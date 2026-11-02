@@ -34,6 +34,9 @@ rep("    if(i===0){ctx.globalAlpha=alpha;ctx.fillStyle=lc;ctx.fillRect(len/2-3,-
     "    if(i===0){ctx.globalAlpha=alpha;if(NAT()&&!gray){ctx.fillStyle='#0a0a0a';for(const sy of [-1,1]){ctx.beginPath();ctx.arc(len/2-2,sy*(wid/2-1.6),0.9,0,TAU);ctx.fill()}}else{ctx.fillStyle=lc;ctx.fillRect(len/2-3,-wid/2+1,2,2);ctx.fillRect(len/2-3,wid/2-3,2,2)}}")
 core=open('biome_core.js').read()+'\n'+open('variants.js').read()+'\n'+open('unlocks.js').read()+'\n'+open('decor.js').read()+'\n'+open('topview.js').read()+'\n'+open('profile.js').read()+'\n'+open('devices.js').read()+'\n'+open('links.js').read()+'\n'+open('lure.js').read()+'\n'+open('species2.js').read()+'\n'+open('species3.js').read()
 main=open('biome_main.js').read()+'\n'+open('menu.js').read()+'\n'+open('extras.js').read()+"\n"+open('tutorial.js').read()+"\n"+open('ambiance.js').read()+'\n'+open('save.js').read()+'\n'+open('bascule.js').read()+'\n'+open('tiroir.js').read()+'\n'+open('soie.js').read()+'\n'+open('instincts.js').read()+'\n'+open('decor_top.js').read()+'\n'+open('aide.js').read()+'\n'+open('ctrl.js').read()+'\n'+open('defis.js').read()+'\n'+open('fixes.js').read()+"\n"
+# fichiers ajoutés après fixes.js (modes de jeu, bêtes, milieu, salle, confort, savoir)
+for f in ['progres.js']:
+    main+=open(f).read()+'\n'
 main=main.replace("for(const id of order)for(const c of creatures)if(c.sp.id===id)drawCreature(c,1,false);",
  "for(const id of order)for(const c of creatures)if(c.sp.id===id){drawProfile(c,1,false);if(c.load){const h=c.segs[0];ctx.fillStyle=c.load.type==='grain'?(c.load.t===1?'#8a6a3a':'#d8b060'):'#ffb43a';ctx.fillRect(h.x+Math.cos(h.a)*5-1.5,h.y+Math.sin(h.a)*5-1.5,3,3)}}")
 html=r'''<!DOCTYPE html>
@@ -298,6 +301,13 @@ body.land #ctrlbar button{flex:1;width:auto;min-width:0;flex-direction:row;justi
 .diffs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px 0 10px}.diff{background:#111;border:1px solid #333;border-radius:10px;color:#ddd;padding:7px 8px;text-align:left;font:12px/1.3 -apple-system,Roboto,sans-serif}
 .diff b{display:block;font-size:13px;margin-bottom:2px}.diff small{color:#999;font-size:10.5px}.diff.on{border-color:#ffe94d;background:#2a2608}.diff.on b{color:#ffe94d}
 @media (max-width:480px){.diff small{display:none}}
+/* Modes en plus (progres.js) et bilan de fin */
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0 0 10px}.mode{background:#0f1a10;border:1px solid #3d6b3f;border-radius:10px;color:#ddd;padding:8px;text-align:left;font:12px/1.3 -apple-system,Roboto,sans-serif}
+.mode b{display:block;font-size:13.5px;color:#cfe;margin-bottom:2px}.mode small{color:#9a9;font-size:11px}.mode.lock{opacity:.5}
+.lv.defi{border-style:dashed;border-color:#a85a3a}.lv.defi b{color:#ff9a6a}
+.bilan{background:#0b120b;border:1px solid #2d4a2f;border-radius:10px;padding:8px;margin:10px 0;text-align:left;font-size:12px}.bilan svg{width:100%;height:90px;display:block;margin:6px 0;border-radius:6px}
+.bilan .bleg{display:flex;flex-wrap:wrap;gap:8px;font-size:12px}.bilan p{margin:5px 0;color:#bbb}
+@media (max-width:480px){.modes{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
