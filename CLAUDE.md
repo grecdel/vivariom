@@ -61,6 +61,14 @@ Ordre des fichiers :
 - **Synchronisation** : save.js, Options → Données → Sauvegarde. Exporte toutes les clés `biome_*` en code `VIVA1:` (JSON gzip en base64) ou en fichier `.vivariom` ; l'import remplace tout et recharge (les enregistrements automatiques sont bloqués pendant ce rechargement).
 - **Photo** : `window.claude.use('downloads')` si le jeu tourne dans Claude, sinon un lien `<a download>`.
 
+## Bestioles (bonus à part, sans lien avec le jeu)
+Petites bêtes qui vivent sur l'écran du téléphone ou de l'ordinateur, par-dessus les autres applis, sans rien modifier.
+- `bestioles/moteur/` : page transparente commune (bestioles.js : espèces, comportements, interactions, menu au clic ; API `window.Bestioles` : demarrer, arreter, action, ajouter, survol, etat, _avancer).
+- `bestioles/android/` : appli Kotlin (sans dépendance) : superposition WebView non tactile (alpha 0,8 pour Android 12+) + une zone tactile invisible par bête → MenuActivity ; widget et tuile des réglages rapides passent par BasculeActivity ; service au premier plan (type specialUse) avec notification « Éteindre ».
+- `bestioles/bureau/` : appli Electron (Windows .exe portable, Linux .AppImage) : fenêtre transparente toujours au-dessus, clics qui traversent sauf sur une bête/le menu (position de la souris envoyée toutes les 60 ms) ; icône près de l'horloge (allumer/éteindre, lancer au démarrage, quitter).
+- Fabrication : `.github/workflows/bestioles.yml` à chaque mise à jour de `bestioles/` ; fichiers dans l'onglet Actions (pas de page Releases publique : à décider avec l'utilisateur). APK signé avec une clé de débogage (une mise à jour peut demander de désinstaller l'ancienne version).
+- Non testé sur un vrai appareil par Claude : à valider par l'utilisateur.
+
 ## Paysage sur téléphone
 Quand l'écran fait moins de 520 px de haut en paysage, `resize()` pose la classe `land` sur body : outils et boutons du menu en colonne à gauche, vues et zoom à droite (inversé en mode gaucher). `CVL`/`CVR` = largeur des colonnes ; le canvas est décalé de `CVL` et `W` est la largeur entre les colonnes (les touchers retirent `CVL`). `BOT`/`BAND_T` sont réduits.
 
