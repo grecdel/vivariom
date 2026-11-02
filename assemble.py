@@ -35,7 +35,7 @@ rep("    if(i===0){ctx.globalAlpha=alpha;ctx.fillStyle=lc;ctx.fillRect(len/2-3,-
 core=open('biome_core.js').read()+'\n'+open('variants.js').read()+'\n'+open('unlocks.js').read()+'\n'+open('decor.js').read()+'\n'+open('topview.js').read()+'\n'+open('profile.js').read()+'\n'+open('devices.js').read()+'\n'+open('links.js').read()+'\n'+open('lure.js').read()+'\n'+open('species2.js').read()+'\n'+open('species3.js').read()
 main=open('biome_main.js').read()+'\n'+open('menu.js').read()+'\n'+open('extras.js').read()+"\n"+open('tutorial.js').read()+"\n"+open('ambiance.js').read()+'\n'+open('save.js').read()+'\n'+open('bascule.js').read()+'\n'+open('tiroir.js').read()+'\n'+open('soie.js').read()+'\n'+open('instincts.js').read()+'\n'+open('decor_top.js').read()+'\n'+open('aide.js').read()+'\n'+open('ctrl.js').read()+'\n'+open('defis.js').read()+'\n'+open('langue.js').read()+'\n'+open('fixes.js').read()+"\n"
 # fichiers ajoutés après fixes.js (modes de jeu, bêtes, milieu, salle, confort, savoir)
-for f in ['progres.js','vie.js','milieu.js','salle2.js','confort.js']:
+for f in ['progres.js','vie.js','milieu.js','salle2.js','confort.js','savoir.js']:
     main+=open(f).read()+'\n'
 main=main.replace("for(const id of order)for(const c of creatures)if(c.sp.id===id)drawCreature(c,1,false);",
  "for(const id of order)for(const c of creatures)if(c.sp.id===id){drawProfile(c,1,false);if(c.load){const h=c.segs[0];ctx.fillStyle=c.load.type==='grain'?(c.load.t===1?'#8a6a3a':'#d8b060'):'#ffb43a';ctx.fillRect(h.x+Math.cos(h.a)*5-1.5,h.y+Math.sin(h.a)*5-1.5,3,3)}}")
@@ -319,6 +319,17 @@ body.land #ctrlbar button{flex:1;width:auto;min-width:0;flex-direction:row;justi
 body.obs>*:not(#c):not(#obsx):not(#toast){display:none!important}body.obs #obsx{display:block}body.obs #c{left:0!important}
 .nuitsalle{position:absolute;inset:0;background:#030818;pointer-events:none;z-index:1}.viv.allume{z-index:2;box-shadow:0 0 18px #ffe9a055}
 #rimp,#ralb{margin-left:4px}#partp,#albp,#albv,#absp{z-index:60}#albv{z-index:61}
+/* Encyclopédie, quiz, découvertes, carte (savoir.js) */
+#quizp,#decp,#chapp{z-index:70}
+.card .taille{background:#1a2a3a;color:#9cd0ff}.card .latin{display:block;font-style:italic;color:#888;font-size:12px;margin:2px 0}.card .anec{background:#1a1808;border-left:3px solid #ffe94d;padding:5px 8px;border-radius:4px;color:#e8e0b0}
+#fquiz,#fdec{background:#111;border:1px solid #3d6b3f;color:#cfe;border-radius:10px;padding:6px 10px;margin-left:8px;font:600 13px -apple-system,Roboto,sans-serif}
+.decs{display:grid;gap:6px}.dec{display:flex;gap:10px;align-items:center;background:#0d0d0d;border:1px solid #2a2a2a;border-radius:10px;padding:7px 10px;opacity:.55}.dec.on{opacity:1;border-color:#3d6b3f}.dec span{font-size:24px}.dec small{display:block;color:#999;font-size:11.5px}
+.qq{font-size:16px;color:#fff;margin:10px 0}.qr{display:grid;gap:6px}.qr button{text-align:left}.qr .bon{border-color:#8bff6a!important;color:#8bff6a!important}.qr .faux{border-color:#ff6a6a!important;color:#ff6a6a!important}
+.carte{position:relative;margin:8px 0 12px;border-radius:16px;overflow:hidden;background:radial-gradient(circle at 20% 15%,#1f3a1c,#0f1f0e 60%),#0f1f0e;border:1px solid #2d4a2f}
+.carte svg{position:absolute;inset:0;width:100%;height:100%}.carte .deco{position:absolute;font-size:18px;opacity:.35;pointer-events:none}
+.etape{position:absolute;width:68px;display:flex;flex-direction:column;align-items:center;background:none;border:0;color:#eee;padding:0;font:600 12px -apple-system,Roboto,sans-serif;text-align:center}
+.etape .eic{width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;background:#16301a;border:3px solid #8bff6a;box-shadow:0 4px 14px #000a}
+.etape b{width:130px;margin-top:4px;text-shadow:0 1px 3px #000}.etape small{color:#bcd;font-size:11px}.etape.lock{opacity:.5}.etape.lock .eic{border-color:#555;background:#1a1a1a}.etape.fini .eic{border-color:#ffe94d;background:#2a2608}
 /* Confort (confort.js) */
 #tuto .thand{display:none;position:fixed;font-size:30px;z-index:41;pointer-events:none;filter:drop-shadow(0 2px 4px #000);animation:tap 1.1s ease-in-out infinite}
 @keyframes tap{0%,100%{transform:translate(0,10px) scale(1)}45%{transform:translate(0,0) scale(.88)}55%{transform:translate(0,0) scale(.88)}}
