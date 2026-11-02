@@ -197,6 +197,8 @@ body.land.left #pal{left:auto!important;right:0!important}body.land.left #bar{le
 body.land.left #viewsw{right:auto!important;left:6px!important}body.land.left #zoomui{right:auto!important;left:6px!important}
 body.land.left #drawer{left:62px!important;right:180px!important}body.land.left #legend{left:66px;right:184px}
 body.land.left #vnav{left:auto;right:184px}body.land.left #vstrip{left:60px;right:178px}
+/* Survol à la souris (ordinateur seulement : pas d'effet collant au doigt sur téléphone) */
+@media (hover:hover) and (pointer:fine){button,.lv,.cat,.chip,.ghostc{transition:box-shadow .12s,outline-color .12s}button:not(:disabled),.lv,.cat,.chip{cursor:pointer}button:not(:disabled):hover,.lv:hover,.cat:hover,.chip:hover{box-shadow:inset 0 0 0 100vmax #ffffff1c;outline:1px solid #ffe94dbb;outline-offset:-1px}.btn:not(:disabled):hover{box-shadow:inset 0 0 0 100vmax #ffffff40;outline:none}button:disabled:hover,.lv.lock:hover{cursor:default}.lv.lock:hover{box-shadow:none;outline:none}}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0b0d0a">
