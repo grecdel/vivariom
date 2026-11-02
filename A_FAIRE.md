@@ -30,6 +30,10 @@ Coche quand c'est vérifié et que ça marche. Si ça ne marche pas, laisse `[ ]
 - [x] Champignon blanc sur les bêtes et moisissures quand le sol est trop mouillé
 - [x] Fougère arborescente, dionée (attrape les mouches), champignons, fruits
 
+- [ ] Plantes au dessin « organique » (tiges ondulées, feuilles en amande)
+- [ ] Les tiges ploient quand une bête grimpe ou qu'un insecte se pose ; toiles qui ondulent ; grains de sable sous les pattes
+- [ ] Aide contre les maladies (carte « 🪄 Le faire pour moi » en Facile, 🍄 en haut de l'écran sinon)
+
 ### Bac à sable et salle
 - [x] Modèles tout prêts (Forêt, Désert, Mare) à la création d'un bac
 - [x] Climat du bac (Tempéré, Tropical, Désert) et étiquette de couleur
