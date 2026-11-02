@@ -13,7 +13,7 @@ parts=[fn(n) for n in ['angDiff','segDist','colors','restPos','kneeOf','local','
 lib='\n'.join(parts)
 lib=lib.replace("flying=!gray&&c.alt>1","flying=false").replace("air=preview||c.alt>3","air=preview||c.fly")
 core=open('biome_core.js').read()+'\n'+open('variants.js').read()+'\n'+open('unlocks.js').read()+'\n'+open('decor.js').read()+'\n'+open('topview.js').read()+'\n'+open('profile.js').read()+'\n'+open('devices.js').read()+'\n'+open('links.js').read()+'\n'+open('lure.js').read()+'\n'+open('species2.js').read()+'\n'+open('species3.js').read()
-main=open('biome_main.js').read()+'\n'+open('menu.js').read()+'\n'+open('extras.js').read()+"\n"+open('tutorial.js').read()+"\n"+open('ambiance.js').read()+'\n'+open('save.js').read()+'\n'+open('bascule.js').read()+'\n'+open('fixes.js').read()+"\n"
+main=open('biome_main.js').read()+'\n'+open('menu.js').read()+'\n'+open('extras.js').read()+"\n"+open('tutorial.js').read()+"\n"+open('ambiance.js').read()+'\n'+open('save.js').read()+'\n'+open('bascule.js').read()+'\n'+open('tiroir.js').read()+'\n'+open('fixes.js').read()+"\n"
 main=main.replace("for(const id of order)for(const c of creatures)if(c.sp.id===id)drawCreature(c,1,false);",
  "for(const id of order)for(const c of creatures)if(c.sp.id===id){drawProfile(c,1,false);if(c.load){const h=c.segs[0];ctx.fillStyle=c.load.type==='grain'?(c.load.t===1?'#8a6a3a':'#d8b060'):'#ffb43a';ctx.fillRect(h.x+Math.cos(h.a)*5-1.5,h.y+Math.sin(h.a)*5-1.5,3,3)}}")
 html=r'''<!DOCTYPE html>
@@ -233,6 +233,15 @@ button:not(:disabled):active,.lv:not(.lock):active,.cat:active,.chip:active{box-
 /* Fiche du bac : vivarium choisi centré, voisins (précédent/suivant) juste à côté, en transparence */
 #rsheet .cbig{left:calc(50% - 90px);right:auto;top:10px}
 #rsheet .cgh{top:56px}#rsheet .cgh.l{left:calc(50% - 234px)}#rsheet .cgh.r{right:auto;left:calc(50% + 114px)}
+/* Tiroir Bêtes : case par espèce, bouton ▾ des variantes, liste déroulante */
+.gcell{position:relative;display:flex}.gcell>.chip{flex:1;min-width:0}
+#drawer .chip .vn{display:block;font:500 8.5px -apple-system,Roboto,sans-serif;color:#8a9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:10px}
+.vbtn{position:absolute;left:2px;top:2px;background:#1c2a1c;border:1px solid #3d6b3f;color:#bfeaa8;border-radius:7px;font:700 10px -apple-system,Roboto,sans-serif;padding:4px 6px;line-height:1;z-index:1}
+.vmenu{position:absolute;z-index:5;background:#0d100d;border:1px solid #8bff6a88;border-radius:12px;padding:6px;box-shadow:0 10px 30px #000c;display:flex;flex-direction:column;gap:4px}
+.vmh{display:flex;justify-content:space-between;align-items:center;font:700 12px -apple-system,Roboto,sans-serif;color:#cfe;padding:2px 4px 4px}.vx{background:#111;border:1px solid #444;color:#ccc;border-radius:50%;width:24px;height:24px;padding:0;font-size:11px}
+.vrow{position:relative;display:flex;align-items:center;gap:8px;background:#070707;border:1px solid #2a2a2a;border-radius:9px;padding:4px 6px;text-align:left;color:#ddd}
+.vrow.on{border-color:#ffe94d;color:#ffe94d}.vrow canvas{width:46px;height:30px;flex:none}.vrow b{font:600 12px -apple-system,Roboto,sans-serif}.vrow i{font:500 10px -apple-system,Roboto,sans-serif;color:#8a9}
+.vrow small{display:block;font:italic 10px Georgia,serif;color:#888}.vrow .st{position:absolute;top:3px;right:6px;font:600 9px ui-monospace,monospace;color:#ffe94d}
 </style>
 </head>
 <body>
