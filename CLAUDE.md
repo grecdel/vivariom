@@ -69,4 +69,5 @@ python3 assemble.py && node tests/fixcheck.js && node tests/all_lv.js && node te
 ## Publication
 - Dépôt public sur GitHub, **tous droits réservés** (LICENSE) : visible, pas libre.
 - Le jeu est en ligne sur https://grecdel.github.io/vivariom/ : `.github/workflows/pages.yml` met en ligne `web/` à chaque mise à jour de `main` touchant `web/`. Donc : modifier, `python3 assemble.py`, tester, enregistrer `web/` avec le reste.
-- itch.io abandonné pour le moment (récupérable dans l'historique, commit 5d4c9cf).
+- itch.io abandonné pour le moment. L'historique a été repris à zéro avant de rendre le dépôt public (pour ne pas exposer l'e-mail de l'auteur) : les anciens fichiers itch.io ne sont plus récupérables.
+- Travailler directement sur `main` ou sur une branche courte ; le proxy de la session ne permet pas de supprimer une branche distante ni de changer les réglages du dépôt (visibilité, Pages) : c'est à l'utilisateur de le faire sur github.com.
