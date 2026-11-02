@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Vivarium Lexical</title>
+<style>
+html,body{margin:0;height:100%;background:#000;overflow:hidden;color:#ddd;font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;touch-action:none;-webkit-user-select:none;user-select:none}
+canvas#c{display:block;position:fixed;inset:0}
+#hud{position:fixed;top:0;left:0;right:0;padding:7px 10px 14px;font:11px ui-monospace,Menlo,Consolas,monospace;background:linear-gradient(#000f 65%,#0000);pointer-events:none;z-index:2}
+#hud .row{display:flex;flex-wrap:wrap;gap:2px 11px;align-items:center}
+#hud b{font-weight:600}
+#msg{margin-top:3px}
+.ok{color:#8bff6a}.ko{color:#ff6a7a}.dim{color:#555}
+.ink{display:inline-block;width:52px;height:5px;background:#222;vertical-align:middle;border-radius:3px;overflow:hidden}
+.ink i{display:block;height:100%;background:#9ab8ff}
+#pal{position:fixed;left:0;right:0;bottom:62px;display:flex;gap:5px;overflow-x:auto;padding:4px 8px;z-index:2;touch-action:pan-x;-webkit-overflow-scrolling:touch;scrollbar-width:none;background:linear-gradient(#0000,#000d 40%)}
+#pal::-webkit-scrollbar{display:none}
+#pal .chip{flex:none;width:58px;background:#070707;border:1px solid #2a2a2a;border-radius:9px;padding:2px 2px 3px;text-align:center;font:600 9px -apple-system,Roboto,sans-serif;color:#aaa;line-height:1.15}
+#pal .chip canvas{width:52px;height:34px;display:block;margin:0 auto 1px}
+#pal .chip.on{border-color:#ffe94d;color:#ffe94d;box-shadow:0 0 8px #ffe94d44}
+#pal .grp{flex:none;writing-mode:vertical-rl;transform:rotate(180deg);font:600 9px ui-monospace,Menlo,monospace;padding:2px 1px;border-left:1px solid #333;letter-spacing:.05em}
+#bar{position:fixed;left:6px;right:6px;bottom:10px;display:flex;gap:5px;justify-content:center;z-index:2}
+#bar button{flex:1;min-width:0;max-width:96px;background:#0b0b0bdd;border:1px solid #333;color:#bbb;border-radius:12px;padding:6px 2px 5px;font:600 11px -apple-system,Roboto,sans-serif;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#bar button small{display:block;font-weight:400;font-size:9px;color:#777;overflow:hidden;text-overflow:ellipsis}
+#bar button.on{border-color:#ffe94d;color:#ffe94d;box-shadow:0 0 10px #ffe94d33}
+#bar #sel{flex:1.6;max-width:130px}
+.ov{position:fixed;inset:0;background:#000e;z-index:5;display:none;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+#intro{display:flex;align-items:flex-start;justify-content:center;padding:18px}
+.box{max-width:470px;border:1px solid #333;padding:20px 18px;background:#050505;font-size:14px;line-height:1.5;margin:auto}
+.box h1{font:600 22px Georgia,serif;margin:0 0 4px;letter-spacing:.06em}
+.box h2{font:600 15px Georgia,serif;margin:14px 0 4px;border-bottom:1px solid #333;padding-bottom:3px}
+.box p{margin:6px 0;color:#bbb}
+.box .go{margin-top:14px;width:100%;padding:11px;background:#ffe94d;color:#000;border:0;border-radius:10px;font:700 15px -apple-system,Roboto,sans-serif}
+#best{padding:0 10px 30px}
+#best header{position:sticky;top:0;background:#000;padding:12px 4px 8px;z-index:1;border-bottom:1px solid #222}
+#best header h1{font:600 20px Georgia,serif;margin:0 0 8px;display:flex;justify-content:space-between;align-items:center}
+#best header h1 button{background:none;border:1px solid #444;color:#ccc;border-radius:8px;padding:4px 12px;font-size:14px}
+#filt{display:flex;gap:5px;overflow-x:auto;padding-bottom:2px}
+#filt button{flex:none;background:#111;border:1px solid #333;color:#aaa;border-radius:14px;padding:4px 10px;font-size:12px}
+#filt button.on{border-color:#ffe94d;color:#ffe94d}
+#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:8px;margin-top:10px}
+.card{border:1px solid #262626;background:#060606;border-radius:8px;padding:8px;font-size:12px;line-height:1.4;display:flex;flex-direction:column}
+.card canvas{width:100%;height:96px;display:block;border-bottom:1px solid #1a1a1a;margin-bottom:6px}
+.card b{font:600 14px Georgia,serif;color:#eee}
+.card i{color:#777;font-size:11px}
+.card p{margin:5px 0;color:#9a9a9a;flex:1}
+.badge{display:inline-block;font-size:10px;border:1px solid;border-radius:8px;padding:0 6px;margin:3px 3px 0 0}
+.card .meta{color:#666;font-size:10px;font-family:ui-monospace,Menlo,monospace}
+.card button{margin-top:6px;background:#111;border:1px solid #444;color:#ffe94d;border-radius:8px;padding:6px;font:600 12px -apple-system,Roboto,sans-serif}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud"><div class="row" id="stats"></div><div class="row" id="roles" style="margin-top:2px"></div><div id="msg"></div></div>
+<div id="pal"></div>
+<div id="bar">
+  <button data-tool="ink" class="on">✒ Encre<small>réécrire</small></button>
+  <button id="bst">📖 Bestiaire<small>50 espèces</small></button>
+  <button id="clr">🧹 Vider<small>vivarium</small></button>
+  <button id="spd">×1<small>vitesse</small></button>
+  <button id="snd">🔊<small>son</small></button>
+  <button id="help">?<small>but</small></button>
+</div>
+<div id="intro" class="ov"><div class="box">
+  <h1>VIVARIUM LEXICAL</h1>
+  <p style="color:#888;font-style:italic">Cinquante espèces vivent sur une page d'encyclopédie.</p>
+  <h2>Les six rôles</h2>
+  <p><b style="color:#4fd1ff">◆ Mangeurs de mots</b> — avalent les mots et recrachent des <span style="color:#ff5c9a">anagrammes</span>.</p>
+  <p><b style="color:#ff5a3c">✳ Tisseuses</b> — tendent leurs fils entre deux mots ; ce qui s'y colle est mangé.</p>
+  <p><b style="color:#c8f04a">▲ Chasseurs</b> — mangent les autres bêtes (chacun a ses proies).</p>
+  <p><b style="color:#ffd84d">✿ Réparateurs</b> — remettent les anagrammes dans le bon ordre.</p>
+  <p><b style="color:#b48cff">♻ Décomposeurs</b> — mangent les cadavres et rendent tout de suite leurs mots à la page.</p>
+  <p><b style="color:#ff6ad5">● Parasites</b> — s'accrochent à un hôte et boivent son énergie.</p>
+  <p><b>Communication</b> — chaque espèce parle à sa façon : pistes de phéromones (fourmis), chant (grillons, cigales), danse (abeilles), flashs (lucioles), panaches odorants (papillons), vibrations (araignées), signaux visuels (saltiques) ou ondes orientées qui partent des antennes.</p>
+  <p>Certaines espèces <b>volent</b> : hors d'atteinte des chasseurs au sol, sauf quand elles se posent.</p>
+  <h2>Ton but</h2>
+  <p>Garde le vivarium <b class="ok">en équilibre</b> : au moins <b>4 rôles sur 6</b> vivants (dont les mangeurs) et une page <b>lisible entre 40 % et 85 %</b>. Défi bonus : le record de <b>biodiversité</b>, le plus d'espèces vivantes en même temps.</p>
+  <p>Le vivarium est <b>vide</b>. Choisis une créature dans la barre du bas (ou dans le <b>📖 Bestiaire</b>), puis touche la page pour la relâcher — autant que tu veux. Touche une bête pour la tenir en laisse. L'encre sert à réécrire les mots abîmés.</p>
+  <button class="go" id="go">Ouvrir le vivarium</button>
+</div></div>
+<div id="best" class="ov">
+  <header><h1>Bestiaire <button id="bclose">Fermer ✕</button></h1><div id="filt"></div></header>
+  <div id="grid"></div>
+</div>
+<script>
+(()=>{
+const cv=document.getElementById('c'),mainCtx=cv.getContext('2d');let ctx=mainCtx;
+let W=0,H=0,DPR=1;
+const TAU=Math.PI*2,rnd=(a,b)=>a+Math.random()*(b-a),clamp=(v,a,b)=>v<a?a:v>b?b:v;
+const dist=(ax,ay,bx,by)=>Math.hypot(ax-bx,ay-by);
+const hsl=(h,s,l,a=1)=>`hsla(${h|0},${s|0}%,${l|0}%,${a})`;
+function angDiff(a,b){let d=b-a;while(d>Math.PI)d-=TAU;while(d<-Math.PI)d+=TAU;return d}
+function segDist(px,py,ax,ay,bx,by){const dx=bx-ax,dy=by-ay,l=dx*dx+dy*dy;let t=l?((px-ax)*dx+(py-ay)*dy)/l:0;t=clamp(t,0,1);return dist(px,py,ax+dx*t,ay+dy*t)}
+function shuffle(s){const a=[...s];for(let k=0;k<4;k++){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}if(a.join('')!==s||a.length<2)break}return a.join('')}
+
+// ================= TEXTE =================
+const PARAS=[
+"#Vivarium lexical",
+"Le vivarium lexical est un écosystème artificiel dans lequel des arthropodes numériques vivent à la surface d'une page encyclopédique. Les mots y constituent la seule ressource nutritive : ils sont consommés, digérés puis rejetés sous forme d'anagrammes, selon un cycle comparable à celui de l'azote dans les sols.",
+"#Description",
+"On y recense une cinquantaine d'espèces réparties en six rôles écologiques. Les mangeurs de mots possèdent un corps divisé en trois parties et avancent en trépied alterné ; leurs antennes détectent les termes intacts à plusieurs lignes de distance.",
+"Les araignées tisseuses n'ont pas d'antennes. Leurs filières produisent une soie qui se fixe uniquement sur les mots. Une toile tendue entre deux termes reste solide tant que ses points d'ancrage ne sont pas dévorés.",
+"#Comportement",
+"Les chasseurs sont des prédateurs spécialisés : certains poursuivent, d'autres guettent, d'autres encore bondissent. La scolopendre grandit d'un segment à chaque proie et se scinde lorsqu'elle dépasse seize segments.",
+"Les réparateurs butinent les anagrammes et en restaurent l'ordre. Les décomposeurs recyclent les cadavres, tandis que les parasites vivent aux dépens d'un hôte plus grand qu'eux.",
+"#Communication",
+"Chaque individu possède un rythme cardiaque lumineux. Les congénères proches se synchronisent progressivement, à la manière des lucioles, et échangent des ondes d'alerte ou de recrutement.",
+"#Conservation",
+"Le conservateur dispose d'une réserve d'encre limitée. Elle permet de réécrire les passages abîmés ou d'introduire de nouveaux spécimens. Un vivarium est considéré comme équilibré lorsque les rôles cohabitent et que la page reste lisible sans être intacte.",
+"#Notes",
+"Les premières observations du phénomène datent de l'époque des encyclopédies collaboratives, lorsque des lecteurs signalèrent des mots inversés dans des articles consacrés aux myriapodes. Aucune explication satisfaisante n'a été proposée depuis."
+];
+const TOP=74,BOTTOM_PAD=128;
+let words=[],hlines=[];
+function layout(){
+  words=[];hlines=[];ctx=mainCtx;
+  const mx=14,maxW=W-mx*2,bottom=H-BOTTOM_PAD;let y=TOP,pi=0,full=false;
+  while(!full&&pi<200){
+    const p=PARAS[pi%PARAS.length];pi++;
+    const isH=p[0]==='#',txt=isH?p.slice(1):p;
+    const size=isH?Math.round(clamp(W/20,17,26)):Math.round(clamp(W/29,12,16));
+    const font=isH?`600 ${size}px Georgia,"Times New Roman",serif`:`${size}px -apple-system,Roboto,Helvetica,Arial,sans-serif`;
+    ctx.font=font;const lh=size*1.5,sp=ctx.measureText(' ').width;
+    let x=mx;y+=isH?lh:lh*0.85;
+    if(y>bottom)break;
+    for(const t of txt.split(' ')){
+      const extra=[];
+      if(!isH&&/[.;]$/.test(t)&&Math.random()<0.35)extra.push('['+(1+Math.random()*99|0)+']');
+      for(const tok of [t,...extra]){
+        const ref=tok[0]==='['&&tok.length>2;
+        const f=ref?`${Math.round(size*0.7)}px -apple-system,Roboto,sans-serif`:font;
+        ctx.font=f;const w=ctx.measureText(tok).width;
+        if(x+w>mx+maxW&&x>mx){x=mx;y+=lh;if(y>bottom){full=true;break}}
+        let kind=isH?'h':ref?'ref':'p',col=null;
+        if(kind==='p'&&tok.length>5&&Math.random()<0.12)col=Math.random()<0.6?'#8ab4ff':'#ff5c9a';
+        if(ref)col='#8ab4ff';
+        const by=ref?y-size*0.45:y;
+        words.push({orig:tok,text:tok,x,y:by,w,size,font:f,kind,col,state:'ok',hl:0,hc:'#ffe94d',flash:0,cx:x+w/2,cy:by-size*0.33});
+        x+=w+(ref?2:sp);
+      }
+      if(full)break;
+    }
+    if(isH&&!full)hlines.push(y+size*0.35);
+    y+=isH?2:lh*0.35;
+  }
+}
+
+// ================= RÔLES & ESPÈCES =================
+const ROLES={
+ mangeur:{nom:'Mangeurs de mots',ic:'◆',col:'#4fd1ff',start:60,decay:1.4,repro:100,age:170,cost:0,snd:['sine',0.03,1.15,0.2]},
+ tisseur:{nom:'Tisseuses',ic:'✳',col:'#ff5a3c',start:90,decay:0.85,repro:200,age:420,cost:10,snd:['triangle',0.07,0.62,0.45]},
+ chasseur:{nom:'Chasseurs',ic:'▲',col:'#c8f04a',start:85,decay:1.1,repro:150,age:420,cost:14,snd:['square',0.016,1,0.08]},
+ reparateur:{nom:'Réparateurs',ic:'✿',col:'#ffd84d',start:70,decay:1.0,repro:130,age:230,cost:6,snd:['sine',0.04,1.45,0.18]},
+ decomposeur:{nom:'Décomposeurs',ic:'♻',col:'#b48cff',start:80,decay:0.7,repro:115,age:320,cost:4,snd:['triangle',0.05,0.7,0.3]},
+ parasite:{nom:'Parasites',ic:'●',col:'#ff6ad5',start:55,decay:0.8,repro:95,age:220,cost:4,snd:['sawtooth',0.02,1.2,0.07]},
+};
+const RK=Object.keys(ROLES);
+function legsFrom(seg,n,spread,L,Lk){const a=[];for(let k=0;k<n;k++){const off=n>1?spread-k*2*spread/(n-1):0,m=Lk?Lk[k]:1;for(const sd of[-1,1])a.push([seg,sd,off,k,L[0]*m,L[1]*m])}return a}
+const INS=o=>({dims:[o.hd,o.th,...(o.mid||[]),o.ab,...(o.ab2||[])],legs:legsFrom(o.ls??1,o.n||3,o.sp??45,o.L||[8,10],o.Lk)});
+const ARA=o=>({dims:[o.ce,o.ab,...(o.tail||[])],legs:legsFrom(0,4,o.sp??60,o.L||[16,20],o.Lk)});
+const MYR=o=>({dims:[o.hd,...Array.from({length:o.n},()=>o.sg.slice()),...(o.tl?[o.tl]:[])],legs:[],chain:{n:o.n,sg:o.sg,per:o.per||1,L:o.L,grow:!!o.grow,max:o.max||26,split:o.split||16,tl:o.tl}});
+const M='mangeur',T='tisseur',C='chasseur',P='reparateur',D='decomposeur',X='parasite';
+const SPECIES=[
+// ---------- mangeurs ----------
+{id:'fourmi',nom:'Fourmi rousse',la:'Formica rufa',role:M,h:12,s:75,l:34,spd:44,hz:2.8,ant:9,f:['mandibules'],cap:16,d:"Infatigable, elle prélève les mots courts et recrute ses sœurs par ondes dès qu'elle trouve un gisement.",...INS({hd:[5,5,'o'],th:[7,4,'o'],mid:[[2.5,2.5,'o']],ab:[8,7,'o'],L:[7,8]})},
+{id:'termite',nom:'Termite ouvrier',la:'Reticulitermes',role:M,h:40,s:45,l:72,spd:22,hz:2,ant:6,f:['mandibules'],d:"Aveugle et pâle, il ronge les mots de l'intérieur ; ses galeries laissent des lacunes partout.",...INS({hd:[5,5,'o'],th:[6,5,'r'],ab:[11,7,'o'],L:[6,7]})},
+{id:'blatte',nom:'Blatte orientale',la:'Blatta orientalis',role:M,h:22,s:60,l:26,spd:55,gait:'dash',hz:2.4,ant:18,gG:12,f:['cerques'],d:"Plate et rapide, elle file sous les lignes et grignote tout, même les anagrammes.",...INS({hd:[4,6,'o'],th:[7,10,'o'],ab:[13,11,'o'],L:[9,11],sp:50})},
+{id:'grillon',nom:'Grillon champêtre',la:'Gryllus campestris',role:M,h:30,s:30,l:12,spd:40,gait:'hop',hz:2.2,ant:16,f:['cerques'],snd:['square',0.05,1,0.07,4200],d:"Il saute d'un mot à l'autre et stridule. Son chant porte loin dans la page.",...INS({hd:[6,7,'o'],th:[6,8,'r'],ab:[13,9,'o'],L:[7,9],Lk:[1,1,1.7]})},
+{id:'criquet',nom:'Criquet migrateur',la:'Locusta migratoria',role:M,h:95,s:55,l:40,spd:50,gait:'hop',hz:2.3,ant:8,d:"Grand sauteur vert ; en essaim, il peut dévaster un paragraphe entier.",...INS({hd:[6,6,'o'],th:[8,7,'r'],ab:[16,7,'o'],L:[7,9],Lk:[1,1,2]})},
+{id:'charancon',nom:'Charançon',la:'Curculio nucum',role:M,h:30,s:40,l:30,spd:18,hz:1.6,ant:6,f:['rostre','elytres'],d:"Son long rostre extrait les lettres une par une. Lent mais obstiné.",...INS({hd:[4,4,'o'],th:[6,7,'o'],ab:[12,10,'o'],L:[7,8]})},
+{id:'doryphore',nom:'Doryphore',la:'Leptinotarsa decemlineata',role:M,h:48,s:90,l:55,spd:20,hz:1.8,ant:6,f:['elytres','lignes'],d:"Rayé de jaune et de noir dans le sens de la longueur, il préfère les mots longs.",...INS({hd:[4,5,'o'],th:[5,8,'o'],ab:[12,11,'o'],L:[7,8]})},
+{id:'chenille',nom:'Chenille de machaon',la:'Papilio machaon (larve)',role:M,h:110,s:65,l:42,spd:12,hz:1.4,ant:0,morph:'machaon',morphN:8,f:['anneaux'],d:"Larve vorace. Après huit mots, elle se transforme en papillon machaon.",...MYR({hd:[5,6,'o'],n:9,sg:[5,7,'o'],L:[3,3]})},
+{id:'phasme',nom:'Phasme bâton',la:'Carausius morosus',role:M,h:85,s:35,l:35,spd:10,hz:0.9,ant:14,d:"Immobile, on le prend pour une brindille entre deux lignes. Il mange lentement, très lentement.",...INS({hd:[4,3,'r'],th:[20,3,'r'],ab:[24,3,'r'],L:[14,16],sp:65})},
+{id:'lepisme',nom:'Poisson d\'argent',la:'Lepisma saccharinum',role:M,h:210,s:15,l:70,spd:48,gait:'dash',hz:2.6,ant:12,f:['filaments'],d:"Il mange réellement le papier. Ici, il est chez lui.",...INS({hd:[4,5,'o'],th:[7,7,'o'],ab:[6,6,'o'],ab2:[[5,4.5,'o'],[4,3,'o']],L:[5,6]})},
+{id:'puceron',nom:'Puceron',la:'Aphis fabae',role:M,h:100,s:70,l:55,spd:10,hz:3,ant:6,repro:70,cap:22,d:"Minuscule et prolifique : il se clone dès qu'il a mangé deux mots.",...INS({hd:[3,3,'o'],th:[3,4,'o'],ab:[6,6,'o'],L:[4,5]})},
+{id:'psoque',nom:'Pou des livres',la:'Liposcelis',role:M,h:35,s:30,l:76,spd:20,hz:3.2,ant:6,d:"On ne le voit presque pas, mais il est dans toutes les reliures.",...INS({hd:[3,3,'o'],th:[3,3,'o'],ab:[5,4,'o'],L:[3.5,4]})},
+{id:'teigne',nom:'Teigne des étoffes',la:'Tineola bisselliella',role:M,fly:true,h:40,s:40,l:62,spd:40,hz:2.5,ant:6,w:{n:2,len:11,wid:5,hz:14},d:"Petit papillon de nuit : il se pose, dévore un mot, puis repart en voletant.",...INS({hd:[3,3,'o'],th:[4,4,'o'],ab:[7,3,'o'],L:[4,4]})},
+{id:'cigale',nom:'Cigale grise',la:'Cicada orni',role:M,fly:true,h:80,s:30,l:30,spd:34,hz:1.8,ant:3,f:['yeux'],w:{n:4,len:18,wid:6,hz:20,a:0.22},snd:['sawtooth',0.06,1,0.05,5200],d:"Elle aspire la sève des mots et chante à pleine puissance.",...INS({hd:[5,8,'o'],th:[7,9,'o'],ab:[10,9,'o'],L:[6,7]})},
+// ---------- tisseuses ----------
+{id:'epeire',nom:'Épeire diadème',la:'Araneus diadematus',role:T,h:28,s:85,l:42,spd:22,hz:0.8,f:['croix'],d:"L'architecte classique : toiles régulières et patience infinie.",...ARA({ce:[11,10,'o'],ab:[17,15,'o'],L:[17,21]})},
+{id:'tegenaire',nom:'Tégénaire',la:'Tegenaria domestica',role:T,h:25,s:35,l:26,spd:34,hz:0.9,f:['poils'],d:"Grande et velue, elle tend des nappes dans les coins de page et surgit très vite.",...ARA({ce:[12,10,'o'],ab:[14,11,'o'],L:[22,26]})},
+{id:'argiope',nom:'Argiope frelon',la:'Argiope bruennichi',role:T,h:50,s:95,l:52,spd:22,hz:0.8,f:['rayures'],ray:5,d:"Rayée comme une guêpe, elle signe sa toile d'un zigzag de soie.",...ARA({ce:[10,9,'o'],ab:[19,14,'o'],L:[17,22]})},
+{id:'veuve',nom:'Veuve noire',la:'Latrodectus mactans',role:T,h:0,s:10,l:8,spd:22,hz:0.7,big:2.6,f:['sablier'],d:"Noire et luisante, marquée d'un sablier rouge. Sa toile retient même les gros insectes.",...ARA({ce:[10,9,'o'],ab:[18,17,'o'],L:[16,20]})},
+{id:'pholque',nom:'Pholque phalangide',la:'Pholcus phalangioides',role:T,h:40,s:30,l:70,spd:20,hz:1,d:"Un corps minuscule perché sur des pattes interminables.",...ARA({ce:[6,5,'o'],ab:[9,5,'o'],L:[30,34]})},
+{id:'nephile',nom:'Néphile dorée',la:'Trichonephila clavipes',role:T,h:45,s:90,l:40,spd:20,hz:0.7,webLife:2,webR:130,d:"Sa soie dorée est la plus solide du vivarium : ses toiles durent deux fois plus longtemps.",...ARA({ce:[12,9,'o'],ab:[26,10,'o'],L:[24,28]})},
+{id:'linyphie',nom:'Linyphie',la:'Linyphia triangularis',role:T,h:20,s:40,l:30,spd:24,hz:1.1,webR:60,maxStr:18,d:"Petite tisseuse de nappes : beaucoup de fils courts, très rapprochés.",...ARA({ce:[7,6,'o'],ab:[10,8,'o'],L:[11,13]})},
+{id:'gasteracanthe',nom:'Araignée cerf-volant',la:'Gasteracantha cancriformis',role:T,h:5,s:85,l:55,spd:18,hz:0.9,f:['epines'],d:"Un abdomen cuirassé, large comme un bouclier et hérissé d'épines.",...ARA({ce:[7,7,'o'],ab:[10,18,'o'],L:[10,12]})},
+// ---------- chasseurs ----------
+{id:'scolopendre',nom:'Scolopendre géante',la:'Scolopendra gigantea',role:C,h:75,s:85,l:48,spd:34,hz:1.25,ant:9,eats:[M,P,D,T],sonar:true,d:"Chaque proie lui ajoute un segment ; à seize, elle se coupe en deux. Affamée, elle s'attaque aux araignées.",...MYR({hd:[7,8,'r'],n:8,sg:[5,9,'r'],L:[6,7],grow:true,max:26,split:16})},
+{id:'lithobie',nom:'Lithobie',la:'Lithobius forficatus',role:C,h:25,s:60,l:35,spd:42,hz:1.6,ant:8,eats:[M,D],sonar:true,d:"Petit mille-pattes brun très vif, chasseur de psoques et de collemboles.",...MYR({hd:[5,6,'r'],n:6,sg:[4,7,'r'],L:[5,6],grow:true,max:15,split:12})},
+{id:'scutigere',nom:'Scutigère',la:'Scutigera coleoptrata',role:C,h:40,s:30,l:55,spd:70,gait:'dash',hz:2,ant:16,eats:[M,P,D],d:"Quinze paires de pattes immenses : c'est la créature la plus rapide de la page.",...MYR({hd:[5,5,'o'],n:7,sg:[4,6,'r'],L:[13,15]})},
+{id:'mante',nom:'Mante religieuse',la:'Mantis religiosa',role:C,h:100,s:65,l:45,spd:24,hz:0.9,ant:9,mode:'ambush',catchFly:true,eats:[M,P,X,D],f:['ravisseuses','yeux'],d:"Immobile, pattes jointes… puis la frappe, en un éclair. Elle attrape aussi les volants posés.",...INS({hd:[5,7,'o'],th:[14,3,'r'],mid:[[6,5,'r']],ab:[18,8,'o'],ls:2,n:2,sp:30,L:[10,12]})},
+{id:'scorpion',nom:'Scorpion jaune',la:'Buthus occitanus',role:C,h:45,s:70,l:52,spd:26,hz:0.8,eats:[M,T,D,P],big:1.6,f:['pinces','dard'],d:"Pinces en avant, dard levé. Il ne craint personne, sauf la scolopendre géante.",...ARA({ce:[12,10,'r'],ab:[8,12,'r'],tail:[[7,11,'r'],[6,10,'r'],[5,4,'o'],[5,4,'o'],[5,4,'o'],[5,4,'o'],[6,4,'o']],L:[11,13],sp:55})},
+{id:'lycose',nom:'Araignée-loup',la:'Lycosa tarantula',role:C,h:30,s:30,l:34,spd:48,hz:1.2,eats:[M,D,P],f:['yeux','poils'],d:"Elle ne tisse pas : elle court après ses proies.",...ARA({ce:[11,9,'o'],ab:[13,10,'o'],L:[16,18]})},
+{id:'saltique',nom:'Saltique',la:'Salticus scenicus',role:C,h:200,s:10,l:32,spd:20,hz:1.5,mode:'jump',eats:[M,P,D],f:['yeux','rayures'],ray:3,d:"Quatre gros yeux et un bond de dix fois sa taille. La plus curieuse du vivarium.",...ARA({ce:[8,8,'r'],ab:[9,8,'o'],L:[7,8]})},
+{id:'carabe',nom:'Carabe doré',la:'Carabus auratus',role:C,h:140,s:80,l:40,spd:40,hz:1.4,ant:10,eats:[M,D],f:['elytres','mandibules'],d:"Coléoptère vert métallique, chasseur de larves et de cloportes.",...INS({hd:[5,5,'o'],th:[7,8,'r'],ab:[15,12,'o'],L:[9,11]})},
+{id:'thomise',nom:'Araignée-crabe',la:'Thomisus onustus',role:C,h:55,s:60,l:82,spd:16,hz:0.8,mode:'ambush',catchFly:true,eats:[P,M],d:"Elle se poste sur un mot et attend les butineurs qui viennent s'y poser.",...ARA({ce:[7,9,'o'],ab:[10,11,'o'],L:[11,12],sp:70})},
+{id:'libellule',nom:'Libellule empereur',la:'Anax imperator',role:C,fly:true,webproof:true,h:195,s:80,l:50,spd:70,hz:1.8,eats:[M,P,X,D],f:['yeux'],w:{n:4,len:20,wid:4,hz:22,a:0.28},d:"Chasseuse aérienne : elle attrape les autres volants en plein vol.",...INS({hd:[5,8,'o'],th:[8,7,'o'],ab:[32,3,'r'],L:[4,5]})},
+{id:'cicindele',nom:'Cicindèle',la:'Cicindela campestris',role:C,h:160,s:70,l:40,spd:75,gait:'dash',hz:2.2,ant:10,eats:[M,D],f:['yeux','mandibules','elytres'],d:"Le coureur le plus rapide des coléoptères.",...INS({hd:[5,7,'o'],th:[5,6,'r'],ab:[11,8,'o'],L:[9,10]})},
+{id:'frelon',nom:'Frelon',la:'Vespa crabro',role:C,fly:true,webproof:true,h:30,s:90,l:45,spd:55,hz:2,ant:7,eats:[P,M,X],f:['rayures'],ray:3,w:{n:2,len:13,wid:4,hz:24},d:"Il chasse les abeilles en vol. Son bourdonnement fait fuir tout le monde.",...INS({hd:[6,7,'o'],th:[8,8,'o'],ab:[13,9,'o'],L:[6,7]})},
+// ---------- réparateurs ----------
+{id:'abeille',nom:'Abeille domestique',la:'Apis mellifera',role:P,fly:true,h:42,s:90,l:50,spd:46,hz:2.6,ant:6,dance:true,f:['rayures'],ray:3,w:{n:2,len:11,wid:4,hz:26},d:"Elle butine les anagrammes et les remet en ordre, puis danse en ondes pour guider ses sœurs.",...INS({hd:[5,6,'o'],th:[6,7,'o'],ab:[10,8,'o'],L:[6,7]})},
+{id:'bourdon',nom:'Bourdon terrestre',la:'Bombus terrestris',role:P,fly:true,h:45,s:60,l:28,spd:32,hz:1.7,ant:5,decay:0.6,f:['rayures','poils'],ray:2,w:{n:2,len:10,wid:4,hz:18},d:"Lourd et poilu, il répare lentement mais ne se fatigue jamais.",...INS({hd:[6,7,'o'],th:[8,10,'o'],ab:[11,11,'o'],L:[6,7]})},
+{id:'machaon',nom:'Machaon',la:'Papilio machaon',role:P,fly:true,h:52,s:90,l:60,spd:30,hz:1.2,ant:9,club:true,w:{n:4,len:22,wid:14,hz:6,pat:'ocelles',a:0.35},d:"Grand papillon jaune et noir. Il naît d'une chenille bien nourrie.",...INS({hd:[3,3,'o'],th:[6,5,'o'],ab:[12,4,'o'],L:[5,6]})},
+{id:'coccinelle',nom:'Coccinelle à 7 points',la:'Coccinella septempunctata',role:P,h:2,s:85,l:45,spd:22,hz:1.8,ant:4,f:['points','elytres'],d:"Sept points noirs porte-bonheur. Elle recolle les lettres des mots brouillés.",...INS({hd:[4,5,'o'],th:[3,8,'o'],ab:[11,11,'o'],L:[6,7]})},
+{id:'luciole',nom:'Luciole',la:'Lampyris noctiluca',role:P,fly:true,h:65,s:80,l:55,spd:28,hz:0.6,firefly:true,ant:5,f:['lanterne'],w:{n:2,len:8,wid:3,hz:16},d:"Sa lanterne clignote. En groupe, les lucioles finissent par briller toutes ensemble.",...INS({hd:[3,4,'o'],th:[5,5,'o'],ab:[9,5,'o'],L:[4,5]})},
+{id:'sphinx',nom:'Moro-sphinx',la:'Macroglossum stellatarum',role:P,fly:true,hover:true,h:25,s:40,l:40,spd:60,hz:2.8,ant:6,club:true,f:['rostre'],w:{n:4,len:12,wid:6,hz:30},d:"Il fait du surplace devant les mots comme un colibri et répare sans se poser.",...INS({hd:[4,5,'o'],th:[6,7,'o'],ab:[10,8,'o'],L:[4,5]})},
+{id:'syrphe',nom:'Syrphe ceinturé',la:'Episyrphus balteatus',role:P,fly:true,hover:true,h:50,s:85,l:50,spd:50,hz:2.4,ant:3,f:['rayures','yeux'],ray:3,w:{n:2,len:10,wid:3.5,hz:28},d:"Il imite la guêpe pour qu'on le laisse tranquille. Inoffensif et très utile.",...INS({hd:[5,6,'o'],th:[6,6,'o'],ab:[9,7,'o'],L:[5,5]})},
+// ---------- décomposeurs ----------
+{id:'cloporte',nom:'Cloporte',la:'Armadillidium vulgare',role:D,h:220,s:10,l:45,spd:16,hz:1.2,ant:6,d:"Un crustacé terrestre en armure grise. Il recycle les cadavres en mots tout neufs.",...MYR({hd:[4,9,'o'],n:7,sg:[3.5,13,'o'],L:[5,5],tl:[3,8,'o']})},
+{id:'bousier',nom:'Bousier',la:'Scarabaeus sacer',role:D,h:250,s:15,l:12,spd:18,hz:1,ant:5,f:['corne','elytres'],d:"Il roule les restes jusqu'à la page et les y enterre.",...INS({hd:[6,9,'o'],th:[7,12,'o'],ab:[12,13,'o'],L:[9,11],sp:55})},
+{id:'necrophore',nom:'Nécrophore',la:'Nicrophorus vespillo',role:D,h:25,s:90,l:45,spd:24,hz:1.3,ant:6,club:true,sense:400,f:['elytres','bandes'],d:"Il flaire un cadavre à travers toute la page et l'enterre aussitôt.",...INS({hd:[5,6,'o'],th:[6,8,'o'],ab:[13,10,'r'],L:[8,9]})},
+{id:'mouche',nom:'Mouche verte',la:'Lucilia sericata',role:D,fly:true,h:150,s:80,l:45,spd:55,hz:2.8,ant:3,f:['yeux'],w:{n:2,len:10,wid:4,hz:30},d:"Toujours la première arrivée. Elle se pose sur les cadavres… et s'envole au moindre geste.",...INS({hd:[5,6,'o'],th:[6,7,'o'],ab:[8,7,'o'],L:[5,6]})},
+{id:'iule',nom:'Iule',la:'Julida',role:D,h:15,s:40,l:25,spd:10,hz:0.9,ant:5,f:['anneaux'],d:"Mille-pattes paisible : deux paires de pattes par anneau et une démarche en vague.",...MYR({hd:[5,6,'o'],n:14,sg:[3.5,6,'o'],L:[3,3],per:2})},
+{id:'collembole',nom:'Collembole',la:'Folsomia candida',role:D,h:200,s:20,l:82,spd:30,gait:'hop',hz:3,ant:4,d:"Minuscule sauteur blanc qui nettoie les miettes de lettres.",...INS({hd:[3,3,'o'],th:[3,3,'o'],ab:[5,3,'o'],L:[3,3]})},
+// ---------- parasites ----------
+{id:'tique',nom:'Tique',la:'Ixodes ricinus',role:X,h:15,s:40,l:25,spd:12,hz:1,mode:'attach',d:"Elle attend, s'accroche, et boit l'énergie de son hôte jusqu'à doubler de volume.",...ARA({ce:[4,4,'o'],ab:[8,8,'o'],L:[4,4]})},
+{id:'trombidion',nom:'Trombidion',la:'Trombidium holosericeum',role:X,h:0,s:90,l:45,spd:20,hz:1.4,mode:'attach',f:['poils'],d:"Acarien rouge velours. Il voyage accroché aux autres bêtes.",...ARA({ce:[3,3,'o'],ab:[6,6,'o'],L:[3,3]})},
+{id:'ichneumon',nom:'Ichneumon',la:'Rhyssa persuasoria',role:X,fly:true,h:20,s:60,l:22,spd:40,hz:1.6,ant:10,mode:'parasitoid',f:['tariere'],w:{n:4,len:10,wid:3,hz:20},d:"Une guêpe fine comme une aiguille. Elle pond dans un hôte… qui finira par donner naissance à de nouvelles guêpes.",...INS({hd:[3,4,'o'],th:[5,4,'o'],ab:[12,3,'o'],L:[6,7]})},
+];
+const COM={'fourmi': 'pheromone', 'termite': 'pheromone', 'puceron': 'pheromone', 'psoque': 'pheromone', 'coccinelle': 'pheromone', 'cloporte': 'pheromone', 'collembole': 'pheromone', 'bourdon': 'pheromone', 'frelon': 'pheromone', 'tique': 'pheromone', 'trombidion': 'pheromone', 'grillon': 'chant', 'criquet': 'chant', 'cigale': 'chant', 'necrophore': 'chant', 'teigne': 'plume', 'machaon': 'plume', 'sphinx': 'plume', 'ichneumon': 'plume', 'abeille': 'danse', 'luciole': 'lumiere', 'epeire': 'vibration', 'tegenaire': 'vibration', 'argiope': 'vibration', 'veuve': 'vibration', 'pholque': 'vibration', 'nephile': 'vibration', 'linyphie': 'vibration', 'gasteracanthe': 'vibration', 'lycose': 'vibration', 'scorpion': 'vibration', 'saltique': 'visuel', 'mante': 'visuel', 'libellule': 'visuel', 'thomise': 'aucune', 'chenille': 'aucune', 'syrphe': 'aucune'};
+const COMNOM={pheromone:'phéromones (pistes et alarme)',chant:'chant (stridulation)',plume:'panache odorant',danse:'danse frétillante',lumiere:'flashs lumineux',vibration:'vibrations',visuel:'signaux visuels',antenne:'antennes',aucune:'solitaire'};
+const SC=1.25,SPI={};
+for(const sp of SPECIES){
+  sp.mass=sp.dims.reduce((m,d)=>m+d[0]*d[1],0)/40;
+  sp.dims=sp.dims.map(d=>[d[0]*SC,d[1]*SC,d[2]]);
+  sp.legs=sp.legs.map(l=>[l[0],l[1],l[2],l[3],l[4]*SC,l[5]*SC]);
+  if(sp.chain){sp.chain.sg=[sp.chain.sg[0]*SC,sp.chain.sg[1]*SC,sp.chain.sg[2]];sp.chain.L=sp.chain.L.map(v=>v*SC);if(sp.chain.tl)sp.chain.tl=[sp.chain.tl[0]*SC,sp.chain.tl[1]*SC,sp.chain.tl[2]]}
+  if(sp.w){sp.w=Object.assign({},sp.w,{len:sp.w.len*SC,wid:sp.w.wid*SC})}
+  sp.com=COM[sp.id]||(sp.ant>0?'antenne':'aucune');sp.ant=(sp.ant||0)*SC;sp.spd*=SC;sp.f=sp.f||[];
+  const L=sp.chain?sp.chain.L:[sp.legs[0][4],sp.legs[0][5]];sp.thresh=(L[0]+L[1])*0.38;
+  const R=ROLES[sp.role];
+  sp.cost=Math.round(clamp(5+sp.mass*0.9+R.cost,6,45));
+  const base=clamp(5200/Math.sqrt(sp.mass*2+1),240,4800);
+  const s=sp.snd||R.snd;sp.sound={w:s[0],d:s[1],sl:s[2],v:s[3],f:s[4]||base};
+  SPI[sp.id]=sp;
+}
+
+// ================= CRÉATURES =================
+let creatures=[],corpses=[],strands=[],tags=[],rings=[],waves=[],newborns=[];
+function spacing(c,i){return (c.dims[i-1][0]+c.dims[i][0])/2+1}
+function colors(c){
+  c.cLine=hsl(c.hue,Math.min(100,c.sat+12),Math.max(55,c.lig+26));
+  c.cCore=hsl(c.hue,c.sat,90);c.cFill=hsl(c.hue,c.sat,Math.min(80,c.lig+18),c.sp.w&&c.sp.w.a||0.22);
+  const n=c.dims.length,hs=c.sp.hs??(c.sp.chain?5:14);
+  c.segL=c.dims.map((d,i)=>hsl(c.hue+(i-(n-1)/2)*hs,Math.min(100,c.sat+15),Math.max(56,c.lig+26)));
+  c.segT=c.dims.map((d,i)=>hsl(c.hue+(i-(n-1)/2)*hs,c.sat,Math.max(10,c.lig*0.45),0.45));
+  c.segC=c.dims.map((d,i)=>{const hh=c.hue+(i%2?5:-5)+i*1.5;
+    return [hsl(hh,c.sat,Math.max(4,c.lig*0.42)),hsl(hh,c.sat,c.lig),hsl(hh+12,Math.min(100,c.sat+12),Math.min(94,c.lig+32))]});
+}
+function mk(sp,x,y,o={}){
+  if(typeof sp==='string')sp=SPI[sp];
+  const R=ROLES[sp.role];
+  const c={sp,role:sp.role,x,y,ang:o.ang??rnd(0,TAU),v:0,wa:0,energy:o.energy??(sp.start||R.start),age:0,dead:false,state:'wander',t:rnd(0,1),
+    target:null,prey:null,eaten:o.eaten||0,carry:null,segs:[],legs:[],webCd:0,anchor:null,home:{x,y},idle:0,alt:sp.fly?14:0,air:!!sp.fly,
+    phase:Math.random(),beatT:9,beats:0,flap:rnd(0,TAU),hopT:rnd(0,1),jumpCd:0,parasites:0,infest:0,host:null,swell:1};
+  c.hue=sp.h+rnd(-8,8);c.sat=sp.s;c.lig=sp.l;
+  if(sp.chain){const n=o.n||sp.chain.n;c.dims=[sp.dims[0].slice(),...Array.from({length:n},()=>sp.chain.sg.slice()),...(sp.chain.tl?[sp.chain.tl.slice()]:[])]}
+  else c.dims=sp.dims.map(d=>d.slice());
+  let px=x,py=y;
+  for(let i=0;i<c.dims.length;i++){if(i){const s=spacing(c,i);px-=Math.cos(c.ang)*s;py-=Math.sin(c.ang)*s}c.segs.push({x:px,y:py,a:c.ang})}
+  if(sp.chain){const last=sp.chain.tl?c.dims.length-1:c.dims.length;for(let i=1;i<last;i++)addChainLegs(c,i)}
+  else sp.legs.forEach(l=>addLeg(c,...l));
+  colors(c);
+  return c;
+}
+function addLeg(c,seg,side,off,p,L1,L2){const l={seg,side,off,p,L1,L2,step:0,fx:0,fy:0,hx:0,hy:0,sx:0,sy:0,tx:0,ty:0};const r=restPos(c,l);l.fx=r[2];l.fy=r[3];l.hx=r[0];l.hy=r[1];c.legs.push(l)}
+function addChainLegs(c,i){const ch=c.sp.chain;for(let j=0;j<ch.per;j++){const o=(i%2?8:-8)-j*14;addLeg(c,i,-1,o,i*ch.per+j,ch.L[0],ch.L[1]);addLeg(c,i,1,-o,i*ch.per+j,ch.L[0],ch.L[1])}}
+function growSeg(c){
+  const ch=c.sp.chain;if(!ch||c.segs.length>=ch.max)return;
+  const idx=ch.tl?c.segs.length-1:c.segs.length;
+  const L=c.segs[idx-1];c.segs.splice(idx,0,{x:L.x,y:L.y,a:L.a});c.dims.splice(idx,0,ch.sg.slice());
+  if(ch.tl)for(const l of c.legs)if(l.seg>=idx)l.seg++;
+  addChainLegs(c,idx);colors(c);
+}
+function shrink(c,k,gain){const ch=c.sp.chain;for(let i=0;i<k&&c.segs.length>4;i++){const idx=ch&&ch.tl?c.segs.length-2:c.segs.length-1;c.segs.splice(idx,1);c.dims.splice(idx,1);c.legs=c.legs.filter(l=>l.seg!==idx);for(const l of c.legs)if(l.seg>idx)l.seg--;c.energy+=gain}colors(c)}
+function restPos(c,l){
+  const g=c.segs[l.seg],hw=c.dims[l.seg][1]/2,pa=g.a+l.side*Math.PI/2;
+  const hx=g.x+Math.cos(pa)*hw,hy=g.y+Math.sin(pa)*hw;
+  const a=g.a+l.side*(Math.PI/2-l.off*Math.PI/180),r=(l.L1+l.L2)*0.78;
+  return [hx,hy,hx+Math.cos(a)*r,hy+Math.sin(a)*r];
+}
+function kneeOf(c,l){
+  const g=c.segs[l.seg];let d=dist(l.hx,l.hy,l.fx,l.fy);d=clamp(d,0.01,l.L1+l.L2-0.01);
+  const a=Math.acos(clamp((l.L1*l.L1+d*d-l.L2*l.L2)/(2*l.L1*d),-1,1)),b=Math.atan2(l.fy-l.hy,l.fx-l.hx);
+  const k1=[l.hx+Math.cos(b+a)*l.L1,l.hy+Math.sin(b+a)*l.L1],k2=[l.hx+Math.cos(b-a)*l.L1,l.hy+Math.sin(b-a)*l.L1];
+  return dist(k1[0],k1[1],g.x,g.y)>dist(k2[0],k2[1],g.x,g.y)?k1:k2;
+}
+const MINY=TOP-12;
+function inBounds(c){return c.x>14&&c.x<W-14&&c.y>MINY&&c.y<H-BOTTOM_PAD+10}
+function steer(c,tx,ty,dt,spd){const da=angDiff(c.ang,Math.atan2(ty-c.y,tx-c.x));c.ang+=clamp(da,-(c.sp.turn||4)*dt,(c.sp.turn||4)*dt);c.v=spd*(Math.abs(da)>1.7?0.35:1)}
+function wander(c,dt,f=0.55){
+  if(c.lure&&c.lure.t>0){c.lure.t-=dt;if(dist(c.x,c.y,c.lure.x,c.lure.y)>15){steer(c,c.lure.x,c.lure.y,dt,c.sp.spd*0.8);return}c.lure=null}
+  if(c.sp.com==='pheromone'&&Math.random()<0.05){for(let k=phero.length-1;k>=0;k-=3){const q=phero[k];if(q.sp===c.sp&&q.food&&dist(c.x,c.y,q.x,q.y)<28){c.lure={x:q.food.x,y:q.food.y,t:4};break}}}
+  if(!inBounds(c)){steer(c,W/2,H/2,dt,c.sp.spd*f);return}
+  c.wa+=rnd(-4,4)*dt;c.wa=clamp(c.wa*0.985,-1.6,1.6);c.ang+=c.wa*dt;c.v=c.sp.spd*f;
+}
+function moveBody(c,dt){
+  const sp=c.sp;
+  // altitude des volants
+  const tAlt=c.air?14:0;c.alt+=(tAlt-c.alt)*Math.min(1,dt*4);
+  if(sp.w)c.flap+=dt*sp.w.hz*TAU*(c.alt>3?1:0.03);
+  let v=c.v;
+  if(c.alt<3){
+    if(sp.gait==='hop'&&v>1){c.hopT-=dt;if(c.hopT<=0)c.hopT=0.9;v*=c.hopT>0.65?3.2:0.12}
+    else if(sp.gait==='dash'&&v>1)v*=Math.sin(c.age*5+c.phase*6)>0.1?1.5:0.35;
+  }else v*=1+Math.sin(c.age*7+c.phase*9)*0.25;
+  if(c.jump>0){c.jump-=dt;v=sp.spd*4}
+  if(!c.host){
+    c.x+=Math.cos(c.ang)*v*dt;c.y+=Math.sin(c.ang)*v*dt;
+    c.x=clamp(c.x,4,W-4);c.y=clamp(c.y,MINY-6,H-BOTTOM_PAD+16);
+  }
+  const s0=c.segs[0];s0.x=c.x;s0.y=c.y;s0.a=c.ang;
+  for(let i=1;i<c.segs.length;i++){const p=c.segs[i-1],g=c.segs[i];const a=Math.atan2(p.y-g.y,p.x-g.x),s=spacing(c,i);g.x=p.x-Math.cos(a)*s;g.y=p.y-Math.sin(a)*s;g.a=a}
+  const th=sp.thresh,moving=v>2,flying=c.alt>3;
+  for(const l of c.legs){
+    const r=restPos(c,l);l.hx=r[0];l.hy=r[1];
+    if(flying){l.step=0;l.fx=l.hx+(r[2]-l.hx)*0.35;l.fy=l.hy+(r[3]-l.hy)*0.35;continue}
+    if(c.signal>0&&l.p===0){l.step=0;const wv=Math.sin(c.age*18+l.side)*4;l.fx=r[2]+Math.cos(c.ang)*6+Math.cos(c.ang+Math.PI/2)*wv*l.side;l.fy=r[3]+Math.sin(c.ang)*6+Math.sin(c.ang+Math.PI/2)*wv*l.side;continue}
+    if(l.step>0){
+      l.step+=dt/0.11;const t=Math.min(1,l.step),e=t*t*(3-2*t);
+      l.fx=l.sx+(l.tx-l.sx)*e;l.fy=l.sy+(l.ty-l.sy)*e;if(t>=1){l.step=0;beep(c,l)}
+    }else{
+      const d=dist(l.fx,l.fy,r[2],r[3]);
+      if(d>th*(moving?1:1.8)){
+        const blocked=d<th*2.6&&c.legs.some(o=>o!==l&&o.step>0&&((o.side===l.side&&Math.abs(o.p-l.p)===1)||(o.side!==l.side&&o.p===l.p)));
+        if(!blocked){l.step=1e-4;l.sx=l.fx;l.sy=l.fy;const lead=moving?th*0.55:0;l.tx=r[2]+Math.cos(c.ang)*lead;l.ty=r[3]+Math.sin(c.ang)*lead}
+      }
+    }
+  }
+  if(sp.w&&flying){const n=Math.floor(c.flap/TAU);if(n!==c.flapN){c.flapN=n;if(n%3===0)beep(c,null)}}
+}
+
+// ================= MOTS =================
+const valid=w=>w&&w.state!=='eaten';
+function pickWord(c,radius){
+  let best=null,bd=1e9;
+  for(let k=0;k<22;k++){const w=words[Math.random()*words.length|0];if(!valid(w))continue;
+    let d=dist(c.x,c.y,w.cx,w.cy);if(w.state==='garbled')d*=1.6;if(d<radius&&d<bd){bd=d;best=w}}
+  if(!best)for(let k=0;k<30;k++){const w=words[Math.random()*words.length|0];if(w.state==='ok'){best=w;break}}
+  return best;
+}
+function pickNear(x,y,r){let best=null,bd=1e9;for(let k=0;k<30;k++){const w=words[Math.random()*words.length|0];if(w.state!=='ok')continue;const d=dist(x,y,w.cx,w.cy);if(d<r&&d<bd){bd=d;best=w}}return best}
+function pickGarbled(c,r){let best=null,bd=1e9;for(const w of words){if(w.state!=='garbled'||w.claim)continue;const d=dist(c.x,c.y,w.cx,w.cy);if(d<bd&&d<r){bd=d;best=w}}return best}
+function restoreWord(w){w.state='ok';w.text=w.orig;w.flash=1;w.claim=null}
+function releaseWords(x,y,n){
+  const cand=words.filter(w=>w.state!=='ok'&&!w.pending).map(w=>[dist(x,y,w.cx,w.cy),w]).sort((a,b)=>a[0]-b[0]).slice(0,n);
+  for(const [,w] of cand){w.pending=true;tags.push({text:w.orig,x,y,sx:x+rnd(-6,6),sy:y+rnd(-6,6),rot:rnd(-1,1),vr:rnd(-3,3),t:0,dur:rnd(0.9,1.6),word:w,color:'#8bff6a'})}
+}
+
+// ================= COMMUNICATION =================
+const BEATDELAY=0.07;
+function pulseAt(c,i){const d=c.sp.chain?0.035:BEATDELAY;const t=c.beatT-i*d;if(t<0)return 0;return Math.min(1,Math.exp(-t*9)+(t>0.17?0.55*Math.exp(-(t-0.17)*11):0))}
+function wave(o){if(waves.length<120)waves.push(Object.assign({r:3,sp:110,max:90,a:0.5,w:1},o))}
+let phero=[],windA=rnd(0,TAU);
+function antTips(c){const h=c.segs[0],hd=c.dims[0],L=Math.max(c.sp.ant,5),ox=-c.alt*0.3,oy=-c.alt,r=[];
+  for(const sd of[-1,1]){const [fx,fy]=local(h,hd[0]*0.45,sd*hd[1]*0.2),a2=h.a+sd*0.75;r.push([fx+Math.cos(a2)*L+ox,fy+Math.sin(a2)*L+oy])}return r}
+// onde orientée qui part des antennes vers une cible
+function antWave(c,tx,ty,col,a=0.55,max,echo){
+  if(!(c.sp.ant>0))return;
+  antTips(c).forEach((t,k)=>{const d=dist(t[0],t[1],tx,ty);wave({x:t[0],y:t[1],arc:Math.atan2(ty-t[1],tx-t[0]),spr:0.3,max:max||clamp(d,20,110),sp:130,col,a,w:1,echo:k===0?echo:null,from:c})});
+}
+// chant : arcs ))) de part et d'autre du corps
+function chirp(c){const g=c.segs[1]||c.segs[0],ox=-c.alt*0.3,oy=-c.alt;
+  for(const sd of[-1,1])for(let k=0;k<3;k++)wave({x:g.x+ox,y:g.y+oy,r:3+k*5,arc:g.a+sd*Math.PI/2,spr:0.45,max:44+k*5,sp:85,col:c.cLine,a:0.6,w:1.2});
+  beep(c,{p:0,side:1});
+  for(const o of creatures)if(o!==c&&!o.dead&&o.sp===c.sp&&o!==leader&&o.state==='wander'&&dist(o.x,o.y,c.x,c.y)<170&&Math.random()<0.35)o.lure={x:c.x,y:c.y,t:3};
+}
+function tremor(x,y,r,k=0.7){for(const w of words){if(Math.abs(w.cy-y)>r)continue;const d=dist(x,y,w.cx,w.cy);if(d<r)w.shake=Math.max(w.shake||0,k*(1-d/r))}}
+function puff(c,col,n,spd,life,food){for(let k=0;k<n;k++){if(phero.length>700)phero.shift();const a=rnd(0,TAU),v=rnd(0.3,1)*spd;phero.push({x:c.x+rnd(-2,2),y:c.y+rnd(-2,2),vx:Math.cos(a)*v,vy:Math.sin(a)*v,life,max:life,col,sp:c.sp,food})}}
+function trail(c,food){if(phero.length>700)phero.shift();const g=c.segs[c.segs.length-1];phero.push({x:g.x,y:g.y,vx:0,vy:0,life:10,max:10,col:c.cLine,sp:c.sp,food})}
+// alarme selon le mode de communication de l'espèce
+function alarmSignal(c,thr){
+  const sp=c.sp,near=creatures.filter(o=>o!==c&&!o.dead&&o.sp===sp&&o!==leader&&dist(c.x,c.y,o.x,o.y)<85);
+  switch(sp.com){
+    case 'pheromone':puff(c,'#ff6a3a',12,22,1.6);break;
+    case 'chant':chirp(c);break;
+    case 'vibration':tremor(c.x,c.y,55,1);break;
+    case 'lumiere':c.beatT=0;break;
+    default:if(sp.ant>0)for(const o of near.slice(0,3))antWave(c,o.x,o.y,'#ffffff',0.7);
+  }
+  for(const o of near){o.alarm=1.3;o.ax=thr.x;o.ay=thr.y}
+}
+// recrutement après une trouvaille
+function recruit(c,x,y){
+  const sp=c.sp;
+  switch(sp.com){
+    case 'pheromone':c.trailLeft=3;c.food={x,y};break;
+    case 'antenne':{const o=creatures.find(o=>o!==c&&!o.dead&&o.sp===sp&&o.state==='wander'&&dist(o.x,o.y,c.x,c.y)<100);if(o){antWave(c,o.x,o.y,c.cLine,0.55,null,o);o.lure={x,y,t:3}}break}
+    case 'chant':if(Math.random()<0.5)chirp(c);break;
+  }
+}
+function onBeat(c){
+  c.beats++;const sp=c.sp;
+  const sync=sp.firefly?0.16:0.08;let near=null,nd=95;
+  for(const o of creatures){if(o===c||o.dead||o.sp!==sp)continue;const d=dist(c.x,c.y,o.x,o.y);
+    if(d<95){if(o.phase>0.35)o.phase=Math.min(0.999,o.phase+sync);if(d<nd){nd=d;near=o}}}
+  switch(sp.com){
+    case 'antenne':if(near&&Math.random()<0.25)antWave(c,near.x,near.y,c.cLine,0.4,null,near);break;
+    case 'chant':if(c.state!=='caught'&&Math.random()<0.3)chirp(c);break;
+    case 'plume':{const g=c.segs[c.segs.length-1];for(let k=0;k<3;k++){if(phero.length>700)phero.shift();phero.push({x:g.x-c.alt*0.3+rnd(-2,2),y:g.y-c.alt+rnd(-2,2),vx:Math.cos(windA)*14+rnd(-4,4),vy:Math.sin(windA)*14+rnd(-4,4),life:4,max:4,col:c.cLine,sp,plume:true})}
+      for(const o of creatures)if(o!==c&&!o.dead&&o.sp===sp&&o!==leader&&o.state==='wander'&&dist(o.x,o.y,c.x,c.y)<190&&Math.random()<0.2){o.lure={x:c.x,y:c.y,t:2.5};antWave(o,c.x,c.y,o.cLine,0.35,40)}
+      break}
+    case 'vibration':if(sp.role==='tisseur'){for(const st of strands)if(st.owner===c)st.glow=1}else if(c.state==='hunt')tremor(c.x,c.y,40,0.6);break;
+    case 'visuel':if(near&&nd<90)c.signal=1.2;break;
+  }
+  if(sp.role==='chasseur'&&c.state==='hunt'&&sp.ant>0)antTips(c).forEach(t=>wave({x:t[0],y:t[1],arc:c.ang,spr:0.4,max:90,sp:150,col:c.cLine,dash:true,a:0.5,w:1.1}));
+}
+
+// ================= COMPORTEMENTS =================
+let hunters=[],spCount={};
+const TOT=150;
+function canEat(p,q){
+  if(!p.sp.eats||q===p||q.dead||q.host||!p.sp.eats.includes(q.role))return false;
+  if(q.sp.mass>p.sp.mass*(p.sp.big||1.4))return false;
+  if(q.alt>5&&!p.sp.fly)return false;
+  if(q.role==='tisseur'&&p.sp.id==='scolopendre'&&p.energy>45)return false;
+  return true;
+}
+function threatOf(c){let thr=null,td=1e9;for(const h of hunters){if(!canEat(h,c))continue;const d=dist(c.x,c.y,h.x,h.y),lim=h.state==='hunt'?75:45;if(d<lim&&d<td){td=d;thr=h}}return thr}
+function flee(c,dt){
+  c.alarmCd=(c.alarmCd||0)-dt;
+  const thr=threatOf(c);
+  if(thr){
+    if(c.alarmCd<=0){c.alarmCd=1.6;alarmSignal(c,thr)}
+    steer(c,c.x+(c.x-thr.x),c.y+(c.y-thr.y),dt,c.sp.spd*1.3);if(!inBounds(c))steer(c,W/2,H/2,dt,c.sp.spd*1.3);
+    if(c.sp.fly)c.air=true;
+    if(c.state==='eat'||c.state==='repair'||c.state==='feed'){c.state='wander';if(c.target){c.target.claim=null}c.target=null}
+    return true;
+  }
+  if(c.alarm>0){c.alarm-=dt;steer(c,c.x+(c.x-c.ax),c.y+(c.y-c.ay),dt,c.sp.spd*1.25);if(!inBounds(c))steer(c,W/2,H/2,dt,c.sp.spd);if(c.sp.fly)c.air=true;return true}
+  return false;
+}
+function updCaught(c,dt){c.v=0;c.air=false;c.alt=0;c.t-=dt;for(const l of c.legs)if(Math.random()<dt*6){l.fx+=rnd(-2,2);l.fy+=rnd(-2,2)}
+  if(c.t<=0&&!c.held){c.state='wander';c.webCd=2;if(c.strand){c.strand.life=0;c.strand=null}}}
+
+function updMangeur(c,dt){
+  const sp=c.sp;
+  if(flee(c,dt))return;
+  switch(c.state){
+    case 'wander':
+      wander(c,dt);c.t-=dt;c.air=!!sp.fly;
+      if(c.t<=0){c.target=pickWord(c,170);if(c.target)c.state='seek';else c.t=1}
+      break;
+    case 'seek':{
+      const w=c.target;if(!valid(w)){c.state='wander';c.t=0;break}
+      const d=dist(c.x,c.y,w.cx,w.cy);steer(c,w.cx,w.cy,dt,sp.spd*(d<20?0.5:1));c.air=!!sp.fly&&d>14;
+      if(d<6){c.state='eat';c.t=0.9}break;}
+    case 'eat':{
+      c.v=0;c.air=false;const w=c.target;if(!valid(w)){c.state='wander';c.t=0;break}
+      w.hl=1;w.hc='#ffe94d';c.t-=dt;
+      if(c.t<=0){const g=w.state==='garbled';c.carry=w.text;w.state='eaten';c.energy+=g?(sp.gG||5):24;c.eaten++;
+        tags.push({text:w.text,x:w.cx,y:w.cy,sx:w.cx,sy:w.cy-18,rot:0,vr:rnd(-3,3),t:0,dur:0.7,color:w.col||'#ffe94d',fade:true});
+        if(!g)recruit(c,w.cx,w.cy);
+        c.target=null;c.state='carry';c.t=rnd(1.2,2.8);
+        if(sp.morph&&c.eaten>=sp.morphN&&spCountOf(sp.morph)<12){c.dead=true;c.silent=true;const b=mk(sp.morph,c.x,c.y,{energy:90,ang:c.ang});b.alt=0;newborns.push(b);
+          wave({x:c.x,y:c.y,max:60,sp:80,col:b.cLine,a:0.9,ring2:true,w:2});say(`Métamorphose : ${sp.nom} → ${SPI[sp.morph].nom}`)}}
+      break;}
+    case 'carry':
+      wander(c,dt,0.7);c.t-=dt;c.air=!!sp.fly;
+      if(c.t<=0){
+        let best=null,bd=150;for(const w of words){if(w.state!=='eaten'||w.pending)continue;const d=dist(c.x,c.y,w.cx,w.cy);if(d<bd){bd=d;best=w}}
+        if(best){best.text=shuffle(c.carry);best.state='garbled';best.flash=0.6}
+        c.carry=null;c.state='wander';c.t=rnd(0.3,1.5);
+      }
+      break;
+    default:c.state='wander';
+  }
+}
+function updReparateur(c,dt){
+  const sp=c.sp;
+  if(flee(c,dt))return;
+  switch(c.state){
+    case 'wander':wander(c,dt,0.6);c.air=!!sp.fly;c.t-=dt;
+      if(c.t<=0){const w=pickGarbled(c,260);if(w){w.claim=c;c.target=w;c.state='seek'}else c.t=1.2}break;
+    case 'seek':{const w=c.target;if(!w||w.state!=='garbled'){if(w)w.claim=null;c.state='wander';c.t=0;break}
+      const d=dist(c.x,c.y,w.cx,w.cy);steer(c,w.cx,w.cy,dt,sp.spd*(d<20?0.5:1));c.air=!!sp.fly&&(sp.hover||d>14);
+      if(d<7){c.state='repair';c.t=sp.hover?0.5:1}break;}
+    case 'repair':{c.v=sp.hover?0:0;c.air=!!sp.hover;const w=c.target;if(!w||w.state!=='garbled'){if(w)w.claim=null;c.state='wander';c.t=0;break}
+      w.hl=1;w.hc='#8bff6a';c.t-=dt;
+      if(c.t<=0){restoreWord(w);c.energy+=14;c.target=null;c.state='wander';c.t=rnd(0.2,0.8);
+        wave({x:w.cx,y:w.cy,max:40,sp:90,col:'#8bff6a',a:0.6});
+        if(sp.com==='danse'){const g=pickGarbled(c,300);c.danceDir=g?Math.atan2(g.cy-c.y,g.cx-c.x):rnd(0,TAU);c.dpos=g?{x:g.cx,y:g.cy}:null;c.state='dance';c.t=2;c.dph=0;c.air=false}
+        else recruit(c,w.cx,w.cy)}
+      break;}
+    case 'dance':{
+      c.air=false;c.dph+=dt;c.t-=dt;
+      const k=c.dph%1.2;if(k<0.6){c.ang=c.danceDir+Math.sin(c.age*40)*0.35;c.v=sp.spd*0.25}else{c.ang+=(Math.floor(c.dph/1.2)%2?1:-1)*dt*9;c.v=sp.spd*0.3}
+      if(c.t<=0){c.state='wander';c.t=0.5;
+        for(const o of creatures)if(o!==c&&!o.dead&&o.sp===sp&&o!==leader&&(o.state==='wander'||o.state==='seek')&&dist(o.x,o.y,c.x,c.y)<120){antWave(o,c.x,c.y,o.cLine,0.5,dist(o.x,o.y,c.x,c.y));if(c.dpos)o.lure={x:c.dpos.x,y:c.dpos.y,t:3}}}
+      break;}
+    default:c.state='wander';
+  }
+}
+function updDecomposeur(c,dt){
+  const sp=c.sp;
+  if(flee(c,dt))return;
+  switch(c.state){
+    case 'wander':wander(c,dt,0.5);c.air=!!sp.fly;c.t-=dt;
+      if(c.t<=0){let best=null,bd=sp.sense||260;for(const k of corpses){if(k.taken||k.done)continue;const d=dist(c.x,c.y,k.x,k.y);if(d<bd){bd=d;best=k}}
+        if(best){best.taken=c;c.target=best;c.state='seek'}
+        else{let hw=null,hd=180;for(let k=0;k<30;k++){const w=words[Math.random()*words.length|0];if(w.state!=='eaten'||w.pending||w.claim)continue;const d=dist(c.x,c.y,w.cx,w.cy);if(d<hd){hd=d;hw=w}}
+          if(hw){hw.claim=c;c.target=hw;c.state='humus'}else c.t=1}}break;
+    case 'humus':{const w=c.target;if(!w||w.state!=='eaten'){if(w)w.claim=null;c.state='wander';c.t=0;break}
+      const d=dist(c.x,c.y,w.cx,w.cy);if(d>6){steer(c,w.cx,w.cy,dt,sp.spd*(d<20?0.5:1));c.air=!!sp.fly&&d>14}
+      else{c.v=0;c.air=false;w.hl=Math.max(w.hl,0.6);w.hc='#b48cff';c.t-=dt;if(c.t<-2){restoreWord(w);c.energy+=9;c.target=null;c.state='wander';c.t=rnd(0.5,1.5)}}
+      if(c.t>0)c.t=0;break;}
+    case 'seek':{const k=c.target;if(!k||k.done){c.state='wander';c.t=0;break}
+      const d=dist(c.x,c.y,k.x,k.y);steer(c,k.x,k.y,dt,sp.spd*(d<20?0.5:1));c.air=!!sp.fly&&d>14;
+      if(d<8){c.state='feed';c.t=1.6}break;}
+    case 'feed':{c.v=0;c.air=false;const k=c.target;if(!k||k.done){c.state='wander';c.t=0;break}c.t-=dt;
+      if(c.t<=0){k.done=true;releaseWords(k.x,k.y,k.n+2);c.energy+=35;recruit(c,k.x,k.y);c.target=null;c.state='wander';c.t=rnd(0.5,1.5);wave({x:k.x,y:k.y,max:50,sp:80,col:c.cLine,a:0.6})}break;}
+    default:c.state='wander';
+  }
+}
+function updTisseur(c,dt){
+  const sp=c.sp;c.idle+=dt;
+  if(c.state!=='feed'){
+    let prey=null,pd=230;
+    for(const o of creatures)if(!o.dead&&o.state==='caught'&&!o.held&&o.strand&&o.strand.owner===c){const d=dist(c.x,c.y,o.x,o.y);if(d<pd){pd=d;prey=o}}
+    if(prey){c.state='hunt';c.prey=prey}else if(c.state==='hunt')c.state='weave';
+  }
+  switch(c.state){
+    case 'hunt':{const p=c.prey;if(!p||p.dead||p.state!=='caught'){c.state='weave';break}
+      steer(c,p.x,p.y,dt,sp.spd*1.8);if(dist(c.x,c.y,p.x,p.y)<10){c.state='feed';c.t=1.4;p.held=true}break;}
+    case 'feed':{c.v=0;c.t-=dt;const p=c.prey;if(!p||p.dead){c.state='weave';break}
+      if(c.t<=0){c.energy+=p.sp.mass*3+22;die(p,c);c.idle=0;c.state='weave';c.prey=null}break;}
+    case 'rest':c.v=0;c.t-=dt;if(c.t<=0)c.state='weave';break;
+    default:{
+      c.state='weave';
+      if(c.idle>35){c.home={x:rnd(30,W-30),y:rnd(TOP+20,H-BOTTOM_PAD-20)};c.idle=0;c.anchor=null}
+      let w=c.target;const R=sp.webR||95;
+      if(!w||w.state!=='ok'){w=null;for(let k=0;k<25;k++){const q=words[Math.random()*words.length|0];if(q.state==='ok'&&q!==c.anchor&&dist(q.cx,q.cy,c.home.x,c.home.y)<R){w=q;break}}c.target=w}
+      if(!w){wander(c,dt);break}
+      const d=dist(c.x,c.y,w.cx,w.cy);steer(c,w.cx,w.cy,dt,sp.spd*(d<25?0.5:1));
+      if(d<7){
+        if(c.anchor&&c.anchor.state!=='eaten'&&dist(c.anchor.cx,c.anchor.cy,w.cx,w.cy)<R*1.5){
+          strands.push({a:c.anchor,b:w,owner:c,life:rnd(60,90)*(sp.webLife||1),hits:0,glow:0,vib:0});
+          const mine=strands.filter(q=>q.owner===c&&q.life>0);if(mine.length>(sp.maxStr||12))mine[0].life=0;
+        }
+        c.anchor=w;c.target=null;c.state='rest';c.t=rnd(0.4,1.2);
+      }
+    }
+  }
+}
+function updChasseur(c,dt){
+  const sp=c.sp,hungry=c.energy<ROLES.chasseur.start*1.15;
+  c.jumpCd-=dt;c.air=!!sp.fly;
+  let prey=null,pd=hungry?(sp.mode==='ambush'?60:150):0;
+  if(pd)for(const o of creatures){if(!canEat(c,o))continue;const d=dist(c.x,c.y,o.x,o.y);if(d<pd){pd=d;prey=o}}
+  c.prey=prey;
+  if(prey){
+    c.state='hunt';
+    let f=sp.fly?1.05:1.12;if(sp.mode==='ambush')f=2.2;
+    steer(c,prey.x,prey.y,dt,sp.spd*f);
+    if(sp.mode==='jump'&&c.jumpCd<=0&&pd<70){c.jump=0.28;c.jumpCd=2;c.ang=Math.atan2(prey.y-c.y,prey.x-c.x)}
+    if(dist(c.x,c.y,prey.x,prey.y)<9+prey.dims[0][1]*0.3){
+      c.energy+=Math.min(80,prey.sp.mass*6+18);die(prey,c);wave({x:c.x,y:c.y,max:40,sp:100,col:c.cLine,a:0.7});
+      if(sp.chain&&sp.chain.grow)growSeg(c);
+    }
+  }else if(sp.mode==='ambush'){c.state='ambush';c.v=0;c.idle+=dt;if(c.idle>18){c.state='wander';wander(c,dt,0.5);if(c.idle>22)c.idle=0}}
+  else{c.state='wander';wander(c,dt,0.5);if(sp.chain)c.wa+=Math.sin(c.age*3)*dt*2}
+  const ch=sp.chain;
+  if(ch&&ch.grow){
+    if(c.energy<25&&c.segs.length>5&&Math.random()<dt*0.5)shrink(c,1,8);
+    if(c.segs.length-1>=ch.split&&c.energy>90&&spCountOf(sp.id)<(sp.cap||6)){
+      const tail=c.segs[c.segs.length-6];const b=mk(sp,tail.x,tail.y,{n:6,energy:60,ang:tail.a+Math.PI,eaten:Math.floor(c.eaten/3)});
+      c.eaten-=b.eaten;shrink(c,6,0);c.energy-=30;newborns.push(b);spCount[sp.id]=(spCount[sp.id]||0)+1;
+    }
+  }
+}
+function updParasite(c,dt){
+  const sp=c.sp;
+  if(sp.mode==='attach'){
+    if(c.host){
+      const h=c.host;if(h.dead){c.host=null;c.state='wander';return}
+      const g=h.segs[Math.min(c.hseg,h.segs.length-1)];c.x=g.x+Math.cos(g.a+Math.PI/2)*c.hoff;c.y=g.y+Math.sin(g.a+Math.PI/2)*c.hoff;c.ang=g.a+c.hang;c.v=0;c.alt=h.alt;
+      const d=2.6*dt;h.energy-=d;c.energy+=d*1.1;c.swell=clamp(c.energy/ROLES.parasite.start,1,2.2);
+      if(c.energy>ROLES.parasite.repro){h.parasites--;c.host=null;c.state='wander';c.alt=0;c.swell=1;
+        for(let k=0;k<2&&spCountOf(sp.id)<(sp.cap||12)&&creatures.length+newborns.length<TOT;k++){newborns.push(mk(sp,c.x+rnd(-10,10),c.y+rnd(-10,10),{energy:40}));spCount[sp.id]=(spCount[sp.id]||0)+1}
+        c.energy=ROLES.parasite.start*0.7}
+      return;
+    }
+    if(flee(c,dt))return;
+    let best=null,bd=170;
+    for(const o of creatures){if(o.dead||o.role==='parasite'||o.alt>4||o.parasites>=2||o.sp.mass<sp.mass*2)continue;const d=dist(c.x,c.y,o.x,o.y);if(d<bd){bd=d;best=o}}
+    if(best){c.state='seek';steer(c,best.x,best.y,dt,sp.spd*1.2);
+      if(bd<8){c.host=best;best.parasites++;c.hseg=Math.floor(rnd(0,best.segs.length));c.hoff=rnd(-0.3,0.3)*best.dims[c.hseg][1];c.hang=rnd(-1,1);c.state='attached';
+        wave({x:c.x,y:c.y,max:25,sp:60,col:c.cLine,a:0.7})}}
+    else{c.state='wander';wander(c,dt,0.5)}
+  }else{ // parasitoïde
+    if(flee(c,dt))return;
+    if(c.state==='sting'){c.v=0;c.air=false;const h=c.prey;if(!h||h.dead){c.state='wander';return}c.x=h.x;c.y=h.y;c.t-=dt;
+      if(c.t<=0){h.infest=rnd(18,26);c.energy+=45;c.state='wander';c.t=12;c.air=true;wave({x:h.x,y:h.y,max:35,sp:70,col:c.cLine,a:0.8,ring2:true})}return}
+    c.air=true;c.t-=dt;
+    let best=null,bd=c.t<=0?230:0;
+    if(bd)for(const o of creatures){if(o.dead||o.infest>0||o.alt>4||o.role==='parasite'||o.role==='tisseur'||o.sp.mass<sp.mass*0.8)continue;const d=dist(c.x,c.y,o.x,o.y);if(d<bd){bd=d;best=o}}
+    if(best){c.prey=best;c.state='seek';steer(c,best.x,best.y,dt,sp.spd);if(bd<14)c.air=false;if(bd<8){c.state='sting';c.t=1}}
+    else{c.state='wander';wander(c,dt,0.6)}
+  }
+}
+const ROLEFN={mangeur:updMangeur,reparateur:updReparateur,decomposeur:updDecomposeur,tisseur:updTisseur,chasseur:updChasseur,parasite:updParasite};
+
+function webCheck(c){
+  if(c.role==='tisseur'||c.host||c.state==='caught'||c.webCd>0||c===leader)return;
+  if(c.alt>3&&c.sp.webproof)return;
+  for(const st of strands){if(st.life<=0)continue;
+    if(segDist(c.x,c.y,st.a.cx,st.a.cy,st.b.cx,st.b.cy)<3.2){
+      const ow=st.owner;
+      if(c.sp.mass>ow.sp.mass*(c.role==='chasseur'?0.8:(ow.sp.big||1.6))){st.life=0;wave({x:c.x,y:c.y,max:30,sp:90,col:'#ffb199',a:0.5});break}
+      if(Math.random()<0.7){c.state='caught';c.t=rnd(9,14);c.strand=st;st.hits++;st.vib=2.5;c.target&&(c.target.claim=null);c.target=null;c.air=false;
+        wave({x:c.x,y:c.y,max:45,sp:90,col:'#ff7a5c',a:0.6})}
+      else c.webCd=1.2;
+      break}
+  }
+}
+function die(c,by){
+  if(c.dead)return;c.dead=true;
+  if(c.strand)c.strand.life=0;
+  if(c.target&&c.target.claim===c)c.target.claim=null;
+  if(c.target&&c.target.taken===c)c.target.taken=null;
+  for(const o of creatures)if(o.host===c){o.host=null;o.state='wander';o.swell=1}
+  if(c.host){c.host.parasites--;c.host=null}
+  if(by){by.eaten+=c.eaten+1;return}
+  corpses.push({c,x:c.x,y:c.y,life:24,n:Math.min(16,3+c.eaten)});
+  if(c.carry)tags.push({text:c.carry,x:c.x,y:c.y,sx:c.x,sy:c.y-30,rot:0,vr:rnd(-2,2),t:0,dur:1.2,color:'#ff5c7a',fade:true});
+}
+function spCountOf(id){return spCount[id]||0}
+function repro(c){
+  const sp=c.sp,R=ROLES[c.role];
+  if(c.role==='parasite'||(sp.chain&&sp.chain.grow)||sp.morph&&false)return;
+  const th=sp.repro||R.repro;
+  if(c.energy>th&&spCountOf(sp.id)<(sp.cap||12)&&creatures.length+newborns.length<TOT){
+    c.energy-=th*0.5;const b=mk(sp,c.x+rnd(-8,8),c.y+rnd(-8,8),{energy:th*0.42,ang:c.ang+Math.PI});
+    if(c.role==='tisseur')b.home={x:clamp(c.x+rnd(-150,150),30,W-30),y:clamp(c.y+rnd(-150,150),TOP+20,H-BOTTOM_PAD-20)};
+    newborns.push(b);spCount[sp.id]=(spCount[sp.id]||0)+1;
+  }
+}
+
+// ================= LAISSE =================
+let leader=null;const ptr={x:0,y:0};
+function updLed(c,dt){
+  c.state='led';if(c.target&&c.target.claim===c)c.target.claim=null;c.target=null;c.air=!!c.sp.fly;
+  if(c.host){c.host.parasites--;c.host=null;c.swell=1}
+  const d=dist(c.x,c.y,ptr.x,ptr.y+c.alt);
+  if(d>10)steer(c,ptr.x,ptr.y+c.alt,dt,c.sp.spd*clamp(d/40,0.35,2.6));else c.v=0;
+  if(c.role==='chasseur')for(const o of creatures){if(!canEat(c,o))continue;
+    if(dist(c.x,c.y,o.x,o.y)<10){c.energy+=Math.min(80,o.sp.mass*6+18);die(o,c);if(c.sp.chain&&c.sp.chain.grow)growSeg(c);wave({x:c.x,y:c.y,max:40,sp:100,col:c.cLine,a:0.7})}}
+}
+function creatureAt(x,y){let best=null,bd=26;for(const c of creatures){if(c.dead)continue;const ox=-c.alt*0.3,oy=-c.alt;for(const g of c.segs){const d=dist(x,y,g.x+ox,g.y+oy);if(d<bd){bd=d;best=c}}}return best}
+function grab(c){release();leader=c;if(c.prey&&c.state==='feed')c.prey.held=false;if(c.state==='sting')c.state='wander';c.prey=null;if(c.state!=='caught')c.state='led'}
+function release(){if(leader&&!leader.dead&&leader.state==='led'){leader.state=leader.carry?'carry':'wander';leader.t=1;leader.anchor=null}leader=null}
+
+// ================= SON =================
+let AC=null,master=null,soundOn=true;const bucket={};let gBucket=10;
+function initAudio(){try{if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();master=AC.createGain();master.gain.value=0.2;master.connect(AC.destination)}if(AC.state!=='running')AC.resume()}catch(e){AC=null}}
+function beep(c,l){
+  if(!AC||!soundOn||paused||AC.state!=='running')return;
+  const lead=c===leader,id=c.sp.id;
+  if(!lead){const b=bucket[id]??2;if(b<1||gBucket<1)return;bucket[id]=b-1;gBucket--}
+  const s=c.sp.sound,t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();
+  let f,dur,vol,end,type;
+  if(!l){type='sawtooth';f=s.f*0.25;dur=0.02;vol=0.04;end=f*0.9}
+  else{type=s.w;f=s.f*(1+l.p*0.07)+(l.side>0?s.f*0.04:0);dur=s.d;vol=s.v;end=f*s.sl}
+  if(lead)vol*=1.8;
+  o.type=type;o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(Math.max(30,end),t+dur);
+  g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+0.003);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.connect(g);let out=g;
+  if(AC.createStereoPanner){const pn=AC.createStereoPanner();pn.pan.value=clamp(c.x/W*2-1,-1,1)*0.8;g.connect(pn);out=pn}
+  out.connect(master);o.start(t);o.stop(t+dur+0.02);
+}
+
+// ================= BOUCLE =================
+let simT=0,regen=0,ink=100,balT=0,best=0,bestBio=0,saveBest=false;
+try{best=+localStorage.getItem('vivlex_best')||0;bestBio=+localStorage.getItem('vivlex_bio')||0}catch(e){}
+function update(dt){
+  simT+=dt;spCount={};for(const c of creatures)if(!c.dead)spCount[c.sp.id]=(spCount[c.sp.id]||0)+1;
+  hunters=creatures.filter(h=>!h.dead&&h.role==='chasseur');
+  for(const c of creatures){
+    if(c.dead)continue;c.age+=dt;c.webCd-=dt;
+    const segF=c.sp.chain?(1+c.segs.length/30):1;
+    if(!c.host)c.energy-=(c.sp.decay||ROLES[c.role].decay)*segF*dt;
+    if(c.infest>0){c.infest-=dt;if(c.infest<=0){const x=c.x,y=c.y;die(c);for(let k=0;k<2&&creatures.length+newborns.length<TOT&&spCountOf('ichneumon')<8;k++){newborns.push(mk('ichneumon',x+rnd(-8,8),y+rnd(-8,8),{energy:55}));spCount.ichneumon=(spCount.ichneumon||0)+1}wave({x,y,max:60,sp:80,col:'#ff6ad5',a:0.8,ring2:true});continue}}
+    const maxAge=(c.sp.age||ROLES[c.role].age)*(0.85+((c.phase*7)%0.3));
+    if(c.energy<=0||c.age>maxAge){die(c);continue}
+    if(c.state==='caught')updCaught(c,dt);
+    else if(c===leader)updLed(c,dt);
+    else ROLEFN[c.role](c,dt);
+    if(c.dead)continue;
+    moveBody(c,dt);
+    webCheck(c);
+    const ex=(c.state==='hunt'||c.alarm>0||c.state==='caught'||c.state==='feed')?1.9:1,hungry=c.energy<(ROLES[c.role].start)*0.3?0.6:1;
+    c.phase+=dt*c.sp.hz*ex*hungry;c.beatT+=dt;
+    if(c.phase>=1){c.phase-=1;c.beatT=0;onBeat(c)}
+    if(c!==leader)repro(c);
+    if(c.signal>0)c.signal-=dt;
+    if(c.trailLeft>0){c.trailLeft-=dt;c.trailT=(c.trailT||0)-dt;if(c.trailT<=0){c.trailT=0.18;trail(c,c.food)}}
+  }
+  if(newborns.length){creatures.push(...newborns);newborns=[]}
+  creatures=creatures.filter(c=>!c.dead);
+  if(leader&&leader.dead){leader=null;say('La bête en laisse est morte…')}
+  const echoes=[];for(const w of waves){w.r+=w.sp*dt;if(w.echo&&w.r>=w.max&&!w.echo.dead&&w.from){echoes.push([w.echo,w.from]);w.echo=null}}
+  for(const [o,f] of echoes)antWave(o,f.x,f.y,o.cLine,0.4,30);
+  windA+=rnd(-0.3,0.3)*dt;
+  for(const q of phero){q.life-=dt;q.x+=q.vx*dt;q.y+=q.vy*dt;q.vx*=0.97;q.vy*=0.97}
+  if(phero.length&&phero[0].life<=0)phero=phero.filter(q=>q.life>0);
+  for(const w of words)if(w.shake>0)w.shake=Math.max(0,w.shake-dt*1.2);
+  waves=waves.filter(w=>w.r<w.max);
+  for(const st of strands){st.life-=dt*(st.owner.dead?4:1);if(st.a.state==='eaten'||st.b.state==='eaten')st.life=0;st.glow=Math.max(0,st.glow-dt*1.5);st.vib=Math.max(0,st.vib-dt)}
+  strands=strands.filter(s=>s.life>0);
+  for(const k of corpses){k.life-=dt;if(k.life<=0&&!k.done){k.done=true;releaseWords(k.x,k.y,k.n)}}
+  corpses=corpses.filter(k=>!k.done||k.life>-0.01&&false);
+  for(const t of tags){t.t+=dt;t.rot+=t.vr*dt;if(t.word&&t.t>=t.dur){t.word.pending=false;restoreWord(t.word);t.done=true}if(t.fade&&t.t>=t.dur)t.done=true}
+  tags=tags.filter(t=>!t.done);
+  for(const w of words){if(w.hl>0)w.hl=Math.max(0,w.hl-dt*1.5);if(w.flash>0)w.flash=Math.max(0,w.flash-dt*0.8)}
+  regen+=dt;if(regen>1){regen=0;if(Math.random()<0.2){const g=words.filter(w=>w.state==='garbled'&&!w.claim);if(g.length)restoreWord(g[Math.random()*g.length|0])}}
+  ink=Math.min(100,ink+3.2*dt);
+  const st=stats();
+  if(st.balanced){balT+=dt;if(balT>best){best=balT;saveBest=true}}else balT=0;
+  if(st.nsp>bestBio){bestBio=st.nsp;saveBest=true}
+}
+function stats(){
+  let ok=0;for(const w of words)if(w.state==='ok')ok++;
+  const r=words.length?ok/words.length:1,role={},sps=new Set();
+  for(const k of RK)role[k]=0;
+  for(const c of creatures)if(!c.dead){role[c.role]++;sps.add(c.sp.id)}
+  const nroles=RK.filter(k=>role[k]>0).length,inR=r>=0.40&&r<=0.85,rolesOk=role.mangeur>0&&nroles>=4;
+  return {r,role,nroles,nsp:sps.size,inR,rolesOk,balanced:rolesOk&&inR};
+}
+
+// ================= RENDU =================
+const LA=Math.atan2(-0.8,-0.6);
+const glowCache={};
+function glowSprite(h){const k=h|0;if(glowCache[k])return glowCache[k];const cv2=document.createElement('canvas');cv2.width=cv2.height=64;const g=cv2.getContext('2d');const gr=g.createRadialGradient(32,32,0,32,32,32);gr.addColorStop(0,hsl(k,100,65,1));gr.addColorStop(0.35,hsl(k,100,60,0.4));gr.addColorStop(1,hsl(k,100,55,0));g.fillStyle=gr;g.fillRect(0,0,64,64);return glowCache[k]=cv2}
+function shapePath(sh,len,wid,ox,oy,s){ctx.beginPath();if(sh==='o')ctx.ellipse(ox,oy,len/2*s,wid/2*s,0,0,TAU);else ctx.rect(ox-len/2*s,oy-wid/2*s,len*s,wid*s)}
+function drawWords(){
+  ctx.textBaseline='alphabetic';ctx.strokeStyle='#2a2a2a';ctx.lineWidth=1;
+  for(const y of hlines){ctx.beginPath();ctx.moveTo(14,y+0.5);ctx.lineTo(W-14,y+0.5);ctx.stroke()}
+  for(const w of words){
+    ctx.font=w.font;const sx=w.shake>0?(Math.random()-0.5)*3*w.shake:0;if(sx){ctx.save();ctx.translate(sx,(Math.random()-0.5)*1.5*w.shake)}
+    if(w.hl>0){ctx.globalAlpha=w.hl;ctx.fillStyle=w.hc;ctx.fillRect(w.x-2,w.y-w.size*0.85,w.w+4,w.size*1.1);ctx.globalAlpha=1}
+    if(w.state==='eaten'){ctx.fillStyle='rgba(255,255,255,0.09)';ctx.fillText(w.orig,w.x,w.y)}
+    else if(w.state==='garbled'){ctx.fillStyle=w.hl>0.5?'#000':'#ff5c7a';ctx.fillText(w.text,w.x,w.y)}
+    else{ctx.fillStyle=w.hl>0.5?'#000':(w.col||(w.kind==='h'?'#d8d8d8':'#9c9c9c'));ctx.fillText(w.text,w.x,w.y)}
+    if(w.flash>0){ctx.globalAlpha=w.flash;ctx.strokeStyle=w.state==='garbled'?'#ff5c7a':'#8bff6a';ctx.strokeRect(w.x-2.5,w.y-w.size*0.85,w.w+5,w.size*1.1);ctx.globalAlpha=1}
+    if(sx)ctx.restore();
+  }
+}
+function drawStrands(){
+  for(const s of strands){
+    const gl=s.glow,vb=s.vib;const a=Math.min(1,s.life/8)*(0.35+0.5*gl+0.3*Math.min(1,vb));
+    ctx.globalAlpha=a;ctx.strokeStyle=vb>0?'#ffd0b8':s.owner.cLine;ctx.lineWidth=0.8+gl*0.6;ctx.beginPath();
+    if(vb>0){const n=8,dx=s.b.cx-s.a.cx,dy=s.b.cy-s.a.cy,L=Math.hypot(dx,dy)||1,nx=-dy/L,ny=dx/L;ctx.moveTo(s.a.cx,s.a.cy);
+      for(let k=1;k<=n;k++){const f=k/n,o=k<n?Math.sin(simT*45+k*2)*Math.min(1,vb)*2.5:0;ctx.lineTo(s.a.cx+dx*f+nx*o,s.a.cy+dy*f+ny*o)}}
+    else{ctx.moveTo(s.a.cx,s.a.cy);ctx.lineTo(s.b.cx,s.b.cy)}
+    ctx.stroke();
+    if(vb>0){ctx.fillStyle='#ffe0d0';for(let k=0;k<3;k++){const f=(simT*1.6+k/3)%1;ctx.globalAlpha=Math.min(1,vb);ctx.beginPath();ctx.arc(s.a.cx+(s.b.cx-s.a.cx)*f,s.a.cy+(s.b.cy-s.a.cy)*f,1.6,0,TAU);ctx.fill()}}
+    ctx.globalAlpha=a;ctx.fillStyle=s.owner.cLine;ctx.fillRect(s.a.cx-1.5,s.a.cy-1.5,3,3);ctx.fillRect(s.b.cx-1.5,s.b.cy-1.5,3,3);
+  }
+  ctx.globalAlpha=1;
+}
+function drawWaves(){
+  ctx.globalCompositeOperation='lighter';
+  for(const w of waves){
+    const k=w.r/w.max,a=(1-k)*w.a;if(a<=0)continue;
+    ctx.globalAlpha=a;ctx.strokeStyle=w.col;ctx.lineWidth=w.w;
+    if(w.dash)ctx.setLineDash([2,5]);
+    ctx.beginPath();if(w.arc!=null){const sp2=w.spr||0.7;ctx.arc(w.x,w.y,w.r,w.arc-sp2,w.arc+sp2)}else ctx.arc(w.x,w.y,w.r,0,TAU);ctx.stroke();
+    if(w.ring2&&w.r>8){ctx.globalAlpha=a*0.5;ctx.beginPath();ctx.arc(w.x,w.y,w.r*0.7,0,TAU);ctx.stroke()}
+    ctx.setLineDash([]);
+  }
+  for(const q of phero){const a=q.life/q.max;ctx.globalAlpha=a*(q.plume?0.55:q.food?0.45:0.8);ctx.fillStyle=q.col;const r=q.plume?1.6+(1-a)*2:1.3;ctx.fillRect(q.x-r/2,q.y-r/2,r,r)}
+  ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;
+}
+// ---- éléments anatomiques ----
+function local(g,fx,fy){const ca=Math.cos(g.a),sa=Math.sin(g.a);return [g.x+ca*fx-sa*fy,g.y+sa*fx+ca*fy]}
+function drawWings(c,alpha,preview){
+  const w=c.sp.w,th=c.segs[1]||c.segs[0],air=preview||c.alt>3;
+  for(let k=0;k<w.n;k++){
+    const pair=w.n===4&&k>=2?1:0,side=k%2?1:-1;
+    let ang,span;
+    if(air){const fl=preview?1:Math.abs(Math.sin(c.flap+pair*0.7));ang=th.a+side*(Math.PI/2+(pair?0.4:-0.2));span=w.len*(0.3+0.7*fl)*(pair?0.85:1)}
+    else{ang=th.a+Math.PI+side*(0.16+pair*0.1);span=w.len}
+    const ww=w.wid*(pair?0.8:1),lc=c.segL[1]||c.cLine;
+    ctx.save();ctx.translate(th.x,th.y);ctx.rotate(ang);
+    ctx.globalAlpha=alpha*0.08;ctx.fillStyle=lc;ctx.beginPath();ctx.ellipse(span/2,0,span/2,ww/2,0,0,TAU);ctx.fill();
+    ctx.globalAlpha=alpha*0.85;ctx.strokeStyle=lc;ctx.lineWidth=0.8;ctx.stroke();
+    // nervures en grille
+    ctx.globalAlpha=alpha*0.4;ctx.lineWidth=0.5;ctx.beginPath();ctx.moveTo(1,0);ctx.lineTo(span-1,0);
+    for(let q=1;q<4;q++){const x=span*q/4,hh=ww/2*Math.sqrt(Math.max(0,1-Math.pow((x-span/2)/(span/2),2)));ctx.moveTo(x,-hh);ctx.lineTo(x,hh)}ctx.stroke();
+    if(w.pat==='ocelles'){ctx.globalAlpha=alpha;ctx.strokeStyle=c.cCore;ctx.lineWidth=0.9;ctx.strokeRect(span*0.68,-ww*0.12,ww*0.24,ww*0.24)}
+    ctx.restore();
+  }
+}
+function drawFeatures(c,col,alpha,P0){
+  const sp=c.sp,f=sp.f,h=c.segs[0],hd=c.dims[0],last=c.segs.length-1;
+  // segment « principal » (abdomen) = le plus large après la tête
+  let ai=1;for(let i=1;i<c.dims.length;i++)if(c.dims[i][0]*c.dims[i][1]>c.dims[ai][0]*c.dims[ai][1])ai=i;
+  const A=c.segs[ai],ad=c.dims[ai];
+  ctx.strokeStyle=col;ctx.lineWidth=0.9;ctx.globalAlpha=alpha;
+  // antennes
+  if(sp.ant>0){ctx.beginPath();const ends=[];
+    for(const sd of [-1,1]){const [fx,fy]=local(h,hd[0]*0.45,sd*hd[1]*0.2);const wig=Math.sin(simT*6+c.x*0.1)*0.15;
+      const a1=h.a+sd*(0.4+wig),a2=h.a+sd*(0.75+wig);const ex=fx+Math.cos(a2)*sp.ant,ey=fy+Math.sin(a2)*sp.ant;
+      ctx.moveTo(fx,fy);ctx.quadraticCurveTo(fx+Math.cos(a1)*sp.ant*0.6,fy+Math.sin(a1)*sp.ant*0.6,ex,ey);ends.push([ex,ey])}
+    ctx.stroke();ctx.fillStyle=c.cCore;ctx.globalAlpha=alpha*(0.35+0.65*P0);
+    for(const e of ends){ctx.beginPath();ctx.arc(e[0],e[1],(sp.club?2:1.1)+P0*1.4,0,TAU);ctx.fill()}ctx.globalAlpha=alpha}
+  if(c.role==='tisseur'||sp.id==='lycose'||sp.id==='saltique'||sp.id==='thomise'){ctx.beginPath();
+    for(const sd of [-1,1]){const [fx,fy]=local(h,hd[0]*0.5,sd*2);const [tx,ty]=local(h,hd[0]*0.5+5,sd*3.5);ctx.moveTo(fx,fy);ctx.lineTo(tx,ty)}ctx.stroke()}
+  for(const ft of f){
+    switch(ft){
+      case 'mandibules':ctx.beginPath();for(const sd of [-1,1]){const [ax,ay]=local(h,hd[0]*0.5,sd*hd[1]*0.25);const [bx,by]=local(h,hd[0]*0.5+4,sd*hd[1]*0.35);const [cx2,cy2]=local(h,hd[0]*0.5+6,sd*0.6);ctx.moveTo(ax,ay);ctx.quadraticCurveTo(bx,by,cx2,cy2)}ctx.stroke();break;
+      case 'rostre':{const [ax,ay]=local(h,hd[0]*0.5,0),[bx,by]=local(h,hd[0]*0.5+9,0);ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke();ctx.fillStyle=col;ctx.beginPath();ctx.arc(bx,by,1.3,0,TAU);ctx.fill();break}
+      case 'corne':{const [ax,ay]=local(h,hd[0]*0.3,0),[bx,by]=local(h,hd[0]*0.5+7,-2),[cx2,cy2]=local(h,hd[0]*0.5+3,-5);ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(ax,ay);ctx.quadraticCurveTo(bx,by,cx2,cy2);ctx.stroke();ctx.lineWidth=0.9;break}
+      case 'cerques':case 'filaments':{const g=c.segs[last],d=c.dims[last];const n=ft==='cerques'?[-1,1]:[-1,0,1];ctx.beginPath();
+        for(const sd of n){const [ax,ay]=local(g,-d[0]*0.5,sd*d[1]*0.2),[bx,by]=local(g,-d[0]*0.5-(ft==='cerques'?5:11),sd*(ft==='cerques'?4:5));ctx.moveTo(ax,ay);ctx.lineTo(bx,by)}ctx.stroke();break}
+      case 'tariere':{const g=c.segs[last],d=c.dims[last];const [ax,ay]=local(g,-d[0]*0.5,0),[bx,by]=local(g,-d[0]*0.5-22,Math.sin(simT*2)*2);ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke();break}
+      case 'yeux':{ctx.fillStyle=c.segC[0][2];ctx.strokeStyle=col;for(const sd of [-1,1]){const [ex,ey]=local(h,hd[0]*0.2,sd*hd[1]*0.38);ctx.globalAlpha=alpha*(0.5+0.5*P0);ctx.beginPath();ctx.arc(ex,ey,Math.max(1.6,hd[1]*0.22),0,TAU);ctx.fill();ctx.globalAlpha=alpha;ctx.stroke()}break}
+      case 'pinces':{const op=0.25+Math.sin(simT*2+c.phase*6)*0.12;ctx.lineWidth=1.2;
+        for(const sd of [-1,1]){const [ax,ay]=local(h,hd[0]*0.45,sd*hd[1]*0.35),[bx,by]=local(h,hd[0]*0.5+7,sd*hd[1]*0.9),[cx2,cy2]=local(h,hd[0]*0.5+13,sd*hd[1]*0.6);
+          ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.lineTo(cx2,cy2);ctx.stroke();
+          const ca=Math.atan2(cy2-by,cx2-bx);ctx.beginPath();ctx.moveTo(cx2,cy2);ctx.lineTo(cx2+Math.cos(ca-sd*op)*6,cy2+Math.sin(ca-sd*op)*6);ctx.moveTo(cx2,cy2);ctx.lineTo(cx2+Math.cos(ca+sd*op*1.6)*5,cy2+Math.sin(ca+sd*op*1.6)*5);ctx.stroke()}
+        ctx.lineWidth=0.9;break}
+      case 'dard':{const g=c.segs[last],d=c.dims[last];const [ax,ay]=local(g,-d[0]*0.5,0),[bx,by]=local(g,-d[0]*0.5-6,3),[cx2,cy2]=local(g,-d[0]*0.5-4,6);ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(ax,ay);ctx.quadraticCurveTo(bx,by,cx2,cy2);ctx.stroke();ctx.lineWidth=0.9;
+        ctx.fillStyle=c.cCore;ctx.globalAlpha=alpha*(0.3+0.7*P0);ctx.beginPath();ctx.arc(cx2,cy2,1.5+P0,0,TAU);ctx.fill();ctx.globalAlpha=alpha;break}
+      case 'ravisseuses':{const g=c.segs[1],d=c.dims[1];ctx.lineWidth=1.3;
+        for(const sd of [-1,1]){const [ax,ay]=local(g,d[0]*0.4,sd*d[1]*0.5),[bx,by]=local(g,d[0]*0.5+8,sd*7),[cx2,cy2]=local(g,d[0]*0.5+2,sd*3);
+          ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.lineTo(cx2,cy2);ctx.stroke();
+          ctx.beginPath();for(let k=1;k<4;k++){const px=bx+(cx2-bx)*k/4,py=by+(cy2-by)*k/4;ctx.moveTo(px,py);ctx.lineTo(px+sd*1.5,py+2)}ctx.stroke()}
+        ctx.lineWidth=0.9;break}
+      case 'poils':{ctx.globalAlpha=alpha*0.6;ctx.beginPath();for(let i=0;i<c.segs.length;i++){const g=c.segs[i],d=c.dims[i];for(let k=0;k<8;k++){const a=k/8*TAU+i,rx=d[0]/2,ry=d[1]/2;const [px,py]=local(g,Math.cos(a)*rx,Math.sin(a)*ry),[qx,qy]=local(g,Math.cos(a)*(rx+2.5),Math.sin(a)*(ry+2.5));ctx.moveTo(px,py);ctx.lineTo(qx,qy)}}ctx.stroke();ctx.globalAlpha=alpha;break}
+      case 'epines':{ctx.lineWidth=1.3;ctx.beginPath();for(let k=0;k<6;k++){const a=[-1.1,-1.6,-2.1,1.1,1.6,2.1][k];const [px,py]=local(A,Math.cos(a)*ad[0]*0.5,Math.sin(a)*ad[1]*0.5),[qx,qy]=local(A,Math.cos(a)*(ad[0]*0.5+4),Math.sin(a)*(ad[1]*0.5+5));ctx.moveTo(px,py);ctx.lineTo(qx,qy)}ctx.stroke();ctx.lineWidth=0.9;break}
+    }
+  }
+}
+function drawSegPattern(c,i,len,wid,sh,alpha,lc){
+  const f=c.sp.f,abd=i>0&&c.dims[i][0]*c.dims[i][1]>=Math.max(...c.dims.slice(1).map(d=>d[0]*d[1]))*0.99;
+  if(!abd)return;
+  ctx.lineWidth=0.9;
+  if(f.includes('rayures')||f.includes('bandes')){const n=c.sp.ray||2;ctx.strokeStyle=f.includes('bandes')?'#ff8a2a':lc;ctx.globalAlpha=alpha*0.9;ctx.beginPath();
+    for(let k=0;k<n;k++){const x=-len/2+len*(k+0.6)/(n+0.5);ctx.moveTo(x-1.5,-wid/2);ctx.lineTo(x-1.5,wid/2);ctx.moveTo(x+1.5,-wid/2);ctx.lineTo(x+1.5,wid/2)}ctx.stroke()}
+  if(f.includes('lignes')){ctx.strokeStyle=lc;ctx.globalAlpha=alpha*0.8;ctx.beginPath();for(let k=-2;k<=2;k++){ctx.moveTo(-len/2,k*wid*0.18);ctx.lineTo(len/2,k*wid*0.18)}ctx.stroke()}
+  if(f.includes('points')){ctx.fillStyle='#000';ctx.strokeStyle=c.cCore;ctx.globalAlpha=alpha;const P=[[0.15,0],[-0.1,-0.25],[-0.1,0.25],[0.25,-0.22],[0.25,0.22],[-0.3,-0.18],[-0.3,0.18]];const r=wid*0.07;for(const [px,py] of P){ctx.fillRect(px*len-r,py*wid-r,r*2,r*2);ctx.strokeRect(px*len-r,py*wid-r,r*2,r*2)}}
+  if(f.includes('elytres')){ctx.strokeStyle=lc;ctx.globalAlpha=alpha;ctx.beginPath();ctx.moveTo(-len/2,0);ctx.lineTo(len/2,0);ctx.stroke()}
+  if(f.includes('sablier')){ctx.strokeStyle='#ff2a3a';ctx.fillStyle='#ff2a3a33';ctx.globalAlpha=alpha;ctx.beginPath();ctx.moveTo(-len*0.2,-wid*0.14);ctx.lineTo(len*0.2,-wid*0.14);ctx.lineTo(-len*0.2,wid*0.14);ctx.lineTo(len*0.2,wid*0.14);ctx.closePath();ctx.fill();ctx.stroke()}
+  if(f.includes('croix')){ctx.fillStyle='#fff';ctx.globalAlpha=alpha*0.9;for(const [px,py] of [[0.2,0],[0.05,0],[-0.1,0],[-0.25,0],[0.05,-0.2],[0.05,0.2]])ctx.fillRect(px*len-1,py*wid-1,2,2)}
+}
+function drawCreature(c,alpha,gray,preview){
+  const sp=c.sp,flying=!gray&&c.alt>1;
+  const ox=flying?-c.alt*0.3:0,oy=flying?-c.alt:0;
+  // ombre portée des volants
+  if(flying){ctx.globalAlpha=alpha*0.3*Math.min(1,c.alt/10);ctx.fillStyle='#000';
+    for(let i=0;i<c.segs.length;i++){const g=c.segs[i],d=c.dims[i];ctx.beginPath();ctx.ellipse(g.x+2,g.y+3,d[0]/2+1,d[1]/2+1,g.a,0,TAU);ctx.fill()}
+    if(sp.w){const th=c.segs[1]||c.segs[0];ctx.globalAlpha=alpha*0.18;ctx.beginPath();ctx.ellipse(th.x+2,th.y+3,sp.w.wid*0.8,sp.w.len*0.9,th.a,0,TAU);ctx.fill()}}
+  ctx.save();ctx.translate(ox,oy);
+  const col=gray?'#777':(c.state==='caught'&&Math.sin(simT*30)>0?'#ffffff':(c.infest>0&&Math.sin(simT*8)>0.6?'#ff6ad5':c.cLine));
+  const en=gray?0.5:clamp(c.energy/(ROLES[c.role].start),0.2,1.3);
+  let bright=0.5+0.5*Math.min(1,en);if(!gray&&!preview&&en<0.35&&Math.random()<0.18)bright*=0.25;
+  const P0=gray?0:pulseAt(c,0);
+  // halo pulsé
+  if(!gray){
+    ctx.globalCompositeOperation='lighter';const spr=glowSprite(c.hue);const stepI=c.segs.length>8?2:1;
+    for(let i=0;i<c.segs.length;i+=stepI){const g=c.segs[i],p=pulseAt(c,i);const R=(c.dims[i][1]*1.5+9)*(0.75+p*0.7);
+      ctx.globalAlpha=alpha*bright*(0.07+0.35*p)*(sp.firefly?1.6:1);ctx.drawImage(spr,g.x-R,g.y-R,R*2,R*2)}
+    if(sp.f.includes('lanterne')){const g=c.segs[c.segs.length-1],R=10+P0*26;ctx.globalAlpha=alpha*(0.2+0.8*P0);ctx.drawImage(spr,g.x-R,g.y-R,R*2,R*2)}
+    ctx.globalCompositeOperation='source-over';
+  }
+  ctx.globalAlpha=alpha;
+  if(!gray&&!preview){let tx=null,ty=null;
+    if(c.target&&c.target.cx){tx=c.target.cx;ty=c.target.cy}else if(c.target&&c.target.c){tx=c.target.x;ty=c.target.y}else if(c.prey&&!c.prey.dead){tx=c.prey.x;ty=c.prey.y}
+    if(tx!==null){ctx.globalAlpha=alpha*0.18;ctx.strokeStyle=col;ctx.lineWidth=0.6;ctx.setLineDash([2,5]);ctx.beginPath();ctx.moveTo(c.x,c.y);ctx.lineTo(tx-ox,ty-oy);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=alpha}}
+  if(sp.w&&!gray)drawWings(c,alpha,preview);
+  // pattes
+  if(c.legs.length){
+    ctx.beginPath();for(const l of c.legs){const k=kneeOf(c,l);ctx.moveTo(l.hx,l.hy);ctx.lineTo(k[0],k[1]);ctx.lineTo(l.fx,l.fy)}
+    ctx.strokeStyle=col;ctx.globalAlpha=alpha*bright*(0.12+0.3*P0);ctx.lineWidth=3.2;ctx.stroke();
+    ctx.globalAlpha=alpha*(0.45+0.5*bright);ctx.lineWidth=1;ctx.stroke();
+    for(const l of c.legs){const k=kneeOf(c,l);const pl=gray?0:pulseAt(c,l.seg);ctx.fillStyle=gray||col!==c.cLine?col:c.segL[l.seg];ctx.globalAlpha=alpha*(0.5+0.5*bright);ctx.fillRect(k[0]-1.2,k[1]-1.2,2.4,2.4);
+      ctx.globalAlpha=alpha*Math.min(1,0.55+pl);ctx.beginPath();ctx.arc(l.fx,l.fy,1.4+pl*1.3,0,TAU);ctx.fill()}
+    ctx.globalAlpha=alpha;
+  }
+  drawFeatures(c,col,alpha,P0);
+  // corps : fil de fer lumineux, teinte qui glisse d'un segment à l'autre
+  for(let i=c.segs.length-1;i>=0;i--){
+    const g=c.segs[i];let [len,wid,sh]=c.dims[i];if(i===c.segs.length-1&&c.swell>1)wid*=c.swell;
+    const p=gray?0:pulseAt(c,i);
+    const lc=gray?'#777':(col===c.cLine?c.segL[i]:col);
+    ctx.save();ctx.translate(g.x,g.y);ctx.rotate(g.a);
+    ctx.globalAlpha=alpha;ctx.fillStyle='#000';shapePath(sh,len,wid,0,0,1);ctx.fill();
+    if(!gray){ctx.fillStyle=c.segT[i];ctx.globalAlpha=alpha*(0.5+0.5*p);ctx.fill()}
+    ctx.save();ctx.clip();
+    const gx=clamp(Math.round(len/6),1,4),gy=clamp(Math.round(wid/6),1,3),cw=len/gx,chh=wid/gy;
+    if(!gray){ctx.fillStyle=lc;for(let a=0;a<gx;a++)for(let b=0;b<gy;b++){const lit=((a*7+b*3+i*5+c.beats)%4)===0;
+      ctx.globalAlpha=alpha*bright*(lit?0.15+0.6*p:0.03+0.12*p);ctx.fillRect(-len/2+a*cw+1,-wid/2+b*chh+1,cw-2,chh-2)}}
+    ctx.globalAlpha=alpha*0.5;ctx.strokeStyle=lc;ctx.lineWidth=0.6;ctx.beginPath();
+    for(let a=1;a<gx;a++){const x=-len/2+len*a/gx;ctx.moveTo(x,-wid/2);ctx.lineTo(x,wid/2)}
+    for(let b=1;b<gy;b++){const y=-wid/2+wid*b/gy;ctx.moveTo(-len/2,y);ctx.lineTo(len/2,y)}ctx.stroke();
+    if(!gray)drawSegPattern(c,i,len,wid,sh,alpha,lc);
+    ctx.restore();
+    shapePath(sh,len,wid,0,0,1);ctx.strokeStyle=lc;ctx.globalAlpha=alpha*bright*(0.15+0.45*p);ctx.lineWidth=3;ctx.stroke();
+    ctx.globalAlpha=alpha*(0.6+0.4*bright);ctx.lineWidth=1;ctx.stroke();
+    if(!gray&&len*wid>25){ctx.fillStyle=c.cCore;ctx.globalAlpha=alpha*Math.min(1,bright*(0.2+0.85*p));const r=(1+1.5*p)*Math.min(1.6,Math.sqrt(len*wid)/9);
+      if(c.role==='tisseur'){if(i===0){ctx.beginPath();ctx.moveTo(0,-r*1.6);ctx.lineTo(r*1.6,0);ctx.lineTo(0,r*1.6);ctx.lineTo(-r*1.6,0);ctx.closePath();ctx.fill()}
+        else if(i===1){ctx.beginPath();ctx.moveTo(-r*2,-r*1.7);ctx.lineTo(r*2,-r*1.7);ctx.lineTo(0,0);ctx.closePath();ctx.moveTo(-r*2,r*1.7);ctx.lineTo(r*2,r*1.7);ctx.lineTo(0,0);ctx.closePath();ctx.fill()}}
+      else ctx.fillRect(-r,-r,r*2,r*2)}
+    if(i===0){ctx.globalAlpha=alpha;ctx.fillStyle=lc;ctx.fillRect(len/2-3,-wid/2+1,2,2);ctx.fillRect(len/2-3,wid/2-3,2,2)}
+    ctx.restore();
+  }
+  if(c.carry&&!gray){const h=c.segs[0];drawTag(c.carry,h.x+Math.cos(h.a)*10,h.y+Math.sin(h.a)*10,h.a+Math.PI/2*0.3,'#ffe94d',alpha)}
+  ctx.restore();ctx.globalAlpha=1;
+}
+function drawTag(text,x,y,rot,col,alpha){
+  ctx.save();ctx.translate(x,y);ctx.rotate(rot);ctx.font='600 10px ui-monospace,Menlo,monospace';
+  const w=ctx.measureText(text).width+8;ctx.globalAlpha=alpha;ctx.fillStyle='#000c';ctx.fillRect(-w/2,-7,w,14);
+  ctx.strokeStyle=col;ctx.lineWidth=1;ctx.strokeRect(-w/2,-7,w,14);ctx.fillStyle=col;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,0,0.5);
+  ctx.restore();ctx.textAlign='left';ctx.textBaseline='alphabetic';
+}
+function draw(){
+  ctx=mainCtx;ctx.setTransform(DPR,0,0,DPR,0,0);ctx.fillStyle='#000';ctx.fillRect(0,0,W,H);
+  drawWords();drawStrands();drawWaves();
+  for(const k of corpses){const a=k.life>4?0.55:Math.max(0,k.life/4*0.55);drawCreature(k.c,a,true)}
+  const ground=creatures.filter(c=>c.alt<=1&&!c.host).sort((a,b)=>b.sp.mass-a.sp.mass);
+  for(const c of ground)drawCreature(c,1,false);
+  for(const c of creatures)if(c.host&&c.alt<=1)drawCreature(c,1,false);
+  for(const c of creatures)if(c.alt>1)drawCreature(c,1,false);
+  for(const t of tags){
+    const k=Math.min(1,t.t/t.dur);
+    if(t.word){const e=k*k*(3-2*k);const x=t.sx+(t.word.cx-t.sx)*e,y=t.sy+(t.word.cy-t.sy)*e-Math.sin(k*Math.PI)*30;drawTag(t.text,x,y,t.rot*(1-k),t.color,1)}
+    else drawTag(t.text,t.x+(t.sx-t.x)*k,t.y+(t.sy-t.y)*k,t.rot,t.color,1-k);
+  }
+  if(leader&&!leader.dead){
+    const c=leader,ox=-c.alt*0.3,oy=-c.alt,pulse=20+Math.sin(simT*6)*2.5;
+    ctx.strokeStyle=c.cLine;ctx.lineWidth=1;ctx.globalAlpha=0.9;ctx.setLineDash([4,3]);
+    ctx.beginPath();ctx.arc(c.x+ox,c.y+oy,pulse,0,TAU);ctx.stroke();ctx.setLineDash([]);
+    ctx.beginPath();ctx.arc(ptr.x,ptr.y,5,0,TAU);ctx.moveTo(ptr.x-10,ptr.y);ctx.lineTo(ptr.x-6,ptr.y);ctx.moveTo(ptr.x+6,ptr.y);ctx.lineTo(ptr.x+10,ptr.y);ctx.moveTo(ptr.x,ptr.y-10);ctx.lineTo(ptr.x,ptr.y-6);ctx.moveTo(ptr.x,ptr.y+6);ctx.lineTo(ptr.x,ptr.y+10);ctx.stroke();
+    ctx.globalAlpha=1;
+  }
+  for(const r of rings){const a=1-r.t/0.6;ctx.globalAlpha=a;ctx.strokeStyle=r.col;ctx.lineWidth=1;ctx.beginPath();ctx.arc(r.x,r.y,r.r*(0.6+0.4*r.t/0.6),0,TAU);ctx.stroke()}
+  ctx.globalAlpha=1;
+}
+
+// ================= INTERFACE =================
+const fmt=s=>{s=Math.floor(s);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')};
+const statsEl=document.getElementById('stats'),rolesEl=document.getElementById('roles'),msgEl=document.getElementById('msg');
+let flashMsg='',flashT=0;
+function say(t){flashMsg=t;flashT=2}
+function hud(){
+  const s=stats();
+  statsEl.innerHTML=`<span>Lisibilité <b class="${s.inR?'ok':'ko'}">${Math.round(s.r*100)}%</b></span>`+
+   `<span>Encre <span class="ink"><i style="width:${ink}%"></i></span></span>`+
+   `<span>⚖ <b class="${s.balanced?'ok':''}">${fmt(balT)}</b> <span class="dim">rec ${fmt(best)}</span></span>`+
+   `<span>🧬 <b>${s.nsp}</b><span class="dim">/50 rec ${bestBio}</span></span>`;
+  rolesEl.innerHTML=RK.map(k=>`<span style="color:${s.role[k]?ROLES[k].col:'#444'}">${ROLES[k].ic} ${s.role[k]}</span>`).join('');
+  let m;
+  if(flashT>0)m=`<span style="color:#ffe94d">${flashMsg}</span>`;
+  else if(!creatures.length)m='<span style="color:#ffe94d">● Vivarium vide : choisis une créature en bas, puis touche la page</span>';
+  else if(leader)m=`<span style="color:${leader.cLine}">● ${leader.sp.nom} en laisse · énergie ${Math.round(leader.energy)} · touche à côté pour la relâcher</span>`;
+  else if(s.balanced)m='<span class="ok">● Équilibre — le chrono tourne</span>';
+  else if(!s.rolesOk)m=`<span class="ko">● Il faut les mangeurs + au moins 4 rôles (${s.nroles}/6)</span>`;
+  else if(s.r>0.85)m='<span style="color:#aaa">● Page trop intacte : laisse les mangeurs travailler</span>';
+  else m='<span class="ko">● Page dévorée : encre, réparateurs ou prédateurs !</span>';
+  msgEl.innerHTML=m;
+  if(saveBest){saveBest=false;try{localStorage.setItem('vivlex_best',String(best));localStorage.setItem('vivlex_bio',String(bestBio))}catch(e){}}
+}
+let tool='ink',spawnSp=SPI.fourmi,speed=1,paused=true;
+const selBtn={style:{}};
+function setTool(t){tool=t;document.querySelectorAll('#bar [data-tool]').forEach(x=>x.classList.toggle('on',x.dataset.tool===t));document.querySelectorAll('#pal .chip').forEach(x=>x.classList.toggle('on',t==='spawn'&&spawnSp&&x.dataset.id===spawnSp.id))}
+function setSpawn(sp){spawnSp=sp;setTool('spawn')}
+document.querySelectorAll('#bar [data-tool]').forEach(b=>b.onclick=()=>setTool(b.dataset.tool));
+document.getElementById('spd').onclick=e=>{speed=speed===1?3:speed===3?6:1;e.currentTarget.firstChild.textContent='×'+speed};
+document.getElementById('snd').onclick=e=>{soundOn=!soundOn;initAudio();e.currentTarget.firstChild.textContent=soundOn?'🔊':'🔇'};
+const intro=document.getElementById('intro'),bestEl=document.getElementById('best');
+document.getElementById('help').onclick=()=>{intro.style.display='flex';paused=true};
+document.getElementById('go').onclick=()=>{initAudio();intro.style.display='none';paused=false;last=performance.now()};
+// ---- bestiaire ----
+let filt='all',built=false;
+function preview(sp,cvs){
+  const w=cvs.clientWidth||165,h=cvs.clientHeight||96,d=2;cvs.width=w*d;cvs.height=h*d;
+  const pc=cvs.getContext('2d');const c=mk(sp,0,0,{ang:-Math.PI/2+0.0001});c.alt=0;c.air=false;c.beatT=0.05;
+  for(const l of c.legs){const r=restPos(c,l);l.hx=r[0];l.hy=r[1];l.fx=r[2];l.fy=r[3]}
+  let minx=1e9,maxx=-1e9,miny=1e9,maxy=-1e9;
+  const pts=[...c.segs.map(g=>[g.x,g.y]),...c.legs.map(l=>[l.fx,l.fy])];
+  if(sp.w){const th=c.segs[1]||c.segs[0];pts.push([th.x+sp.w.len,th.y],[th.x-sp.w.len,th.y])}
+  for(const [x,y] of pts){minx=Math.min(minx,x);maxx=Math.max(maxx,x);miny=Math.min(miny,y);maxy=Math.max(maxy,y)}
+  const pad=Math.min(14,h*0.12),s=Math.min(2.2,(w-pad*2)/((maxx-minx)||1),(h-pad*2)/((maxy-miny)||1));
+  pc.setTransform(d*s,0,0,d*s,d*(w/2-(minx+maxx)/2*s),d*(h/2-(miny+maxy)/2*s));
+  const keep=ctx;ctx=pc;drawCreature(c,1,false,true);ctx=keep;
+}
+function buildBestiary(){
+  const fl=document.getElementById('filt');
+  const opts=[['all','Toutes'],...RK.map(k=>[k,ROLES[k].ic+' '+ROLES[k].nom]),['fly','🪽 Volants']];
+  fl.innerHTML=opts.map(([k,n])=>`<button data-f="${k}" class="${k===filt?'on':''}">${n}</button>`).join('');
+  fl.querySelectorAll('button').forEach(b=>b.onclick=()=>{filt=b.dataset.f;fl.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));renderGrid()});
+  built=true;
+}
+function renderGrid(){
+  const g=document.getElementById('grid');spCount={};for(const c of creatures)spCount[c.sp.id]=(spCount[c.sp.id]||0)+1;
+  const list=SPECIES.filter(sp=>filt==='all'||(filt==='fly'?sp.fly:sp.role===filt));
+  g.innerHTML=list.map(sp=>{const R=ROLES[sp.role];return `<div class="card"><canvas data-id="${sp.id}"></canvas>
+    <b>${sp.nom}</b><i>${sp.la}</i>
+    <div><span class="badge" style="color:${R.col}">${R.ic} ${R.nom}</span>${sp.fly?'<span class="badge" style="color:#9ab8ff">🪽 volant</span>':''}</div>
+    <p>${sp.d}</p>
+    <div class="meta">📡 ${COMNOM[sp.com]}<br>♥ ${Math.round(sp.hz*60)} bpm · vitesse ${Math.round(sp.spd)} · vivants <b style="color:#ddd">${spCount[sp.id]||0}</b></div>
+    <button data-id="${sp.id}">Choisir pour relâcher</button></div>`}).join('');
+  g.querySelectorAll('canvas').forEach(cv2=>preview(SPI[cv2.dataset.id],cv2));
+  g.querySelectorAll('button').forEach(b=>b.onclick=()=>{setSpawn(SPI[b.dataset.id]);bestEl.style.display='none';paused=false;last=performance.now();say(`Touche la page pour relâcher : ${SPI[b.dataset.id].nom}`)});
+}
+document.getElementById('bst').onclick=()=>{bestEl.style.display='block';paused=true;if(!built)buildBestiary();renderGrid()};
+document.getElementById('bclose').onclick=()=>{bestEl.style.display='none';paused=false;last=performance.now()};
+cv.addEventListener('pointermove',e=>{ptr.x=e.clientX;ptr.y=e.clientY});
+cv.addEventListener('pointerdown',e=>{
+  if(paused)return;const x=e.clientX,y=e.clientY;initAudio();ptr.x=x;ptr.y=y;
+  const hit=creatureAt(x,y);
+  if(hit){grab(hit);rings.push({x:hit.x,y:hit.y-hit.alt,r:26,t:0,col:hit.cLine});say(hit.sp.nom+' en laisse');return}
+  if(leader){release();rings.push({x,y,r:16,t:0,col:'#888'});return}
+  if(tool==='ink'){
+    let n=0;for(const w of words){if(w.state!=='ok'&&!w.pending&&dist(x,y,w.cx,w.cy)<50){if(ink<1.5)break;ink-=1.5;restoreWord(w);n++}}
+    rings.push({x,y,r:50,t:0,col:'#9ab8ff'});if(!n)say(ink<1.5?'Plus d\'encre…':'Rien à réécrire ici');
+  }else{
+    const sp=spawnSp;
+    if((spCount[sp.id]||0)>=(sp.cap||12)||creatures.length>=TOT){say('Population maximale atteinte');return}
+const b=mk(sp,x,clamp(y,TOP,H-BOTTOM_PAD));if(sp.role==='tisseur')b.home={x,y};creatures.push(b);spCount[sp.id]=(spCount[sp.id]||0)+1;
+    rings.push({x,y,r:22,t:0,col:b.cLine});wave({x,y,max:50,sp:90,col:b.cLine,a:0.7,ring2:true});
+  }
+});
+function resize(){
+  DPR=Math.min(2,window.devicePixelRatio||1);W=window.innerWidth;H=window.innerHeight;
+  cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';mainCtx.setTransform(DPR,0,0,DPR,0,0);
+  layout();strands=[];tags=[];waves=[];
+  for(const c of creatures){c.target=null;c.anchor=null;if(c.state!=='caught'&&!c.host)c.state='wander';c.x=clamp(c.x,20,W-20);c.y=clamp(c.y,TOP,H-BOTTOM_PAD)}
+}
+let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(resize,150)});
+resize();
+function seed(){
+  creatures=[];return;
+  const S=[['fourmi',6],['blatte',2],['lepisme',3],['chenille',2],['teigne',3],['puceron',3],['epeire',2],['pholque',1],['scolopendre',1],['mante',1],['abeille',3],['coccinelle',2],['luciole',4],['cloporte',3],['mouche',2],['tique',2]];
+  for(const [id,n] of S)for(let i=0;i<n;i++){const c=mk(id,rnd(30,W-30),rnd(TOP+20,H-BOTTOM_PAD-20));creatures.push(c)}
+}
+function buildPalette(){
+  const pal=document.getElementById('pal');let html='';
+  for(const k of RK){html+=`<div class="grp" style="color:${ROLES[k].col}">${ROLES[k].ic} ${ROLES[k].nom.split(' ')[0]}</div>`;
+    for(const sp of SPECIES.filter(x=>x.role===k))html+=`<button class="chip" data-id="${sp.id}"><canvas></canvas>${sp.nom.replace(/ (de|des|à|d'|ouvrier|orientale|champêtre|migrateur|bâton|domestique|terrestre|ceinturé|phalangide|dorée|frelon|diadème|géante|jaune|religieuse|doré|empereur|verte|rousse|noire|grise|des livres|des étoffes).*$/,'')}</button>`}
+  pal.innerHTML=html;
+  pal.querySelectorAll('.chip').forEach(b=>{preview(SPI[b.dataset.id],b.querySelector('canvas'));b.onclick=()=>{setSpawn(SPI[b.dataset.id]);say(`${SPI[b.dataset.id].nom} : touche la page pour la relâcher`)}});
+}
+document.getElementById('clr').onclick=()=>{for(const c of creatures)c.dead=true;creatures=[];corpses=[];strands=[];waves=[];phero=[];leader=null;for(const w of words)restoreWord(w);say('Vivarium vidé')};
+seed();buildPalette();setSpawn(SPI.fourmi);
+let last=performance.now(),hudT=0;
+function frame(now){
+  const real=Math.min(0.1,(now-last)/1000);last=now;
+  if(!paused){
+    let sim=real*speed;while(sim>0){const d=Math.min(1/30,sim);update(d);sim-=d}
+    for(const r of rings)r.t+=real;rings=rings.filter(r=>r.t<0.6);
+    flashT-=real;
+    for(const k in bucket)bucket[k]=Math.min(2,bucket[k]+5*real);gBucket=Math.min(10,gBucket+30*real);
+  }
+  draw();hudT-=real;if(hudT<=0){hud();hudT=0.25}
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+window.__sim={get creatures(){return creatures},get leader(){return leader},run(sec){for(let t=0;t<sec;t+=1/30)update(1/30)},stats,show(){intro.style.display='none';paused=false},SPECIES,mk,spawn(id,n){for(let i=0;i<n;i++)creatures.push(mk(id,rnd(30,W-30),rnd(TOP+20,H-BOTTOM_PAD-20)))}};
+intro.style.display='flex';
+})();
+</script>
+</body>
+</html>

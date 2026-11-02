@@ -1,0 +1,17 @@
+const {chromium}=require('playwright');
+(async()=>{const b=await chromium.launch();const ctx=await b.newContext({viewport:{width:390,height:800},deviceScaleFactor:2});const p=await ctx.newPage();
+const errs=[];p.on('pageerror',e=>errs.push(e.message+(e.stack||'').split('\n')[1]));
+await p.goto('file://'+require('path').resolve(__dirname,'../biome.html'));await p.evaluate(()=>{localStorage.clear();localStorage.setItem('biome_done',JSON.stringify([0,1,2,3,4,5,6,7,8]))});await p.reload();await p.waitForTimeout(300);
+await p.click('#tsand');await p.waitForTimeout(200);
+await p.click('#radd');await p.waitForTimeout(400);await p.screenshot({path:'u1.png'});
+await p.click('#rsheet .cin');await p.waitForTimeout(300);
+await p.evaluate(()=>{for(const [t,x,y] of [["fourmi",250,140],["coccinelle",200,80],["cloporte",100,140],["abeille",150,60],["tronc",300,100]])window.__sim.tap(t,x,y);window.__sim.run(20)});
+await p.screenshot({path:'u2.png'});
+await p.click('#vnsalle');await p.waitForTimeout(300);
+await p.click('#radd');await p.waitForTimeout(300);await p.click('#rsheet .cin');await p.waitForTimeout(300);
+await p.click('#vnbacs');await p.waitForTimeout(200);await p.screenshot({path:'u3.png'});
+await p.locator('#vstrip .sv').first().click();await p.waitForTimeout(300);console.log(await p.evaluate(()=>JSON.stringify(window.__sim.counts())));
+await p.click('#vnsalle');await p.waitForTimeout(300);await p.screenshot({path:'u4.png'});
+await p.locator('.rv').first().click();await p.waitForTimeout(400);await p.screenshot({path:'u5.png'});
+await p.mouse.click(200,90);await p.click('#rmode');await p.waitForTimeout(200);await p.screenshot({path:'u6.png'});
+console.log(errs);await b.close();})();

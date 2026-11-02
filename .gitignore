@@ -1,0 +1,5 @@
+node_modules/
+biome.html
+/index.html
+*.zip
+tests/*.png

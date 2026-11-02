@@ -1,0 +1,37 @@
+{
+ "name": "Vivariom",
+ "short_name": "Vivariom",
+ "lang": "fr",
+ "description": "Un vivarium d'insectes à faire vivre : campagne et bac à sable.",
+ "start_url": "./",
+ "scope": "./",
+ "display": "fullscreen",
+ "background_color": "#0b0d0a",
+ "theme_color": "#0b0d0a",
+ "icons": [
+  {
+   "src": "icones/icone-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icones/icone-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icones/icone-192-masque.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "maskable"
+  },
+  {
+   "src": "icones/icone-512-masque.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}

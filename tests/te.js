@@ -1,0 +1,14 @@
+const {chromium}=require('playwright');
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:800},deviceScaleFactor:2});
+const errs=[];p.on('pageerror',e=>errs.push(e.message+' | '+(e.stack||'').split('\n').slice(1,3).join(' ')));
+await p.goto('file://'+require('path').resolve(__dirname,'../biome.html'));
+await p.evaluate(()=>{window.__sim.startLevel(9);window.__sim.go()});
+for(const [t,x,y] of [["fourmi",250,140],["fourmi",250,140],["puceron",150,140],["puceron",300,140],["coccinelle",200,80],["cloporte",100,140],["abeille",150,60],["araignee",300,80],["mouche",250,60]])await p.evaluate(([t,x,y])=>window.__sim.tap(t,x,y),[t,x,y]);
+await p.evaluate(()=>window.__sim.run(30));
+await p.click('#zens');await p.waitForTimeout(900);await p.screenshot({path:'e1.png'});
+await p.evaluate(()=>{const D=window.__sim.DEV;D.neon.type='horti';D.spot.on=false;D.heat.on=true;window.__sim.tap('pluie',250,10)});await p.waitForTimeout(400);await p.screenshot({path:'e2.png'});
+await p.evaluate(()=>{const D=window.__sim.DEV;D.neon.type='uv';D.spot.on=true});await p.waitForTimeout(300);await p.screenshot({path:'e3.png'});
+await p.evaluate(()=>window.__sim.run(20));await p.evaluate(()=>window.__sim.openDev('thermo'));await p.waitForTimeout(200);await p.screenshot({path:'e4.png'});
+await p.evaluate(()=>{window.__sim.openDev(null);window.__sim.DEV.time.day=20;window.__sim.run(60)});await p.waitForTimeout(300);await p.screenshot({path:'e5.png'});
+await p.click('#zens');await p.waitForTimeout(900);await p.evaluate(()=>{window.__sim.DEV.time.day=90;window.__sim.DEV.neon.type='horti'});await p.waitForTimeout(200);await p.screenshot({path:'e6.png'});
+console.log(errs.slice(0,3));await b.close();})();
