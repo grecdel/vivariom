@@ -86,6 +86,7 @@ python3 assemble.py && node tests/fixcheck.js && node tests/all_lv.js && node te
 - Paysage sur téléphone (hauteur < 520 px) : à valider sur un vrai téléphone (toucher, rotation, mode gaucher).
 
 ## Publication
+- README.md : présentation complète du jeu et des Bestioles, avec captures dans `docs/captures/` (à refaire si l'interface change beaucoup).
 - Dépôt public sur GitHub, **tous droits réservés** (LICENSE) : visible, pas libre.
 - Le jeu est en ligne sur https://grecdel.github.io/vivariom/ : `.github/workflows/pages.yml` met en ligne `web/` à chaque mise à jour de `main` touchant `web/`. Donc : modifier, `python3 assemble.py`, tester, enregistrer `web/` avec le reste.
 - itch.io abandonné pour le moment. L'historique a été repris à zéro avant de rendre le dépôt public (pour ne pas exposer l'e-mail de l'auteur) : les anciens fichiers itch.io ne sont plus récupérables.
