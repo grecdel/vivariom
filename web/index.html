@@ -217,8 +217,11 @@ button:not(:disabled):active,.lv:not(.lock):active,.cat:active,.chip:active{box-
 #rsheet .cgh{top:56px}#rsheet .cgh.l{left:calc(50% - 234px)}#rsheet .cgh.r{right:auto;left:calc(50% + 114px)}
 /* Tiroir Bêtes : case par espèce, bouton ▾ des variantes, liste déroulante */
 .gcell{position:relative;display:flex}.gcell>.chip{flex:1;min-width:0}
-#drawer .chip .vn{display:block;font:500 8.5px -apple-system,Roboto,sans-serif;color:#8a9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:10px}
-.vbtn{position:absolute;left:2px;top:2px;background:#1c2a1c;border:1px solid #3d6b3f;color:#bfeaa8;border-radius:7px;font:700 10px -apple-system,Roboto,sans-serif;padding:4px 6px;line-height:1;z-index:1}
+#drawer .chip .vn{display:block;font:500 9px/16px -apple-system,Roboto,sans-serif;height:16px;margin-top:2px;color:#8a9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#drawer .gcell .chip canvas{height:40px}
+/* bouton des variantes : sur la dernière ligne de la case (la ligne du nom de variante), pour ne pas cacher le dessin */
+.vbtn{position:absolute;left:4px;right:4px;bottom:3px;height:16px;background:#1c2a1c;border:1px solid #3d6b3f;color:#bfeaa8;border-radius:8px;font:600 9.5px/14px -apple-system,Roboto,sans-serif;padding:0 4px;z-index:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gcell .chip.grp .vn{visibility:hidden}@media (max-width:600px){.vlong{display:none}}
 .vmenu{position:absolute;z-index:5;background:#0d100d;border:1px solid #8bff6a88;border-radius:12px;padding:6px;box-shadow:0 10px 30px #000c;display:flex;flex-direction:column;gap:4px}
 .vmh{display:flex;justify-content:space-between;align-items:center;font:700 12px -apple-system,Roboto,sans-serif;color:#cfe;padding:2px 4px 4px}.vx{background:#111;border:1px solid #444;color:#ccc;border-radius:50%;width:24px;height:24px;padding:0;font-size:11px}
 .vrow{position:relative;display:flex;align-items:center;gap:8px;background:#070707;border:1px solid #2a2a2a;border-radius:9px;padding:4px 6px;text-align:left;color:#ddd}
@@ -2808,10 +2811,13 @@ function previewSp(sp,cvs){
   const w=cvs.clientWidth||52,h=cvs.clientHeight||34,d=2;cvs.width=w*d;cvs.height=h*d;
   const pc=cvs.getContext('2d');const c=mk(sp,0,0,{ang:-Math.PI/2+0.0001});c.beatT=0.05;
   for(const l of c.legs){const r=restPos(c,l);l.hx=r[0];l.hy=r[1];l.fx=r[2];l.fy=r[3]}
-  let minx=1e9,maxx=-1e9,miny=1e9,maxy=-1e9;const pts=[...c.segs.map(g=>[g.x,g.y]),...c.legs.map(l=>[l.fx,l.fy])];
+  // cadre : centre des segments ± leur demi-taille, bouts de pattes, antennes (sinon la bête déborde de sa case)
+  let minx=1e9,maxx=-1e9,miny=1e9,maxy=-1e9;const pts=[...c.legs.map(l=>[l.fx,l.fy])];
+  c.segs.forEach((g,i)=>{const r=Math.max(c.dims[i][0],c.dims[i][1])/2;pts.push([g.x-r,g.y-r],[g.x+r,g.y+r])});
+  if(sp.ant>0){const g=c.segs[0],r=c.dims[0][0]/2+sp.ant*0.8;pts.push([g.x-r*0.6,g.y-r],[g.x+r*0.6,g.y-r])}
   if(sp.w){const th=c.segs[1]||c.segs[0];pts.push([th.x+sp.w.len,th.y],[th.x-sp.w.len,th.y])}
   for(const [x,y] of pts){minx=Math.min(minx,x);maxx=Math.max(maxx,x);miny=Math.min(miny,y);maxy=Math.max(maxy,y)}
-  const pad=Math.min(10,h*0.12),s=Math.min(3,(w-pad*2)/((maxx-minx)||1),(h-pad*2)/((maxy-miny)||1));
+  const pad=Math.min(6,h*0.1),s=Math.min(6,(w-pad*2)/((maxx-minx)||1),(h-pad*2)/((maxy-miny)||1));
   pc.setTransform(d*s,0,0,d*s,d*(w/2-(minx+maxx)/2*s),d*(h/2-(miny+maxy)/2*s));
   const keep=ctx;ctx=pc;drawCreature(c,1,false,true);ctx=keep;
 }
@@ -3660,7 +3666,7 @@ function varLabel(id,g){if(id===g)return '';return LARVE_DE[baseOf(id)]?nameOf(i
 function openDrawerBetes(){drawer='betes';const d=document.getElementById('drawer');
   const groups=beastGroups(catItems('betes'));
   d.innerHTML=`<div class="dhead"><b>${CATS.betes.ic} ${CATS.betes.nom}</b><span class="dim">touche pour prendre · ▾ pour les variantes</span><button class="dx">✕</button></div><div class="dgrid">${groups.map(([g,L])=>{const c=grpCur(g,L),vl=varLabel(c,g);
-    return `<div class="gcell"><button class="chip ${L.length>1?'grp':''}" data-id="${c}"><canvas></canvas><span class="nm">${grpNom(g)}</span><span class="vn">${vl||'&nbsp;'}</span><span class="st"></span></button>${L.length>1?`<button class="vbtn" data-grp="${g}" title="Variantes">▾ ${L.length}</button>`:''}</div>`}).join('')}</div>`;
+    return `<div class="gcell"><button class="chip ${L.length>1?'grp':''}" data-id="${c}"><canvas></canvas><span class="nm">${grpNom(g)}</span><span class="vn">${vl||'&nbsp;'}</span><span class="st"></span></button>${L.length>1?`<button class="vbtn" data-grp="${g}" title="Choisir une variante">▾ ${vl||L.length+'<span class="vlong"> variantes</span>'}</button>`:''}</div>`}).join('')}</div>`;
   d.style.display='block';wireChips(d);d.querySelector('.dx').onclick=()=>{closeDrawer();renderBar()};
   d.querySelectorAll('.vbtn').forEach(b=>b.onclick=e=>{e.stopPropagation();const g=b.dataset.grp,L=groups.find(x=>x[0]===g)[1];openVarMenu(b.closest('.gcell'),g,L)});
   refreshPalette()}

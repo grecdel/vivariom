@@ -235,8 +235,11 @@ button:not(:disabled):active,.lv:not(.lock):active,.cat:active,.chip:active{box-
 #rsheet .cgh{top:56px}#rsheet .cgh.l{left:calc(50% - 234px)}#rsheet .cgh.r{right:auto;left:calc(50% + 114px)}
 /* Tiroir Bêtes : case par espèce, bouton ▾ des variantes, liste déroulante */
 .gcell{position:relative;display:flex}.gcell>.chip{flex:1;min-width:0}
-#drawer .chip .vn{display:block;font:500 8.5px -apple-system,Roboto,sans-serif;color:#8a9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:10px}
-.vbtn{position:absolute;left:2px;top:2px;background:#1c2a1c;border:1px solid #3d6b3f;color:#bfeaa8;border-radius:7px;font:700 10px -apple-system,Roboto,sans-serif;padding:4px 6px;line-height:1;z-index:1}
+#drawer .chip .vn{display:block;font:500 9px/16px -apple-system,Roboto,sans-serif;height:16px;margin-top:2px;color:#8a9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#drawer .gcell .chip canvas{height:40px}
+/* bouton des variantes : sur la dernière ligne de la case (la ligne du nom de variante), pour ne pas cacher le dessin */
+.vbtn{position:absolute;left:4px;right:4px;bottom:3px;height:16px;background:#1c2a1c;border:1px solid #3d6b3f;color:#bfeaa8;border-radius:8px;font:600 9.5px/14px -apple-system,Roboto,sans-serif;padding:0 4px;z-index:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gcell .chip.grp .vn{visibility:hidden}@media (max-width:600px){.vlong{display:none}}
 .vmenu{position:absolute;z-index:5;background:#0d100d;border:1px solid #8bff6a88;border-radius:12px;padding:6px;box-shadow:0 10px 30px #000c;display:flex;flex-direction:column;gap:4px}
 .vmh{display:flex;justify-content:space-between;align-items:center;font:700 12px -apple-system,Roboto,sans-serif;color:#cfe;padding:2px 4px 4px}.vx{background:#111;border:1px solid #444;color:#ccc;border-radius:50%;width:24px;height:24px;padding:0;font-size:11px}
 .vrow{position:relative;display:flex;align-items:center;gap:8px;background:#070707;border:1px solid #2a2a2a;border-radius:9px;padding:4px 6px;text-align:left;color:#ddd}

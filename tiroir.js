@@ -14,7 +14,7 @@ function varLabel(id,g){if(id===g)return '';return LARVE_DE[baseOf(id)]?nameOf(i
 function openDrawerBetes(){drawer='betes';const d=document.getElementById('drawer');
   const groups=beastGroups(catItems('betes'));
   d.innerHTML=`<div class="dhead"><b>${CATS.betes.ic} ${CATS.betes.nom}</b><span class="dim">touche pour prendre · ▾ pour les variantes</span><button class="dx">✕</button></div><div class="dgrid">${groups.map(([g,L])=>{const c=grpCur(g,L),vl=varLabel(c,g);
-    return `<div class="gcell"><button class="chip ${L.length>1?'grp':''}" data-id="${c}"><canvas></canvas><span class="nm">${grpNom(g)}</span><span class="vn">${vl||'&nbsp;'}</span><span class="st"></span></button>${L.length>1?`<button class="vbtn" data-grp="${g}" title="Variantes">▾ ${L.length}</button>`:''}</div>`}).join('')}</div>`;
+    return `<div class="gcell"><button class="chip ${L.length>1?'grp':''}" data-id="${c}"><canvas></canvas><span class="nm">${grpNom(g)}</span><span class="vn">${vl||'&nbsp;'}</span><span class="st"></span></button>${L.length>1?`<button class="vbtn" data-grp="${g}" title="Choisir une variante">▾ ${vl||L.length+'<span class="vlong"> variantes</span>'}</button>`:''}</div>`}).join('')}</div>`;
   d.style.display='block';wireChips(d);d.querySelector('.dx').onclick=()=>{closeDrawer();renderBar()};
   d.querySelectorAll('.vbtn').forEach(b=>b.onclick=e=>{e.stopPropagation();const g=b.dataset.grp,L=groups.find(x=>x[0]===g)[1];openVarMenu(b.closest('.gcell'),g,L)});
   refreshPalette()}

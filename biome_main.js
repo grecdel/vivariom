@@ -236,10 +236,13 @@ function previewSp(sp,cvs){
   const w=cvs.clientWidth||52,h=cvs.clientHeight||34,d=2;cvs.width=w*d;cvs.height=h*d;
   const pc=cvs.getContext('2d');const c=mk(sp,0,0,{ang:-Math.PI/2+0.0001});c.beatT=0.05;
   for(const l of c.legs){const r=restPos(c,l);l.hx=r[0];l.hy=r[1];l.fx=r[2];l.fy=r[3]}
-  let minx=1e9,maxx=-1e9,miny=1e9,maxy=-1e9;const pts=[...c.segs.map(g=>[g.x,g.y]),...c.legs.map(l=>[l.fx,l.fy])];
+  // cadre : centre des segments ± leur demi-taille, bouts de pattes, antennes (sinon la bête déborde de sa case)
+  let minx=1e9,maxx=-1e9,miny=1e9,maxy=-1e9;const pts=[...c.legs.map(l=>[l.fx,l.fy])];
+  c.segs.forEach((g,i)=>{const r=Math.max(c.dims[i][0],c.dims[i][1])/2;pts.push([g.x-r,g.y-r],[g.x+r,g.y+r])});
+  if(sp.ant>0){const g=c.segs[0],r=c.dims[0][0]/2+sp.ant*0.8;pts.push([g.x-r*0.6,g.y-r],[g.x+r*0.6,g.y-r])}
   if(sp.w){const th=c.segs[1]||c.segs[0];pts.push([th.x+sp.w.len,th.y],[th.x-sp.w.len,th.y])}
   for(const [x,y] of pts){minx=Math.min(minx,x);maxx=Math.max(maxx,x);miny=Math.min(miny,y);maxy=Math.max(maxy,y)}
-  const pad=Math.min(10,h*0.12),s=Math.min(3,(w-pad*2)/((maxx-minx)||1),(h-pad*2)/((maxy-miny)||1));
+  const pad=Math.min(6,h*0.1),s=Math.min(6,(w-pad*2)/((maxx-minx)||1),(h-pad*2)/((maxy-miny)||1));
   pc.setTransform(d*s,0,0,d*s,d*(w/2-(minx+maxx)/2*s),d*(h/2-(miny+maxy)/2*s));
   const keep=ctx;ctx=pc;drawCreature(c,1,false,true);ctx=keep;
 }
