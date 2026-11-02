@@ -51,7 +51,7 @@ const DECOUV=[
  {k:'dos',ic:'🦂',nom:'Sur le dos de maman',txt:"Voir des petits scorpions portés par leur mère."},
  {k:'lueur',ic:'✨',nom:'La lueur du ver luisant',txt:"Voir un ver luisant briller la nuit."},
  {k:'chant',ic:'🎶',nom:'Le chant du grillon',txt:"Entendre (ou voir) un grillon chanter la nuit."},
- {k:'dionee',ic:'🪤',nom:'Une plante carnivore',txt:"Voir une dionée refermer son piège.",re:/dionée a attrapé/},
+ {k:'dionee',ic:'🪤',nom:'Une plante carnivore',txt:"Voir une dionée refermer son piège.",re:/dionée a (attrapé|mangé)/},
  {k:'guerre',ic:'⚔',nom:'Une guerre de fourmis',txt:"Voir deux colonies s'affronter.",re:/Bataille/},
  {k:'malade',ic:'🍄',nom:'Un champignon',txt:"Voir une bête attaquée par un champignon.",re:/champignon attaque/},
  {k:'moisi',ic:'🧫',nom:'Des moisissures',txt:"Voir des moisissures sur un sol détrempé.",re:/moisissures/},
@@ -76,7 +76,7 @@ const pick1=a=>a[Math.floor(Math.random()*a.length)],melange=a=>a.map(x=>[Math.r
 const ANIM=()=>Object.keys(FICHES).filter(id=>id!=='plante'&&SPI[id]&&PLUS[id]&&REL[id]);
 function questions(){const Q=[],ids=ANIM();
   const q1=()=>{const id=pick1(ids.filter(i=>REL[i].par&&REL[i].par.some(p=>FICHES[p.split(':')[0]])));if(!id)return null;const bons=REL[id].par.map(p=>p.split(':')[0]).filter(p=>FICHES[p]);const bon=pick1(bons);
-    const faux=melange(ids.filter(i=>!bons.includes(i)&&i!==id)).slice(0,3);return {q:`Qui mange ${FICHES[id].ic} ${FICHES[id].nom.toLowerCase()} ?`,r:melange([bon,...faux]).map(i=>[FICHES[i].ic+' '+FICHES[i].nom,i===bon])}};
+    const mangeBetes=x=>(REL[x].mange||[]).some(m=>FICHES[m.split(':')[0]]&&m!=='plante')||SCORP_PREY[id]&&x==='scorpion'||x==='mante'||x==='araignee'||x==='scolopendre'||x==='luciole';const faux=melange(ids.filter(i=>!bons.includes(i)&&i!==id&&!mangeBetes(i))).slice(0,3);if(faux.length<3)return null;return {q:`Qui mange ${FICHES[id].ic} ${FICHES[id].nom.toLowerCase()} ?`,r:melange([bon,...faux]).map(i=>[FICHES[i].ic+' '+FICHES[i].nom,i===bon])}};
   const q2=()=>{const L=melange(ids.filter(i=>REAL[i])).slice(0,4);if(L.length<4)return null;const g=L.reduce((a,b)=>REAL[a][0]>REAL[b][0]?a:b);return {q:'Laquelle de ces bêtes est la plus grande ?',r:L.map(i=>[FICHES[i].ic+' '+FICHES[i].nom,i===g])}};
   const q3=()=>{const id=pick1(ids),faux=melange(ids.filter(i=>i!==id)).slice(0,3);return {q:`Où vit ${FICHES[id].ic} ${FICHES[id].nom.toLowerCase()} ?`,r:melange([id,...faux]).map(i=>[PLUS[i].ou,i===id])}};
   const q4=()=>{const id=pick1(ids),faux=melange(ids.filter(i=>i!==id)).slice(0,3);return {q:`À qui correspond cette anecdote ? « ${FICHES[id].nom.split(/[ ']/).filter(w=>w.length>3).reduce((t,w)=>t.replace(new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g,'')+'[a-zà-ÿ]*','ig'),'…'),PLUS[id].anec)} »`,r:melange([id,...faux]).map(i=>[FICHES[i].ic+' '+FICHES[i].nom,i===id])}};

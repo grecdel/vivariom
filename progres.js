@@ -11,7 +11,7 @@ const MODIFS=[
   {k:'reserves',ic:'📦',txt:'Réserves de moitié',app(L){for(const k in L.stock)if(k!=='compost')L.stock[k]=Math.max(1,Math.round(L.stock[k]/2))}},
   {k:'long',ic:'⏱',txt:'Chrono une fois et demie plus long',app(L){L.goal.t=Math.round(L.goal.t*1.5)}},
   {k:'panne',ic:'⚡',txt:'Programmateur du brumisateur en panne',app(L){L.showers=false}},
-  {k:'foule',ic:'👥',txt:'Population minimale plus haute',app(L){const m=Object.assign({},L.goal.min||{});for(const id of L.goal.alive)if(id!=='plante')m[id]=Math.max(m[id]||0,3);L.goal.min=m}},
+  {k:'foule',ic:'👥',txt:'Population minimale plus haute',app(L){const m=Object.assign({},L.goal.min||{});for(const id of L.goal.alive)if(id!=='plante'&&!NAISS_EXCLUES.includes(id)&&(L.stock[id]||0)>=3)m[id]=Math.max(m[id]||0,3);L.goal.min=m}},
   {k:'sec',ic:'☀',txt:'Évaporation plus forte',app(L){L.evap=(L.evap||1)*1.5}}];
 function defiJour(){const r=seedRng(jourCle()),pool=[];for(let i=2;i<LEVELS.length;i++)pool.push(i);
   const i=pool[Math.floor(r()*pool.length)],m1=Math.floor(r()*MODIFS.length);let m2=Math.floor(r()*(MODIFS.length-1));if(m2>=m1)m2++;
@@ -32,8 +32,11 @@ function startSpecial(S){const base=LEVELS[S.i],L=copieNiv(base);L.special=S.typ
   if(S.type==='survie'){const rec=LS.get('biome_survie',0);t.insertAdjacentHTML('beforeend',`<p class="dim">⏳ Record : <b>${fmt(rec)}</b></p>`);EVTnext=40}
   SURV_T=0}
 let SURV_T=0;
+{const en=especesNaiss;especesNaiss=function(){return lvl&&lvl.special==='survie'?[]:en()}}
 // un niveau normal efface le mode spécial et reprend la difficulté choisie
 {const sl=startLevel;startLevel=function(i){if(!startingSpecial){SPECIAL=null;DIFF=DIFF_USER()}sl(i)}}
+{const st=showTitle;showTitle=function(){st();SPECIAL=null;DIFF=DIFF_USER()}}
+{const ev=enterViv;enterViv=function(v){SPECIAL=null;DIFF=DIFF_USER();ev(v)}}
 {const sr=saveResume;saveResume=function(){if(SPECIAL||(lvl&&lvl.special))return;sr()}}
 // survie : coups durs de plus en plus rapprochés, chrono de survie
 {const up=update;update=function(dt){up(dt);if(state!=='play')return;
@@ -49,7 +52,7 @@ let SURV_T=0;
 let BILH=[],histT=0,MORTS={},MORTS_CAUSE={};
 {const sl=startLevel;startLevel=function(i){sl(i);BILH=[];histT=0;MORTS={};MORTS_CAUSE={}}}
 {const up=update;update=function(dt){up(dt);if(state!=='play'||lvl.sandbox)return;histT-=dt;if(histT<=0){histT=5;BILH.push({t:simT,n:counts()});if(BILH.length>400)BILH=BILH.filter((_,j)=>j%2===0)}}}
-{const d0=die;die=function(c,by){const was=c.dead;d0(c,by);if(!was&&c.dead&&state==='play'&&!lvl.sandbox&&!c.intrus){const id=espNaiss(c.sp.id);MORTS[id]=(MORTS[id]||0)+1;
+{const d0=die;die=function(c,by){const was=c.dead;d0(c,by);if(!was&&c.dead&&state==='play'&&!lvl.sandbox&&!c.intrus&&by!=='meta'){const id=espNaiss(c.sp.id);MORTS[id]=(MORTS[id]||0)+1;
   const cause=by&&by.sp?'mangé':c.energy<=0?'faim':'vieillesse';MORTS_CAUSE[cause]=(MORTS_CAUSE[cause]||0)+1}}}
 const COLS_B=['#8bff6a','#ffb43a','#6ad0ff','#ff6a8a','#d9a0ff','#ffe94d','#a0ffd9','#ff9a5a','#9aa0ff','#e0e0e0','#c8ff5a'];
 function bilanHTML(){if(BILH.length<2)return '';const sp=lvl.sp,Wd=300,Hd=90,t0=BILH[0].t,t1=BILH[BILH.length-1].t||1;
@@ -94,8 +97,8 @@ function etoilesSpe(){const left=Object.keys(lvl.stock).reduce((a,k)=>a+(stock[k
   l0(m);$('endtxt').insertAdjacentHTML('beforeend',bilanHTML());finCoups()}}
 function finCoups(){if(EVTpasses){const n=LS.get('biome_coups',0)+EVTpasses;LS.set('biome_coups',n);if(n>=10)ach('coups10')}EVTpasses=0}
 // rejouer : relance le même mode spécial
-{const b=$('bretry'),r0=b.onclick;b.onclick=()=>SPECIAL?startSpecial(SPECIAL):r0()}
-{const b=$('brestart'),r0=b.onclick;b.onclick=()=>SPECIAL?startSpecial(SPECIAL):r0()}
+{const b=$('bretry'),r0=b.onclick;b.onclick=()=>SPECIAL&&lvl&&lvl.special?startSpecial(SPECIAL):r0()}
+{const b=$('brestart'),r0=b.onclick;b.onclick=()=>SPECIAL&&lvl&&lvl.special?startSpecial(SPECIAL):r0()}
 
 // ================= ENTRÉES DANS L'ÉCRAN DE LA CAMPAGNE =================
 {const sm=showMenu;showMenu=function(){SPECIAL=null;DIFF=DIFF_USER();sm();const M=$('menu'),dv=M.querySelector('.diffs');if(!dv)return;

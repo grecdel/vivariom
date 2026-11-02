@@ -21,18 +21,18 @@ let vibNaissT=0;
 
 // ---------- 35. annuler la dernière pose ----------
 let ANNUL=null;
-document.body.insertAdjacentHTML('beforeend','<button id="undo" title="Annuler la dernière pose">↶ Annuler</button>');
+document.body.insertAdjacentHTML('beforeend','<button id="undo" title="Annuler la dernière pose">↶<span> Annuler</span></button>');
 {const ta=tapAction;tapAction=function(x,y){const c0=new Set(creatures),p0=new Set(plants),i0=new Set(items),s0=Object.assign({},stock),t=tool;ta(x,y);
   const C=creatures.filter(c=>!c0.has(c)),P=plants.filter(p=>!p0.has(p)),I=items.filter(it=>!i0.has(it)&&it.type==='litiere');
   if(C.length||P.length||I.length){ANNUL={C,P,I,stock:s0,t:performance.now(),nom:t};majUndo()}}}
-function majUndo(){const b=$('undo'),ok=ANNUL&&state==='play'&&performance.now()-ANNUL.t<20000;b.style.display=ok&&!document.body.classList.contains('obs')?'block':'none'}
+function majUndo(){const b=$('undo');try{const r=$('viewsw').getBoundingClientRect();if(r.bottom>0)b.style.top=Math.round(r.bottom+6)+'px'}catch(e){}const ok=ANNUL&&state==='play'&&performance.now()-ANNUL.t<20000;b.style.display=ok&&!document.body.classList.contains('obs')?'block':'none'}
 setInterval(majUndo,1000);
 $('undo').onclick=()=>{if(!ANNUL)return;const A=ANNUL;ANNUL=null;
   for(const c of A.C){c.dead=true;if(c.col&&c.sp.id==='reine'&&c.col.queen!==c&&!creatures.some(o=>!o.dead&&o.col===c.col&&o!==c)){c.col.dead=true}}
   creatures=creatures.filter(c=>!c.dead);
   for(const p of A.P){p.alive=false;for(let r=0;r<p.h;r++){const k=K(p.col,p.base-r);if(k>=0&&STEM[k]>0)STEM[k]--}}plants=plants.filter(p=>p.alive);
   for(const it of A.I)it.dead=true;items=items.filter(it=>!it.dead);
-  if(!lvl.sandbox)stock=A.stock;refreshPalette();say('↶ Dernière pose annulée');majUndo()};
+  if(!lvl.sandbox&&A.nom&&stock[A.nom]!=null)stock[A.nom]+=1;refreshPalette();say('↶ Dernière pose annulée');majUndo()};
 
 // ---------- 36. suivre une bête (appui long) ; 37. loupe ----------
 let FOLLOW=null,lpT=0;
@@ -48,7 +48,7 @@ cv.addEventListener('pointerup',()=>clearTimeout(lpT));
 $('sstop').onclick=()=>{FOLLOW=null;suivreUI()};
 {const d0=draw;draw=function(){if(FOLLOW&&!FOLLOW.dead&&view==='side'&&state==='play'){camX+=(FOLLOW.x-camX)*0.12;camY+=(FOLLOW.y-camY)*0.12;camClamp()}d0()}}
 {const sl=startLevel;startLevel=function(i){FOLLOW=null;ANNUL=null;sl(i);suivreUI()}}
-{const ev=enterViv;enterViv=function(v){FOLLOW=null;ANNUL=null;ev(v);suivreUI()}}
+{const ev=enterViv;enterViv=function(v){FOLLOW=null;ANNUL=null;ev(v);ANNUL=null;majUndo();suivreUI()}}
 let LOUPE=null;
 function ouvrirLoupe(c){if(!c)return;const O=ovl('loupep'),F=FICHES[c.sp.id]||{},R=REAL[c.sp.id];
   O.innerHTML=`<div class="box"><div class="mhead"><h1>🔍 ${F.ic||''} ${c.sp.vnom||F.nom||''}</h1><button class="back" id="lclose">Fermer</button></div>

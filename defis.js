@@ -19,6 +19,9 @@ function naissOk(){const k=DIFFS[DIFF].naiss;return especesNaiss().every(id=>(NA
 // les naissances comptent pendant la partie (pas les bêtes posées par le joueur)
 const born1=born;born=function(id,x,y,o){const b=born1(id,x,y,o);if(state==='play'&&enDefi()&&b&&b.sp&&!b.intrus){const e=espNaiss(b.sp.id);NAISSP[e]=(NAISSP[e]||0)+1;if(e!=='plante')NAISS++}return b};
 
+// reprise d'une partie : on garde la difficulté, les naissances et les coups durs passés
+function resumeExtra(){return {diff:DIFF,NAISSP,NAISS,EVTlog,EVTpasses,EVTperdus}}
+function resumeApply(X){if(!X)return;if(DIFFS[X.diff])DIFF=X.diff;NAISSP=X.NAISSP||{};NAISS=X.NAISS||0;EVTlog=X.EVTlog||[];EVTpasses=X.EVTpasses||0;EVTperdus=X.EVTperdus||0}
 // ----- départ d'un niveau : réserves selon la difficulté, compteurs à zéro -----
 const startLevel1=startLevel;startLevel=function(i){startLevel1(i);NAISS=0;NAISSP={};EVT=null;EVTpasses=0;EVTperdus=0;EVTlog=[];
   const D=DIFFS[DIFF];EVTnext=D.coups?rnd(45,70):1e9;

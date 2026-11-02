@@ -44,12 +44,12 @@ function drawPlantNew(p,x,yb,H,vig,sw){const k=p.kind,dry=p.wet<0.15;ctx.lineWid
   const n=1+p.id%3;for(let f=0;f<n;f++){const cx=x+(f-(n-1)/2)*2.5,r=1.2+p.h*0.12;g.fillStyle=p.id%2?hsl(25,55,40):hsl(8,65,45);g.beginPath();g.arc(cx,y,r,0,TAU);g.fill();g.strokeStyle='#0005';g.lineWidth=0.3;g.stroke()}}}
 
 // ---------- dionée : les pièges se referment ----------
-let carnT=0;
+let carnT=0;const DIONEE_BY={sp:{id:'dionee',vnom:'La dionée'},dead:false};
 function carnivoreTick(dt){carnT-=dt;if(carnT>0)return;carnT=0.25;
   for(const p of plants){if(!p.alive||p.kind!=='dionee'||p.snap>0)continue;const x=p.col*CS+CS/2,y=Y0+(p.base+1-p.h)*CS;
     for(const c of creatures){if(c.dead||!(c.sp.id==='mouche'||c.sp.id==='puceron'||(c.sp.id==='fourmi'&&!c.col)))continue;
-      if(Math.hypot(c.x-x,c.y-y)<6&&Math.abs((c.z||0)-p.z)<10&&Math.random()<0.35){die(c,'meta');p.snap=8;p.snapF=Math.floor(Math.random()*4);p.e+=2;
-        jlog('🪤',`La dionée a attrapé : ${nm(c)}`);wave({x,y,max:10,sp:40,col:'#ff4d5a',a:0.6});break}}}
+      if(Math.hypot(c.x-x,c.y-y)<6&&Math.abs((c.z||0)-p.z)<10&&Math.random()<0.35){die(c,DIONEE_BY);p.snap=8;p.snapF=Math.floor(Math.random()*4);p.e+=2;
+        wave({x,y,max:10,sp:40,col:'#ff4d5a',a:0.6});break}}}
   // les mouches sont attirées par l'odeur sucrée des pièges
   if(Math.random()<0.1){const D=plants.filter(p=>p.alive&&p.kind==='dionee');if(D.length)for(const c of creatures)if(!c.dead&&c.sp.id==='mouche'&&!c.goal&&Math.random()<0.05){const p=D[Math.floor(Math.random()*D.length)];c.attire={x:p.col*CS+CS/2,y:Y0+(p.base-p.h)*CS-2,t:6}}}}
 {const um=UPD.mouche;UPD.mouche=function(c,dt){if(c.attire&&!c.stade){c.attire.t-=dt;if(c.attire.t>0){flyTo(c,c.attire.x,c.attire.y,dt,0.7);return}c.attire=null}um(c,dt)}}
@@ -101,7 +101,7 @@ const climat=()=>lvl&&lvl.sandbox&&curViv&&CLIMATS[curViv.climat]||null;
   ci.insertAdjacentHTML('beforeend',`<div class="clims"><span class="dim">Climat</span>${Object.entries(CLIMATS).map(([k,C])=>`<button class="clim ${k===cur?'on':''}" data-c="${k}">${C.ic} ${C.nom}</button>`).join('')}</div>`);
   ci.querySelectorAll('.clim').forEach(b=>b.onclick=e=>{e.stopPropagation();v.climat=b.dataset.c;saveRoom();fillSheet()})}}
 let tropT=0;
-function climatTick(dt){const C=climat();if(!C||!C.humide)return;tropT-=dt;if(tropT>0)return;tropT=0.5;for(let q=0;q<6;q++){const i=Math.floor(Math.random()*COLS);if(SURF[i]<ROWS){const k=K(i,SURF[i]);WET[k]=Math.min(0.8,WET[k]+C.humide*60)}}}
+function climatTick(dt){const C=climat();if(!C||!C.humide)return;tropT-=dt;if(tropT>0)return;tropT=0.5;for(let q=0;q<6;q++){const i=Math.floor(Math.random()*COLS);if(SURF[i]<ROWS){const k=K(i,SURF[i]);if(WET[k]<0.62)WET[k]=Math.min(0.62,WET[k]+C.humide*60)}}}
 {const hd=hud;hud=function(){hd();const C=climat();if(C&&C.nom!=='Tempéré'&&state==='play'){const r=hudEl.firstElementChild;if(r)r.insertAdjacentHTML('beforeend',`<span class="dim">${C.ic} ${C.nom}</span>`)}}}
 
 {const up=update;update=function(dt){up(dt);if(state==='menu')return;carnivoreTick(dt);fruitTick(dt);moisiTick(dt);climatTick(dt)}}

@@ -68,18 +68,18 @@ const win0=win;win=function(){clearResume();const first=!done.has(lvlIdx);markDo
 // ---------- reprendre un niveau de campagne laissé en cours ----------
 // un seul emplacement : la dernière partie de campagne quittée en cours de jeu
 let TUTO_NOSAVE=false;// vrai pendant « Revoir le tutoriel » : on n'écrase pas la partie en cours
-function clearResume(){try{localStorage.removeItem('biome_resume')}catch(e){}}
+function clearResume(){if(lvl&&lvl.special)return;try{localStorage.removeItem('biome_resume')}catch(e){}}
 function saveResume(){if(state!=='play'||!lvl||lvl.sandbox||lvlIdx<0||TUTO_NOSAVE)return;
-  try{LS.set('biome_resume',{v:1,i:lvlIdx,S:serialize(),goalT,stock,everSeen,lvlMissed,t:Date.now()})}catch(e){}}
+  try{LS.set('biome_resume',{v:1,i:lvlIdx,S:serialize(),goalT,stock,everSeen,lvlMissed,t:Date.now(),extra:resumeExtra()})}catch(e){}}
 function resumeLevel(){const R=LS.get('biome_resume',null);if(!R||!LEVELS[R.i]||!R.S){clearResume();showMenu();return}
   initAudio();startLevel(R.i);$('brief').style.display='none';
   try{restore(R.S)}catch(e){clearResume();say('Sauvegarde illisible : le niveau repart de zéro',true);state='play';paused=false;last=performance.now();return}
-  goalT=R.goalT||0;stock=Object.assign({},lvl.stock,R.stock||{});everSeen=R.everSeen||{};lvlMissed=!!R.lvlMissed;prevCounts=counts();
+  resumeApply(R.extra);goalT=R.goalT||0;stock=Object.assign({},lvl.stock,R.stock||{});everSeen=R.everSeen||{};lvlMissed=!!R.lvlMissed;prevCounts=counts();
   camFit();buildPalette();hud();state='play';paused=false;last=performance.now();
   say(`▶ Partie reprise : ${fmt(goalT)} / ${fmt(lvl.goal.t)}`,true)}
 const lose0=lose;lose=function(m){clearResume();lose0(m)};
-setInterval(saveResume,30000);
-window.addEventListener('pagehide',saveResume);
+setInterval(()=>saveResume(),30000);
+window.addEventListener('pagehide',()=>saveResume());
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveResume()});
 
 // ---------- sauvegarde d'un vivarium ----------
@@ -94,11 +94,11 @@ function serialize(){
   const ci=c=>c?colonies.indexOf(c):-1;
   return {v:1,fmt:FMT,soil:SOIL0,T:b64(T),DUG:b64(DUG),NUT:b64(q8(NUT)),WET:b64(q8(WET)),simT,dayClock,DEV:JSON.parse(JSON.stringify(DEV)),
     plants:plants.filter(p=>p.alive).map(p=>pick(p,['id','col','z','kind','base','h','maxH','e','age','maxAge','fl','hue','aph','wet'])),
-    items:items.filter(it=>!it.dead&&!it.carried).map(it=>Object.assign(pick(it,['type','i','x','y','z','age','val','k','kind']),{cs:it.c?(it.c.sp.vid||it.c.sp.id):null,pi:it.p?plants.indexOf(it.p):-1})),
+    items:items.filter(it=>!it.dead&&!it.carried).map(it=>Object.assign(pick(it,['type','i','x','y','z','age','val','k','kind','col']),{cs:it.c?(it.c.sp.vid||it.c.sp.id):null,pi:it.p?plants.indexOf(it.p):-1})),
     decos:decos.map(d=>pick(d,['type','i','dz','w','seed','dir','h','moss'])),
     colonies:colonies.map(c=>({wv:c.wsp?c.wsp.vid:null,i:c.i,entr:c.entr,food:c.food,eggs:c.eggs,cells:c.cells,chamber:[...c.chamber],home:c.home,dead:c.dead})),
     journal:JOURNAL.slice(-80),links:null,
-    creatures:creatures.filter(c=>!c.dead).map(c=>Object.assign(pick(c,['x','y','z','energy','age','state','fly','home','plan','chamberStart','planIdx']),{id:c.sp.vid||c.sp.id,col:ci(c.col)}))}}
+    creatures:creatures.filter(c=>!c.dead).map(c=>Object.assign(pick(c,['x','y','z','energy','age','state','fly','home','plan','chamberStart','planIdx','stade','stT','bebe','malade','malT','ailes']),{id:c.sp.vid||c.sp.id,col:ci(c.col)}))}}
 function restore(S){
   genWorld(S.fmt||(curViv&&curViv.fmt)||'std',S.soil||(curViv&&curViv.soil));T.set(unb64(S.T));DUG.set(unb64(S.DUG));const n=unb64(S.NUT),w=unb64(S.WET);for(let i=0;i<N;i++){NUT[i]=n[i]/255;WET[i]=w[i]/255}
   for(let i=0;i<COLS;i++)surfCol(i);simT=S.simT||0;dayClock=S.dayClock||0;if(S.DEV)DEV=Object.assign(DEV,S.DEV);
@@ -110,7 +110,7 @@ function restore(S){
   colonies=S.colonies.map(c=>Object.assign({},c,{chamber:new Set(c.chamber),queen:null,wsp:c.wv?VSP[c.wv]:null}));
   items=S.items.map(it0=>{const it=Object.assign({},it0);if(it.cs&&spOf(it.cs))it.c=mk(spOf(it.cs),it.x,it.y);if(it.pi>=0)it.p=plants[it.pi];if(it.type==='miellat'&&!it.p)it.dead=true;delete it.cs;delete it.pi;return it}).filter(it=>!it.dead);
   creatures=[];for(const c0 of S.creatures){if(!spOf(c0.id))continue;const c=mk(spOf(c0.id),c0.x,c0.y,{energy:c0.energy,z:c0.z});
-    Object.assign(c,pick(c0,['age','fly','home','plan','chamberStart','planIdx']));c.state=baseOf(c0.id)==='reine'?c0.state:'idle';
+    Object.assign(c,pick(c0,['age','fly','home','plan','chamberStart','planIdx','stade','stT','bebe','malade','malT','ailes']));if(c.stade||(baseOf(c0.id)==='puceron'&&c.fly))c.fly=false;c.state=baseOf(c0.id)==='reine'?c0.state:'idle';
     if(c0.col>=0)c.col=colonies[c0.col];if(baseOf(c0.id)==='reine'&&c.col&&c.state!=='found')c.col.queen=c;
     if(!c.fly&&baseOf(c0.id)!=='lombric')c.k=findWalk(c.x,c.y);creatures.push(c)}
   JOURNAL=S.journal||[];soilDirty=true;

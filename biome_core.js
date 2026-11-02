@@ -488,7 +488,7 @@ function uScolo(c,dt){
   if(gravity(c,dt))return;
   const ants=creatures.filter(a=>!a.dead&&a.sp.id==='fourmi'&&dist3(a,c)<16).length;
   if(ants>=3){c.energy-=5*dt;if(Math.random()<dt*2)wave({x:c.x,y:c.y,max:20,sp:60,col:'#ff6a3a',a:0.6})}
-  const preys=creatures.filter(o=>!o.dead&&o!==c&&(o.sp.id==='escargot'||o.sp.id==='chenille'||o.sp.id==='cloporte'||o.sp.id==='fourmi'||(o.sp.id==='coccinelle'&&!o.fly)||o.sp.id==='lombric')&&(pop[o.sp.id]||0)>2); // refuge : les 2 dernières proies d'une espèce se cachent
+  const preys=creatures.filter(o=>!o.dead&&o!==c&&(o.sp.id==='escargot'||o.sp.id==='chenille'||o.sp.id==='cloporte'||o.sp.id==='fourmi'||(o.sp.id==='coccinelle'&&!o.fly)||o.sp.id==='lombric'||o.sp.id==='grillon'||o.sp.id==='luciole')&&(pop[o.sp.id]||0)>2); // refuge : les 2 dernières proies d'une espèce se cachent
   c.digT=(c.digT||0)-dt; // digestion : plus de chasse pendant un moment (très long pour les mygales)
   let catchIt=null;for(const o of preys)if(dist3(o,c)<5){catchIt=o;break}
   if(catchIt&&c.energy<100&&c.digT<=0){const v={cloporte:30,fourmi:14,coccinelle:22,lombric:38,escargot:34,chenille:20}[catchIt.sp.id]||20;die(catchIt,c);c.energy+=v;c.digT=14+24*Math.max(0,(c.sp.vsize||1)-1);c.path=null;wave({x:c.x,y:c.y,max:22,sp:60,col:c.cLine,a:0.7})}

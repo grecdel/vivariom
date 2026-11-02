@@ -14,9 +14,9 @@ for(const sp of BSP4){
   sp.ant=(sp.ant||0)*SC;sp.f=sp.f||[];const L=[sp.legs[0][4],sp.legs[0][5]];sp.thresh=Math.max(2,(L[0]+L[1])*0.4);
   const dl=sp.dims.reduce((m,d)=>m+d[0],0),R=REAL[sp.id];sp.sf=R[0]/dl;sp.spd=R[1];SPI[sp.id]=sp}
 Object.assign(FICHES,{
-  grillon:{nom:'Grillon champêtre',ic:'🎶',role:'Chanteur, détritivore',mange:"La litière, les graines, les cadavres, parfois une jeune pousse.",par:"Le scorpion, la mante, les araignées chasseuses, la scolopendre.",aide:"Recycle les débris ; son chant anime les nuits du vivarium.",besoin:"Un abri pour la journée (pierre, écorce), un sol sec en surface.",comp:"Caché le jour, il sort la nuit. Le mâle chante en frottant ses ailes l'une contre l'autre. La femelle pond dans le sol avec sa longue tarière ; les petits ressemblent aux adultes, sans ailes."},
+  grillon:{nom:'Grillon champêtre',ic:'🎶',role:'Chanteur, détritivore',mange:"La litière, les graines, les cadavres et les fruits tombés.",par:"Le scorpion, la mante, les araignées chasseuses, la scolopendre.",aide:"Recycle les débris ; son chant anime les nuits du vivarium.",besoin:"Un abri pour la journée (pierre, écorce), un sol sec en surface.",comp:"Caché le jour, il sort la nuit. Le mâle chante en frottant ses ailes l'une contre l'autre. La femelle pond dans le sol avec sa longue tarière ; les petits ressemblent aux adultes, sans ailes."},
   luciole:{nom:'Ver luisant',ic:'✨',role:'Chasseur d\'escargots, lumineux',mange:"Les escargots surtout ; à défaut, les cadavres.",par:"Le scorpion, la scolopendre.",aide:"Empêche les escargots de tout dévorer.",besoin:"De l'humidité, des escargots, un coin sombre.",comp:"C'est un coléoptère : la femelle, sans ailes, ressemble à une larve. La nuit, le bout de son ventre s'allume d'une lumière vert-jaune froide pour attirer les mâles. Sa larve paralyse les escargots d'une morsure."}});
-SCORP_PREY.grillon=26;SCORP_PREY.luciole=18;MANTE_PREY.push('grillon');
+SCORP_PREY.grillon=26;PROIES_SAUT.grillon=18;PROIES_MYGALE.grillon=24;PROIES_MYGALE.luciole=20;SCORP_PREY.luciole=18;MANTE_PREY.push('grillon');
 GROUPE_NOM.luciole='Ver luisant';
 if(typeof REL!=='undefined'){REL.grillon={mange:['litiere','graine','cadavre'],par:['scorpion','mante','scolopendre','araignee:sol']};REL.luciole={mange:['escargot','cadavre'],par:['scorpion','scolopendre']};
   if(REL.escargot&&REL.escargot.par&&!REL.escargot.par.includes('luciole'))REL.escargot.par.push('luciole');if(REL.scorpion&&REL.scorpion.mange)REL.scorpion.mange.push('grillon')}
@@ -48,14 +48,14 @@ let HATCHING=false,HATCHED=[];
   if(b.sp.id==='scorpion'&&CURC&&CURC.sp.id==='scorpion'){b.dos=CURC;b.dosT=rnd(40,60)}}return b}}
 
 // ---------- larves et nymphes : coccinelle et mouche ----------
-const CYCLE={coccinelle:{larve:45,nymphe:22,nl:'larve de coccinelle',nn:'nymphe de coccinelle'},mouche:{larve:25,nymphe:18,nl:'asticot',nn:'pupe de mouche'}};
+const CYCLE={coccinelle:{larve:45,nymphe:22,nl:'Une larve de coccinelle',nn:'Une nymphe de coccinelle'},mouche:{larve:25,nymphe:18,nl:'Un asticot',nn:'Une pupe de mouche'}};
 {const he=hatchEggs;hatchEggs=function(dt){HATCHING=true;HATCHED=[];try{he(dt)}finally{HATCHING=false}
   for(const b of HATCHED){const C=CYCLE[b.sp.id];if(!C)continue;b.stade='larve';b.stT=C.larve*rnd(0.85,1.15);b.fly=false;b.k=findWalk(b.x,b.y);const [x,y]=cxy(b.k);b.x=x;b.y=y;b.energy=Math.max(b.energy,40)}
   HATCHED=[]}}
 function uStade(c,dt){const C=CYCLE[c.sp.id];c.stT-=dt;
-  if(c.stade==='nymphe'){c.v=0;c.path=null;c.energy=Math.max(c.energy,40);if(c.stT<=0){c.stade=null;jlog(FICHES[c.sp.id].ic,`Une ${C.nn} devient adulte`);wave({x:c.x,y:c.y,max:14,sp:40,col:c.cLine,a:0.6});if(c.sp.id==='mouche')takeOff(c)}return}
+  if(c.stade==='nymphe'){c.v=0;c.path=null;c.energy=Math.max(c.energy,40);if(c.stT<=0){c.stade=null;jlog(FICHES[c.sp.id].ic,`${C.nn} devient adulte`);wave({x:c.x,y:c.y,max:14,sp:40,col:c.cLine,a:0.6});if(c.sp.id==='mouche')takeOff(c)}return}
   if(gravity(c,dt))return;
-  if(c.stT<=0){c.stade='nymphe';c.stT=C.nymphe;c.v=0;c.path=null;jlog(FICHES[c.sp.id].ic,`Une ${C.nl} se change en nymphe`);return}
+  if(c.stT<=0){c.stade='nymphe';c.stT=C.nymphe;c.v=0;c.path=null;jlog(FICHES[c.sp.id].ic,`${C.nl} se change en nymphe`);return}
   if(c.sp.id==='mouche'){c.energy+=dt*1.2;if(c.path&&c.path.length){stepPath(c,dt,0.4);return}if(Math.random()<dt*0.3)goTo(c,k=>Math.random()<0.1,200);c.v=0;return}
   // larve de coccinelle : vorace, elle mange des pucerons sur les plantes
   if(c.path&&c.path.length){stepPath(c,dt,0.7);if(c.prey&&!c.prey.dead&&dist3(c,c.prey)<4){die(c.prey,c);c.energy+=10;c.prey=null;c.path=null}return}

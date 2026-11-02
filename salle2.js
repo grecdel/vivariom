@@ -31,6 +31,12 @@ function importerViv(){const O=ovl('partp');
   $('pclose').onclick=()=>{O.style.display='none'};
   const go=async code=>{try{const o=await ungz(code,'VIVB');if(o.app!=='vivariom-bac'||!o.S)throw new Error("Ce n'est pas un vivarium Vivariom.");
       if(ROOM.list.length>=vivMax()||!freeSlot())throw new Error('Plus de place dans la salle : ajoute une étagère ou retire un bac.');
+      const own=(O,k)=>typeof k==='string'&&Object.prototype.hasOwnProperty.call(O,k);
+      if(!own(FORMATS,o.fmt))o.fmt='std';if(!own(SOILS,o.soil))o.soil='foret';if(!own(CLIMATS,o.climat))o.climat=undefined;if(!ETIQS.includes(o.etiq))o.etiq=undefined;
+      const S=o.S;if(!S||typeof S!=='object'||!Array.isArray(S.plants)||!Array.isArray(S.items)||!Array.isArray(S.decos)||!Array.isArray(S.creatures)||!Array.isArray(S.colonies))throw new Error("Ce n'est pas un vivarium Vivariom.");
+      S.fmt=o.fmt;S.soil=o.soil;S.plants=S.plants.filter(p=>p&&(p.kind==null||own(PLANTS,p.kind)));S.decos=S.decos.filter(d=>d&&own(DECOS,d.type));
+      S.items=S.items.filter(it=>it&&typeof it.type==='string'&&/^[a-z]+$/.test(it.type));S.creatures=S.creatures.filter(c=>c&&typeof c.id==='string'&&spOf(c.id));
+      if(S.DEV&&typeof S.DEV==='object'){const D={};for(const k in DEV){if(!S.DEV[k]||typeof S.DEV[k]!=='object')continue;D[k]={};for(const q in DEV[k])if(typeof S.DEV[k][q]===typeof DEV[k][q])D[k][q]=S.DEV[k][q]}S.DEV=D}else S.DEV=undefined;
       fixSlots();const s=freeSlot(),id='v'+Date.now().toString(36),v={id,name:esc(o.name||'Vivarium reçu').slice(0,24),slot:s.id,fmt:o.fmt||'std',soil:o.soil||'foret',climat:o.climat,etiq:o.etiq,thumb:typeof o.thumb==='string'&&/^data:image\/(jpeg|png);base64,[A-Za-z0-9+/=]+$/.test(o.thumb)?o.thumb:undefined};
       if(Array.isArray(o.S.journal))o.S.journal=o.S.journal.map(e=>({t:+e.t||0,n:+e.n||1,ic:esc(e.ic).slice(0,4),txt:esc(e.txt).slice(0,160)}));
       ROOM.list.push(v);VIV.set(id,o.S);LS.set('biome_viv_'+id,o.S);saveRoom();O.style.display='none';drawRoom();toast(`📥 « ${v.name} » est arrivé dans la salle`)}catch(e){$('pmsg').textContent='⚠ '+e.message}};
@@ -41,9 +47,9 @@ $('rimp').onclick=()=>importerViv();
 
 // ---------- 27. modèles tout prêts ; 28. étiquettes ----------
 const MODELES={
-  foret:{ic:'🌳',nom:'Forêt',soil:'foret',climat:'tempere',plantes:['fleur','fleur','fougere','arbo','fleur','fougere','fleur'],decos:['pierre','branche','mousse'],betes:{cloporte:4,lombric:3,fourmi:1,puceron:6,coccinelle:2,abeille:2,grillon:2}},
-  desert:{ic:'🏜',nom:'Désert',soil:'desert',climat:'desert',plantes:['cactus','cactus','cactus','cactus'],decos:['pierre','volcan','pierre'],betes:{tenebrion:5,scorpion:1,grillon:2}},
-  mare:{ic:'🐸',nom:'Mare',soil:'marais',climat:'tropical',plantes:['fougere','dionee','champignon','fleur','fougere','dionee','champignon'],decos:['mare','mousse','liege'],betes:{escargot:4,luciole:1,mouche:4,cloporte:3,lombric:2}}};
+  foret:{ic:'🌳',nom:'Forêt',soil:'foret',climat:'tempere',plantes:['fleur','fleur','fougere','arbo','fleur','fougere','fleur'],decos:['pierre','branche','mousse'],betes:{cloporte:4,lombric:3,fourmi:1,puceron:6,coccinelle:2,abeille:2,grillon:2},litiere:4},
+  desert:{ic:'🏜',nom:'Désert',soil:'desert',climat:'desert',plantes:['cactus','cactus','cactus','cactus'],decos:['pierre','volcan','pierre'],betes:{tenebrion:5,scorpion:1,grillon:2},litiere:3},
+  mare:{ic:'🐸',nom:'Mare',soil:'marais',climat:'tropical',plantes:['fougere','dionee','champignon','fleur','fougere','dionee','champignon'],decos:['mare','mousse','liege'],betes:{escargot:4,luciole:1,mouche:4,cloporte:3,lombric:2},litiere:5}};
 const ETIQS=['','#ffe94d','#ff7a5a','#6ad0ff','#8bff6a','#d9a0ff'];
 {const fs=fillSheet;fillSheet=function(){fs();const v=ROOM.list[sheetIdx],ci=document.querySelector('#rsheet .cinfo');if(!v||!ci)return;
   let h=`<div class="clims"><span class="dim">Étiquette</span>${ETIQS.map(c=>`<button class="etq ${(v.etiq||'')===c?'on':''}" data-e="${c}" style="background:${c||'#222'}">${c?'':'∅'}</button>`).join('')}</div>`;
@@ -55,6 +61,8 @@ const ETIQS=['','#ffe94d','#ff7a5a','#6ad0ff','#8bff6a','#d9a0ff'];
   const sp=$('spart');if(sp)sp.onclick=e=>{e.stopPropagation();partagerViv(v)}}}
 {const vt=vivTile;vivTile=function(v,cls=''){let h=vt(v,cls);if(v.etiq)h=h.replace('<span class="vtag">',`<span class="vtag" style="background:${v.etiq};color:#000">`);return h}}
 function remplirModele(M){const keep=tool,sx=WW/(M.plantes.length+1);
+  for(const p of plants){p.alive=false;for(let r=0;r<p.h;r++){const k=K(p.col,p.base-r);if(k>=0&&STEM[k]>0)STEM[k]--}}plants=[];
+  for(let q=0;q<(M.litiere||3);q++){tool='compost';const x=WW*(0.15+0.7*q/Math.max(1,(M.litiere||3)-1));tapAction(x,surfY(Math.floor(x/CS))-4)}
   M.decos.forEach((d,q)=>{tool=d;const i=Math.round((q+0.6)/(M.decos.length+0.2)*COLS*0.9);tapAction(i*CS,surfY(i)-4)});
   M.plantes.forEach((k,q)=>{tool='plante:'+k;const x=sx*(q+1)+rnd(-6,6);tapAction(x,surfY(Math.floor(x/CS))-4)});
   for(const [id,n] of Object.entries(M.betes))for(let q=0;q<n;q++){tool=id;const x=rnd(WW*0.1,WW*0.9),fly=SPI[id]&&SPI[id].w;tapAction(x,surfY(Math.floor(x/CS))-(fly?30:4))}
@@ -80,6 +88,7 @@ function rattrapage(v){const ms=Date.now()-(v.vu||Date.now());if(ms<60000)return
 document.body.insertAdjacentHTML('beforeend','<button id="obsx" title="Quitter le mode observation">✕</button>');
 $('vnav').insertAdjacentHTML('beforeend','<button id="vnobs" title="Mode observation : sans interface">👁</button><button id="vnalb" title="Album photo">🖼</button>');
 function observer(on){document.body.classList.toggle('obs',on);if(on){selC=null;toast('👁 Mode observation · touche ✕ en haut à droite pour revenir')}resize()}
+{const ts=tapScreen;tapScreen=function(x,y){if(document.body.classList.contains('obs'))return;ts(x,y)}}
 $('vnobs').onclick=()=>observer(true);$('obsx').onclick=()=>observer(false);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.classList.contains('obs'))observer(false)});
 

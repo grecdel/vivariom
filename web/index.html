@@ -275,7 +275,8 @@ body.land #ctrlbar button{flex:1;width:auto;min-width:0;flex-direction:row;justi
 .agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}.agrid figure{margin:0;background:#111;border:1px solid #333;border-radius:8px;overflow:hidden;cursor:pointer}
 .agrid img{width:100%;display:block;aspect-ratio:4/3;object-fit:cover}.agrid figcaption{padding:4px 6px;font-size:11px;color:#ccc}.agrid small{color:#888}
 #obsx{display:none;position:fixed;top:8px;right:8px;z-index:50;background:#0008;border:1px solid #fff4;color:#fff;border-radius:50%;width:36px;height:36px;font-size:16px;opacity:.55}
-body.obs>*:not(#c):not(#obsx):not(#toast){display:none!important}body.obs #obsx{display:block}body.obs #c{left:0!important}
+body.obs>*:not(#c):not(#obsx):not(#toast):not(#end):not(#brief):not(#absp){display:none!important}body.obs #obsx{display:block}
+#vnav{flex-wrap:wrap;max-width:calc(100vw - 16px)}
 .nuitsalle{position:absolute;inset:0;background:#030818;pointer-events:none;z-index:1}.viv.allume{z-index:2;box-shadow:0 0 18px #ffe9a055}
 #rimp,#ralb{margin-left:4px}#partp,#albp,#albv,#absp{z-index:60}#albv{z-index:61}
 /* Encyclopédie, quiz, découvertes, carte (savoir.js) */
@@ -298,8 +299,8 @@ body.obs>*:not(#c):not(#obsx):not(#toast){display:none!important}body.obs #obsx{
 /* Confort (confort.js) */
 #tuto .thand{display:none;position:fixed;font-size:30px;z-index:41;pointer-events:none;filter:drop-shadow(0 2px 4px #000);animation:tap 1.1s ease-in-out infinite}
 @keyframes tap{0%,100%{transform:translate(0,10px) scale(1)}45%{transform:translate(0,0) scale(.88)}55%{transform:translate(0,0) scale(.88)}}
-#undo{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:136px;z-index:4;background:#0b0b0bee;border:1px solid #ffe94d88;color:#ffe94d;border-radius:18px;padding:6px 14px;font:600 13px -apple-system,Roboto,sans-serif}
-body.land #undo{bottom:10px}
+#undo{display:none;position:fixed;right:8px;top:110px;z-index:4;background:#0b0b0bee;border:1px solid #ffe94d88;color:#ffe94d;border-radius:18px;padding:6px 14px;font:600 13px -apple-system,Roboto,sans-serif}
+body.land #undo span{display:none}
 #suivi{display:none;position:fixed;left:50%;transform:translateX(-50%);top:58px;z-index:4;gap:6px;align-items:center;background:#0b0b0bee;border:1px solid #6ad0ff88;border-radius:18px;padding:4px 6px 4px 12px;color:#cfe;font:600 12px -apple-system,Roboto,sans-serif}
 #suivi button{background:#111;border:1px solid #444;color:#ddd;border-radius:12px;padding:4px 8px;font:inherit}
 #loupep{z-index:62}#loupep canvas{width:100%;height:auto;border-radius:8px;background:#0b120b;display:block;margin:6px 0}
@@ -1042,7 +1043,7 @@ function uScolo(c,dt){
   if(gravity(c,dt))return;
   const ants=creatures.filter(a=>!a.dead&&a.sp.id==='fourmi'&&dist3(a,c)<16).length;
   if(ants>=3){c.energy-=5*dt;if(Math.random()<dt*2)wave({x:c.x,y:c.y,max:20,sp:60,col:'#ff6a3a',a:0.6})}
-  const preys=creatures.filter(o=>!o.dead&&o!==c&&(o.sp.id==='escargot'||o.sp.id==='chenille'||o.sp.id==='cloporte'||o.sp.id==='fourmi'||(o.sp.id==='coccinelle'&&!o.fly)||o.sp.id==='lombric')&&(pop[o.sp.id]||0)>2); // refuge : les 2 dernières proies d'une espèce se cachent
+  const preys=creatures.filter(o=>!o.dead&&o!==c&&(o.sp.id==='escargot'||o.sp.id==='chenille'||o.sp.id==='cloporte'||o.sp.id==='fourmi'||(o.sp.id==='coccinelle'&&!o.fly)||o.sp.id==='lombric'||o.sp.id==='grillon'||o.sp.id==='luciole')&&(pop[o.sp.id]||0)>2); // refuge : les 2 dernières proies d'une espèce se cachent
   c.digT=(c.digT||0)-dt; // digestion : plus de chasse pendant un moment (très long pour les mygales)
   let catchIt=null;for(const o of preys)if(dist3(o,c)<5){catchIt=o;break}
   if(catchIt&&c.energy<100&&c.digT<=0){const v={cloporte:30,fourmi:14,coccinelle:22,lombric:38,escargot:34,chenille:20}[catchIt.sp.id]||20;die(catchIt,c);c.energy+=v;c.digT=14+24*Math.max(0,(c.sp.vsize||1)-1);c.path=null;wave({x:c.x,y:c.y,max:22,sp:60,col:c.cLine,a:0.7})}
@@ -3073,18 +3074,18 @@ const win0=win;win=function(){clearResume();const first=!done.has(lvlIdx);markDo
 // ---------- reprendre un niveau de campagne laissé en cours ----------
 // un seul emplacement : la dernière partie de campagne quittée en cours de jeu
 let TUTO_NOSAVE=false;// vrai pendant « Revoir le tutoriel » : on n'écrase pas la partie en cours
-function clearResume(){try{localStorage.removeItem('biome_resume')}catch(e){}}
+function clearResume(){if(lvl&&lvl.special)return;try{localStorage.removeItem('biome_resume')}catch(e){}}
 function saveResume(){if(state!=='play'||!lvl||lvl.sandbox||lvlIdx<0||TUTO_NOSAVE)return;
-  try{LS.set('biome_resume',{v:1,i:lvlIdx,S:serialize(),goalT,stock,everSeen,lvlMissed,t:Date.now()})}catch(e){}}
+  try{LS.set('biome_resume',{v:1,i:lvlIdx,S:serialize(),goalT,stock,everSeen,lvlMissed,t:Date.now(),extra:resumeExtra()})}catch(e){}}
 function resumeLevel(){const R=LS.get('biome_resume',null);if(!R||!LEVELS[R.i]||!R.S){clearResume();showMenu();return}
   initAudio();startLevel(R.i);$('brief').style.display='none';
   try{restore(R.S)}catch(e){clearResume();say('Sauvegarde illisible : le niveau repart de zéro',true);state='play';paused=false;last=performance.now();return}
-  goalT=R.goalT||0;stock=Object.assign({},lvl.stock,R.stock||{});everSeen=R.everSeen||{};lvlMissed=!!R.lvlMissed;prevCounts=counts();
+  resumeApply(R.extra);goalT=R.goalT||0;stock=Object.assign({},lvl.stock,R.stock||{});everSeen=R.everSeen||{};lvlMissed=!!R.lvlMissed;prevCounts=counts();
   camFit();buildPalette();hud();state='play';paused=false;last=performance.now();
   say(`▶ Partie reprise : ${fmt(goalT)} / ${fmt(lvl.goal.t)}`,true)}
 const lose0=lose;lose=function(m){clearResume();lose0(m)};
-setInterval(saveResume,30000);
-window.addEventListener('pagehide',saveResume);
+setInterval(()=>saveResume(),30000);
+window.addEventListener('pagehide',()=>saveResume());
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveResume()});
 
 // ---------- sauvegarde d'un vivarium ----------
@@ -3099,11 +3100,11 @@ function serialize(){
   const ci=c=>c?colonies.indexOf(c):-1;
   return {v:1,fmt:FMT,soil:SOIL0,T:b64(T),DUG:b64(DUG),NUT:b64(q8(NUT)),WET:b64(q8(WET)),simT,dayClock,DEV:JSON.parse(JSON.stringify(DEV)),
     plants:plants.filter(p=>p.alive).map(p=>pick(p,['id','col','z','kind','base','h','maxH','e','age','maxAge','fl','hue','aph','wet'])),
-    items:items.filter(it=>!it.dead&&!it.carried).map(it=>Object.assign(pick(it,['type','i','x','y','z','age','val','k','kind']),{cs:it.c?(it.c.sp.vid||it.c.sp.id):null,pi:it.p?plants.indexOf(it.p):-1})),
+    items:items.filter(it=>!it.dead&&!it.carried).map(it=>Object.assign(pick(it,['type','i','x','y','z','age','val','k','kind','col']),{cs:it.c?(it.c.sp.vid||it.c.sp.id):null,pi:it.p?plants.indexOf(it.p):-1})),
     decos:decos.map(d=>pick(d,['type','i','dz','w','seed','dir','h','moss'])),
     colonies:colonies.map(c=>({wv:c.wsp?c.wsp.vid:null,i:c.i,entr:c.entr,food:c.food,eggs:c.eggs,cells:c.cells,chamber:[...c.chamber],home:c.home,dead:c.dead})),
     journal:JOURNAL.slice(-80),links:null,
-    creatures:creatures.filter(c=>!c.dead).map(c=>Object.assign(pick(c,['x','y','z','energy','age','state','fly','home','plan','chamberStart','planIdx']),{id:c.sp.vid||c.sp.id,col:ci(c.col)}))}}
+    creatures:creatures.filter(c=>!c.dead).map(c=>Object.assign(pick(c,['x','y','z','energy','age','state','fly','home','plan','chamberStart','planIdx','stade','stT','bebe','malade','malT','ailes']),{id:c.sp.vid||c.sp.id,col:ci(c.col)}))}}
 function restore(S){
   genWorld(S.fmt||(curViv&&curViv.fmt)||'std',S.soil||(curViv&&curViv.soil));T.set(unb64(S.T));DUG.set(unb64(S.DUG));const n=unb64(S.NUT),w=unb64(S.WET);for(let i=0;i<N;i++){NUT[i]=n[i]/255;WET[i]=w[i]/255}
   for(let i=0;i<COLS;i++)surfCol(i);simT=S.simT||0;dayClock=S.dayClock||0;if(S.DEV)DEV=Object.assign(DEV,S.DEV);
@@ -3115,7 +3116,7 @@ function restore(S){
   colonies=S.colonies.map(c=>Object.assign({},c,{chamber:new Set(c.chamber),queen:null,wsp:c.wv?VSP[c.wv]:null}));
   items=S.items.map(it0=>{const it=Object.assign({},it0);if(it.cs&&spOf(it.cs))it.c=mk(spOf(it.cs),it.x,it.y);if(it.pi>=0)it.p=plants[it.pi];if(it.type==='miellat'&&!it.p)it.dead=true;delete it.cs;delete it.pi;return it}).filter(it=>!it.dead);
   creatures=[];for(const c0 of S.creatures){if(!spOf(c0.id))continue;const c=mk(spOf(c0.id),c0.x,c0.y,{energy:c0.energy,z:c0.z});
-    Object.assign(c,pick(c0,['age','fly','home','plan','chamberStart','planIdx']));c.state=baseOf(c0.id)==='reine'?c0.state:'idle';
+    Object.assign(c,pick(c0,['age','fly','home','plan','chamberStart','planIdx','stade','stT','bebe','malade','malT','ailes']));if(c.stade||(baseOf(c0.id)==='puceron'&&c.fly))c.fly=false;c.state=baseOf(c0.id)==='reine'?c0.state:'idle';
     if(c0.col>=0)c.col=colonies[c0.col];if(baseOf(c0.id)==='reine'&&c.col&&c.state!=='found')c.col.queen=c;
     if(!c.fly&&baseOf(c0.id)!=='lombric')c.k=findWalk(c.x,c.y);creatures.push(c)}
   JOURNAL=S.journal||[];soilDirty=true;
@@ -4162,6 +4163,9 @@ function naissOk(){const k=DIFFS[DIFF].naiss;return especesNaiss().every(id=>(NA
 // les naissances comptent pendant la partie (pas les bêtes posées par le joueur)
 const born1=born;born=function(id,x,y,o){const b=born1(id,x,y,o);if(state==='play'&&enDefi()&&b&&b.sp&&!b.intrus){const e=espNaiss(b.sp.id);NAISSP[e]=(NAISSP[e]||0)+1;if(e!=='plante')NAISS++}return b};
 
+// reprise d'une partie : on garde la difficulté, les naissances et les coups durs passés
+function resumeExtra(){return {diff:DIFF,NAISSP,NAISS,EVTlog,EVTpasses,EVTperdus}}
+function resumeApply(X){if(!X)return;if(DIFFS[X.diff])DIFF=X.diff;NAISSP=X.NAISSP||{};NAISS=X.NAISS||0;EVTlog=X.EVTlog||[];EVTpasses=X.EVTpasses||0;EVTperdus=X.EVTperdus||0}
 // ----- départ d'un niveau : réserves selon la difficulté, compteurs à zéro -----
 const startLevel1=startLevel;startLevel=function(i){startLevel1(i);NAISS=0;NAISSP={};EVT=null;EVTpasses=0;EVTperdus=0;EVTlog=[];
   const D=DIFFS[DIFF];EVTnext=D.coups?rnd(45,70):1e9;
@@ -4429,11 +4433,13 @@ const EN_D={
 "Un sol détrempé trop longtemps : un champignon blanc pousse sur les bêtes (elles s'affaiblissent et peuvent contaminer leurs voisines de la même espèce) et des moisissures couvrent le sol (elles abîment les plantes).":"Soil soaked for too long: a white fungus grows on the creatures (they weaken and can infect neighbours of the same species) and mould covers the soil (it damages plants).",
 "Les amis de l'humidité : lombrics, escargots, cloportes, vers luisants.":"The damp-lovers: earthworms, snails, woodlice, glow-worms.",
 "Brumiser moins, ouvrir la ventilation, garder la lumière, écarter la bête malade des autres. Elle guérit quand le sol redevient sec.":"Mist less, open the ventilation, keep the light on, move the sick creature away from the others. It heals when the soil is dry again.",
-"💡 Dans la nature aussi, l'humidité confinée favorise les champignons : c'est pour ça que les éleveurs aèrent leurs terrariums.":"💡 In nature too, trapped humidity helps fungi grow: that's why keepers ventilate their terrariums."
+"💡 Dans la nature aussi, l'humidité confinée favorise les champignons : c'est pour ça que les éleveurs aèrent leurs terrariums.":"💡 In nature too, trapped humidity helps fungi grow: that's why keepers ventilate their terrariums.",
+"asticot":"maggot","La dionée":"The flytrap","Les fruits tombés.":"Fallen fruit.","La litière, les graines, les cadavres et les fruits tombés.":"Leaf litter, seeds, carcasses and fallen fruit."
 };
 
 // Modèles : {} = morceau variable (traduit à son tour). Dans la traduction, {} = morceaux dans l'ordre, {0} {1}… = morceau n°.
 const EN_T=[
+["Un {} se change en nymphe","A {} turns into a pupa"],["Un {} devient adulte","A {} becomes an adult"],
 ["🍄 {} bêtes sont malades","🍄 {} creatures are sick"],["{} est guéri(e)","{} is cured"],["🌀 Ouvre la ventilation{} pour sécher l'air.","🌀 Open the ventilation{} to dry the air."],[" (pas encore débloquée ici)"," (not unlocked here yet)"],["Moisissures sur {} endroits.","Mould in {} places."],["Moisissures sur {} endroit.","Mould in {} place."],["{} — fais sécher le sol pour qu'elle guérisse","{} — dry the soil so it heals"],
 ["{} est morte","{} died"],["{} est mort de faim","{} died of hunger"],["{} est morte de faim","{} died of hunger"],["{} est mort de vieillesse","{} died of old age"],["{} est morte de vieillesse","{} died of old age"],["{} est mort","{} died"],
 ["{} a mangé : {}","{} ate: {}"],["{} pris(e) dans une toile","{} caught in a web"],
@@ -4615,7 +4621,7 @@ const MODIFS=[
   {k:'reserves',ic:'📦',txt:'Réserves de moitié',app(L){for(const k in L.stock)if(k!=='compost')L.stock[k]=Math.max(1,Math.round(L.stock[k]/2))}},
   {k:'long',ic:'⏱',txt:'Chrono une fois et demie plus long',app(L){L.goal.t=Math.round(L.goal.t*1.5)}},
   {k:'panne',ic:'⚡',txt:'Programmateur du brumisateur en panne',app(L){L.showers=false}},
-  {k:'foule',ic:'👥',txt:'Population minimale plus haute',app(L){const m=Object.assign({},L.goal.min||{});for(const id of L.goal.alive)if(id!=='plante')m[id]=Math.max(m[id]||0,3);L.goal.min=m}},
+  {k:'foule',ic:'👥',txt:'Population minimale plus haute',app(L){const m=Object.assign({},L.goal.min||{});for(const id of L.goal.alive)if(id!=='plante'&&!NAISS_EXCLUES.includes(id)&&(L.stock[id]||0)>=3)m[id]=Math.max(m[id]||0,3);L.goal.min=m}},
   {k:'sec',ic:'☀',txt:'Évaporation plus forte',app(L){L.evap=(L.evap||1)*1.5}}];
 function defiJour(){const r=seedRng(jourCle()),pool=[];for(let i=2;i<LEVELS.length;i++)pool.push(i);
   const i=pool[Math.floor(r()*pool.length)],m1=Math.floor(r()*MODIFS.length);let m2=Math.floor(r()*(MODIFS.length-1));if(m2>=m1)m2++;
@@ -4636,8 +4642,11 @@ function startSpecial(S){const base=LEVELS[S.i],L=copieNiv(base);L.special=S.typ
   if(S.type==='survie'){const rec=LS.get('biome_survie',0);t.insertAdjacentHTML('beforeend',`<p class="dim">⏳ Record : <b>${fmt(rec)}</b></p>`);EVTnext=40}
   SURV_T=0}
 let SURV_T=0;
+{const en=especesNaiss;especesNaiss=function(){return lvl&&lvl.special==='survie'?[]:en()}}
 // un niveau normal efface le mode spécial et reprend la difficulté choisie
 {const sl=startLevel;startLevel=function(i){if(!startingSpecial){SPECIAL=null;DIFF=DIFF_USER()}sl(i)}}
+{const st=showTitle;showTitle=function(){st();SPECIAL=null;DIFF=DIFF_USER()}}
+{const ev=enterViv;enterViv=function(v){SPECIAL=null;DIFF=DIFF_USER();ev(v)}}
 {const sr=saveResume;saveResume=function(){if(SPECIAL||(lvl&&lvl.special))return;sr()}}
 // survie : coups durs de plus en plus rapprochés, chrono de survie
 {const up=update;update=function(dt){up(dt);if(state!=='play')return;
@@ -4653,7 +4662,7 @@ let SURV_T=0;
 let BILH=[],histT=0,MORTS={},MORTS_CAUSE={};
 {const sl=startLevel;startLevel=function(i){sl(i);BILH=[];histT=0;MORTS={};MORTS_CAUSE={}}}
 {const up=update;update=function(dt){up(dt);if(state!=='play'||lvl.sandbox)return;histT-=dt;if(histT<=0){histT=5;BILH.push({t:simT,n:counts()});if(BILH.length>400)BILH=BILH.filter((_,j)=>j%2===0)}}}
-{const d0=die;die=function(c,by){const was=c.dead;d0(c,by);if(!was&&c.dead&&state==='play'&&!lvl.sandbox&&!c.intrus){const id=espNaiss(c.sp.id);MORTS[id]=(MORTS[id]||0)+1;
+{const d0=die;die=function(c,by){const was=c.dead;d0(c,by);if(!was&&c.dead&&state==='play'&&!lvl.sandbox&&!c.intrus&&by!=='meta'){const id=espNaiss(c.sp.id);MORTS[id]=(MORTS[id]||0)+1;
   const cause=by&&by.sp?'mangé':c.energy<=0?'faim':'vieillesse';MORTS_CAUSE[cause]=(MORTS_CAUSE[cause]||0)+1}}}
 const COLS_B=['#8bff6a','#ffb43a','#6ad0ff','#ff6a8a','#d9a0ff','#ffe94d','#a0ffd9','#ff9a5a','#9aa0ff','#e0e0e0','#c8ff5a'];
 function bilanHTML(){if(BILH.length<2)return '';const sp=lvl.sp,Wd=300,Hd=90,t0=BILH[0].t,t1=BILH[BILH.length-1].t||1;
@@ -4698,8 +4707,8 @@ function etoilesSpe(){const left=Object.keys(lvl.stock).reduce((a,k)=>a+(stock[k
   l0(m);$('endtxt').insertAdjacentHTML('beforeend',bilanHTML());finCoups()}}
 function finCoups(){if(EVTpasses){const n=LS.get('biome_coups',0)+EVTpasses;LS.set('biome_coups',n);if(n>=10)ach('coups10')}EVTpasses=0}
 // rejouer : relance le même mode spécial
-{const b=$('bretry'),r0=b.onclick;b.onclick=()=>SPECIAL?startSpecial(SPECIAL):r0()}
-{const b=$('brestart'),r0=b.onclick;b.onclick=()=>SPECIAL?startSpecial(SPECIAL):r0()}
+{const b=$('bretry'),r0=b.onclick;b.onclick=()=>SPECIAL&&lvl&&lvl.special?startSpecial(SPECIAL):r0()}
+{const b=$('brestart'),r0=b.onclick;b.onclick=()=>SPECIAL&&lvl&&lvl.special?startSpecial(SPECIAL):r0()}
 
 // ================= ENTRÉES DANS L'ÉCRAN DE LA CAMPAGNE =================
 {const sm=showMenu;showMenu=function(){SPECIAL=null;DIFF=DIFF_USER();sm();const M=$('menu'),dv=M.querySelector('.diffs');if(!dv)return;
@@ -4731,9 +4740,9 @@ for(const sp of BSP4){
   sp.ant=(sp.ant||0)*SC;sp.f=sp.f||[];const L=[sp.legs[0][4],sp.legs[0][5]];sp.thresh=Math.max(2,(L[0]+L[1])*0.4);
   const dl=sp.dims.reduce((m,d)=>m+d[0],0),R=REAL[sp.id];sp.sf=R[0]/dl;sp.spd=R[1];SPI[sp.id]=sp}
 Object.assign(FICHES,{
-  grillon:{nom:'Grillon champêtre',ic:'🎶',role:'Chanteur, détritivore',mange:"La litière, les graines, les cadavres, parfois une jeune pousse.",par:"Le scorpion, la mante, les araignées chasseuses, la scolopendre.",aide:"Recycle les débris ; son chant anime les nuits du vivarium.",besoin:"Un abri pour la journée (pierre, écorce), un sol sec en surface.",comp:"Caché le jour, il sort la nuit. Le mâle chante en frottant ses ailes l'une contre l'autre. La femelle pond dans le sol avec sa longue tarière ; les petits ressemblent aux adultes, sans ailes."},
+  grillon:{nom:'Grillon champêtre',ic:'🎶',role:'Chanteur, détritivore',mange:"La litière, les graines, les cadavres et les fruits tombés.",par:"Le scorpion, la mante, les araignées chasseuses, la scolopendre.",aide:"Recycle les débris ; son chant anime les nuits du vivarium.",besoin:"Un abri pour la journée (pierre, écorce), un sol sec en surface.",comp:"Caché le jour, il sort la nuit. Le mâle chante en frottant ses ailes l'une contre l'autre. La femelle pond dans le sol avec sa longue tarière ; les petits ressemblent aux adultes, sans ailes."},
   luciole:{nom:'Ver luisant',ic:'✨',role:'Chasseur d\'escargots, lumineux',mange:"Les escargots surtout ; à défaut, les cadavres.",par:"Le scorpion, la scolopendre.",aide:"Empêche les escargots de tout dévorer.",besoin:"De l'humidité, des escargots, un coin sombre.",comp:"C'est un coléoptère : la femelle, sans ailes, ressemble à une larve. La nuit, le bout de son ventre s'allume d'une lumière vert-jaune froide pour attirer les mâles. Sa larve paralyse les escargots d'une morsure."}});
-SCORP_PREY.grillon=26;SCORP_PREY.luciole=18;MANTE_PREY.push('grillon');
+SCORP_PREY.grillon=26;PROIES_SAUT.grillon=18;PROIES_MYGALE.grillon=24;PROIES_MYGALE.luciole=20;SCORP_PREY.luciole=18;MANTE_PREY.push('grillon');
 GROUPE_NOM.luciole='Ver luisant';
 if(typeof REL!=='undefined'){REL.grillon={mange:['litiere','graine','cadavre'],par:['scorpion','mante','scolopendre','araignee:sol']};REL.luciole={mange:['escargot','cadavre'],par:['scorpion','scolopendre']};
   if(REL.escargot&&REL.escargot.par&&!REL.escargot.par.includes('luciole'))REL.escargot.par.push('luciole');if(REL.scorpion&&REL.scorpion.mange)REL.scorpion.mange.push('grillon')}
@@ -4765,14 +4774,14 @@ let HATCHING=false,HATCHED=[];
   if(b.sp.id==='scorpion'&&CURC&&CURC.sp.id==='scorpion'){b.dos=CURC;b.dosT=rnd(40,60)}}return b}}
 
 // ---------- larves et nymphes : coccinelle et mouche ----------
-const CYCLE={coccinelle:{larve:45,nymphe:22,nl:'larve de coccinelle',nn:'nymphe de coccinelle'},mouche:{larve:25,nymphe:18,nl:'asticot',nn:'pupe de mouche'}};
+const CYCLE={coccinelle:{larve:45,nymphe:22,nl:'Une larve de coccinelle',nn:'Une nymphe de coccinelle'},mouche:{larve:25,nymphe:18,nl:'Un asticot',nn:'Une pupe de mouche'}};
 {const he=hatchEggs;hatchEggs=function(dt){HATCHING=true;HATCHED=[];try{he(dt)}finally{HATCHING=false}
   for(const b of HATCHED){const C=CYCLE[b.sp.id];if(!C)continue;b.stade='larve';b.stT=C.larve*rnd(0.85,1.15);b.fly=false;b.k=findWalk(b.x,b.y);const [x,y]=cxy(b.k);b.x=x;b.y=y;b.energy=Math.max(b.energy,40)}
   HATCHED=[]}}
 function uStade(c,dt){const C=CYCLE[c.sp.id];c.stT-=dt;
-  if(c.stade==='nymphe'){c.v=0;c.path=null;c.energy=Math.max(c.energy,40);if(c.stT<=0){c.stade=null;jlog(FICHES[c.sp.id].ic,`Une ${C.nn} devient adulte`);wave({x:c.x,y:c.y,max:14,sp:40,col:c.cLine,a:0.6});if(c.sp.id==='mouche')takeOff(c)}return}
+  if(c.stade==='nymphe'){c.v=0;c.path=null;c.energy=Math.max(c.energy,40);if(c.stT<=0){c.stade=null;jlog(FICHES[c.sp.id].ic,`${C.nn} devient adulte`);wave({x:c.x,y:c.y,max:14,sp:40,col:c.cLine,a:0.6});if(c.sp.id==='mouche')takeOff(c)}return}
   if(gravity(c,dt))return;
-  if(c.stT<=0){c.stade='nymphe';c.stT=C.nymphe;c.v=0;c.path=null;jlog(FICHES[c.sp.id].ic,`Une ${C.nl} se change en nymphe`);return}
+  if(c.stT<=0){c.stade='nymphe';c.stT=C.nymphe;c.v=0;c.path=null;jlog(FICHES[c.sp.id].ic,`${C.nl} se change en nymphe`);return}
   if(c.sp.id==='mouche'){c.energy+=dt*1.2;if(c.path&&c.path.length){stepPath(c,dt,0.4);return}if(Math.random()<dt*0.3)goTo(c,k=>Math.random()<0.1,200);c.v=0;return}
   // larve de coccinelle : vorace, elle mange des pucerons sur les plantes
   if(c.path&&c.path.length){stepPath(c,dt,0.7);if(c.prey&&!c.prey.dead&&dist3(c,c.prey)<4){die(c.prey,c);c.energy+=10;c.prey=null;c.path=null}return}
@@ -4917,12 +4926,12 @@ function drawPlantNew(p,x,yb,H,vig,sw){const k=p.kind,dry=p.wet<0.15;ctx.lineWid
   const n=1+p.id%3;for(let f=0;f<n;f++){const cx=x+(f-(n-1)/2)*2.5,r=1.2+p.h*0.12;g.fillStyle=p.id%2?hsl(25,55,40):hsl(8,65,45);g.beginPath();g.arc(cx,y,r,0,TAU);g.fill();g.strokeStyle='#0005';g.lineWidth=0.3;g.stroke()}}}
 
 // ---------- dionée : les pièges se referment ----------
-let carnT=0;
+let carnT=0;const DIONEE_BY={sp:{id:'dionee',vnom:'La dionée'},dead:false};
 function carnivoreTick(dt){carnT-=dt;if(carnT>0)return;carnT=0.25;
   for(const p of plants){if(!p.alive||p.kind!=='dionee'||p.snap>0)continue;const x=p.col*CS+CS/2,y=Y0+(p.base+1-p.h)*CS;
     for(const c of creatures){if(c.dead||!(c.sp.id==='mouche'||c.sp.id==='puceron'||(c.sp.id==='fourmi'&&!c.col)))continue;
-      if(Math.hypot(c.x-x,c.y-y)<6&&Math.abs((c.z||0)-p.z)<10&&Math.random()<0.35){die(c,'meta');p.snap=8;p.snapF=Math.floor(Math.random()*4);p.e+=2;
-        jlog('🪤',`La dionée a attrapé : ${nm(c)}`);wave({x,y,max:10,sp:40,col:'#ff4d5a',a:0.6});break}}}
+      if(Math.hypot(c.x-x,c.y-y)<6&&Math.abs((c.z||0)-p.z)<10&&Math.random()<0.35){die(c,DIONEE_BY);p.snap=8;p.snapF=Math.floor(Math.random()*4);p.e+=2;
+        wave({x,y,max:10,sp:40,col:'#ff4d5a',a:0.6});break}}}
   // les mouches sont attirées par l'odeur sucrée des pièges
   if(Math.random()<0.1){const D=plants.filter(p=>p.alive&&p.kind==='dionee');if(D.length)for(const c of creatures)if(!c.dead&&c.sp.id==='mouche'&&!c.goal&&Math.random()<0.05){const p=D[Math.floor(Math.random()*D.length)];c.attire={x:p.col*CS+CS/2,y:Y0+(p.base-p.h)*CS-2,t:6}}}}
 {const um=UPD.mouche;UPD.mouche=function(c,dt){if(c.attire&&!c.stade){c.attire.t-=dt;if(c.attire.t>0){flyTo(c,c.attire.x,c.attire.y,dt,0.7);return}c.attire=null}um(c,dt)}}
@@ -4974,7 +4983,7 @@ const climat=()=>lvl&&lvl.sandbox&&curViv&&CLIMATS[curViv.climat]||null;
   ci.insertAdjacentHTML('beforeend',`<div class="clims"><span class="dim">Climat</span>${Object.entries(CLIMATS).map(([k,C])=>`<button class="clim ${k===cur?'on':''}" data-c="${k}">${C.ic} ${C.nom}</button>`).join('')}</div>`);
   ci.querySelectorAll('.clim').forEach(b=>b.onclick=e=>{e.stopPropagation();v.climat=b.dataset.c;saveRoom();fillSheet()})}}
 let tropT=0;
-function climatTick(dt){const C=climat();if(!C||!C.humide)return;tropT-=dt;if(tropT>0)return;tropT=0.5;for(let q=0;q<6;q++){const i=Math.floor(Math.random()*COLS);if(SURF[i]<ROWS){const k=K(i,SURF[i]);WET[k]=Math.min(0.8,WET[k]+C.humide*60)}}}
+function climatTick(dt){const C=climat();if(!C||!C.humide)return;tropT-=dt;if(tropT>0)return;tropT=0.5;for(let q=0;q<6;q++){const i=Math.floor(Math.random()*COLS);if(SURF[i]<ROWS){const k=K(i,SURF[i]);if(WET[k]<0.62)WET[k]=Math.min(0.62,WET[k]+C.humide*60)}}}
 {const hd=hud;hud=function(){hd();const C=climat();if(C&&C.nom!=='Tempéré'&&state==='play'){const r=hudEl.firstElementChild;if(r)r.insertAdjacentHTML('beforeend',`<span class="dim">${C.ic} ${C.nom}</span>`)}}}
 
 {const up=update;update=function(dt){up(dt);if(state==='menu')return;carnivoreTick(dt);fruitTick(dt);moisiTick(dt);climatTick(dt)}}
@@ -5013,6 +5022,12 @@ function importerViv(){const O=ovl('partp');
   $('pclose').onclick=()=>{O.style.display='none'};
   const go=async code=>{try{const o=await ungz(code,'VIVB');if(o.app!=='vivariom-bac'||!o.S)throw new Error("Ce n'est pas un vivarium Vivariom.");
       if(ROOM.list.length>=vivMax()||!freeSlot())throw new Error('Plus de place dans la salle : ajoute une étagère ou retire un bac.');
+      const own=(O,k)=>typeof k==='string'&&Object.prototype.hasOwnProperty.call(O,k);
+      if(!own(FORMATS,o.fmt))o.fmt='std';if(!own(SOILS,o.soil))o.soil='foret';if(!own(CLIMATS,o.climat))o.climat=undefined;if(!ETIQS.includes(o.etiq))o.etiq=undefined;
+      const S=o.S;if(!S||typeof S!=='object'||!Array.isArray(S.plants)||!Array.isArray(S.items)||!Array.isArray(S.decos)||!Array.isArray(S.creatures)||!Array.isArray(S.colonies))throw new Error("Ce n'est pas un vivarium Vivariom.");
+      S.fmt=o.fmt;S.soil=o.soil;S.plants=S.plants.filter(p=>p&&(p.kind==null||own(PLANTS,p.kind)));S.decos=S.decos.filter(d=>d&&own(DECOS,d.type));
+      S.items=S.items.filter(it=>it&&typeof it.type==='string'&&/^[a-z]+$/.test(it.type));S.creatures=S.creatures.filter(c=>c&&typeof c.id==='string'&&spOf(c.id));
+      if(S.DEV&&typeof S.DEV==='object'){const D={};for(const k in DEV){if(!S.DEV[k]||typeof S.DEV[k]!=='object')continue;D[k]={};for(const q in DEV[k])if(typeof S.DEV[k][q]===typeof DEV[k][q])D[k][q]=S.DEV[k][q]}S.DEV=D}else S.DEV=undefined;
       fixSlots();const s=freeSlot(),id='v'+Date.now().toString(36),v={id,name:esc(o.name||'Vivarium reçu').slice(0,24),slot:s.id,fmt:o.fmt||'std',soil:o.soil||'foret',climat:o.climat,etiq:o.etiq,thumb:typeof o.thumb==='string'&&/^data:image\/(jpeg|png);base64,[A-Za-z0-9+/=]+$/.test(o.thumb)?o.thumb:undefined};
       if(Array.isArray(o.S.journal))o.S.journal=o.S.journal.map(e=>({t:+e.t||0,n:+e.n||1,ic:esc(e.ic).slice(0,4),txt:esc(e.txt).slice(0,160)}));
       ROOM.list.push(v);VIV.set(id,o.S);LS.set('biome_viv_'+id,o.S);saveRoom();O.style.display='none';drawRoom();toast(`📥 « ${v.name} » est arrivé dans la salle`)}catch(e){$('pmsg').textContent='⚠ '+e.message}};
@@ -5023,9 +5038,9 @@ $('rimp').onclick=()=>importerViv();
 
 // ---------- 27. modèles tout prêts ; 28. étiquettes ----------
 const MODELES={
-  foret:{ic:'🌳',nom:'Forêt',soil:'foret',climat:'tempere',plantes:['fleur','fleur','fougere','arbo','fleur','fougere','fleur'],decos:['pierre','branche','mousse'],betes:{cloporte:4,lombric:3,fourmi:1,puceron:6,coccinelle:2,abeille:2,grillon:2}},
-  desert:{ic:'🏜',nom:'Désert',soil:'desert',climat:'desert',plantes:['cactus','cactus','cactus','cactus'],decos:['pierre','volcan','pierre'],betes:{tenebrion:5,scorpion:1,grillon:2}},
-  mare:{ic:'🐸',nom:'Mare',soil:'marais',climat:'tropical',plantes:['fougere','dionee','champignon','fleur','fougere','dionee','champignon'],decos:['mare','mousse','liege'],betes:{escargot:4,luciole:1,mouche:4,cloporte:3,lombric:2}}};
+  foret:{ic:'🌳',nom:'Forêt',soil:'foret',climat:'tempere',plantes:['fleur','fleur','fougere','arbo','fleur','fougere','fleur'],decos:['pierre','branche','mousse'],betes:{cloporte:4,lombric:3,fourmi:1,puceron:6,coccinelle:2,abeille:2,grillon:2},litiere:4},
+  desert:{ic:'🏜',nom:'Désert',soil:'desert',climat:'desert',plantes:['cactus','cactus','cactus','cactus'],decos:['pierre','volcan','pierre'],betes:{tenebrion:5,scorpion:1,grillon:2},litiere:3},
+  mare:{ic:'🐸',nom:'Mare',soil:'marais',climat:'tropical',plantes:['fougere','dionee','champignon','fleur','fougere','dionee','champignon'],decos:['mare','mousse','liege'],betes:{escargot:4,luciole:1,mouche:4,cloporte:3,lombric:2},litiere:5}};
 const ETIQS=['','#ffe94d','#ff7a5a','#6ad0ff','#8bff6a','#d9a0ff'];
 {const fs=fillSheet;fillSheet=function(){fs();const v=ROOM.list[sheetIdx],ci=document.querySelector('#rsheet .cinfo');if(!v||!ci)return;
   let h=`<div class="clims"><span class="dim">Étiquette</span>${ETIQS.map(c=>`<button class="etq ${(v.etiq||'')===c?'on':''}" data-e="${c}" style="background:${c||'#222'}">${c?'':'∅'}</button>`).join('')}</div>`;
@@ -5037,6 +5052,8 @@ const ETIQS=['','#ffe94d','#ff7a5a','#6ad0ff','#8bff6a','#d9a0ff'];
   const sp=$('spart');if(sp)sp.onclick=e=>{e.stopPropagation();partagerViv(v)}}}
 {const vt=vivTile;vivTile=function(v,cls=''){let h=vt(v,cls);if(v.etiq)h=h.replace('<span class="vtag">',`<span class="vtag" style="background:${v.etiq};color:#000">`);return h}}
 function remplirModele(M){const keep=tool,sx=WW/(M.plantes.length+1);
+  for(const p of plants){p.alive=false;for(let r=0;r<p.h;r++){const k=K(p.col,p.base-r);if(k>=0&&STEM[k]>0)STEM[k]--}}plants=[];
+  for(let q=0;q<(M.litiere||3);q++){tool='compost';const x=WW*(0.15+0.7*q/Math.max(1,(M.litiere||3)-1));tapAction(x,surfY(Math.floor(x/CS))-4)}
   M.decos.forEach((d,q)=>{tool=d;const i=Math.round((q+0.6)/(M.decos.length+0.2)*COLS*0.9);tapAction(i*CS,surfY(i)-4)});
   M.plantes.forEach((k,q)=>{tool='plante:'+k;const x=sx*(q+1)+rnd(-6,6);tapAction(x,surfY(Math.floor(x/CS))-4)});
   for(const [id,n] of Object.entries(M.betes))for(let q=0;q<n;q++){tool=id;const x=rnd(WW*0.1,WW*0.9),fly=SPI[id]&&SPI[id].w;tapAction(x,surfY(Math.floor(x/CS))-(fly?30:4))}
@@ -5062,6 +5079,7 @@ function rattrapage(v){const ms=Date.now()-(v.vu||Date.now());if(ms<60000)return
 document.body.insertAdjacentHTML('beforeend','<button id="obsx" title="Quitter le mode observation">✕</button>');
 $('vnav').insertAdjacentHTML('beforeend','<button id="vnobs" title="Mode observation : sans interface">👁</button><button id="vnalb" title="Album photo">🖼</button>');
 function observer(on){document.body.classList.toggle('obs',on);if(on){selC=null;toast('👁 Mode observation · touche ✕ en haut à droite pour revenir')}resize()}
+{const ts=tapScreen;tapScreen=function(x,y){if(document.body.classList.contains('obs'))return;ts(x,y)}}
 $('vnobs').onclick=()=>observer(true);$('obsx').onclick=()=>observer(false);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.classList.contains('obs'))observer(false)});
 
@@ -5126,18 +5144,18 @@ let vibNaissT=0;
 
 // ---------- 35. annuler la dernière pose ----------
 let ANNUL=null;
-document.body.insertAdjacentHTML('beforeend','<button id="undo" title="Annuler la dernière pose">↶ Annuler</button>');
+document.body.insertAdjacentHTML('beforeend','<button id="undo" title="Annuler la dernière pose">↶<span> Annuler</span></button>');
 {const ta=tapAction;tapAction=function(x,y){const c0=new Set(creatures),p0=new Set(plants),i0=new Set(items),s0=Object.assign({},stock),t=tool;ta(x,y);
   const C=creatures.filter(c=>!c0.has(c)),P=plants.filter(p=>!p0.has(p)),I=items.filter(it=>!i0.has(it)&&it.type==='litiere');
   if(C.length||P.length||I.length){ANNUL={C,P,I,stock:s0,t:performance.now(),nom:t};majUndo()}}}
-function majUndo(){const b=$('undo'),ok=ANNUL&&state==='play'&&performance.now()-ANNUL.t<20000;b.style.display=ok&&!document.body.classList.contains('obs')?'block':'none'}
+function majUndo(){const b=$('undo');try{const r=$('viewsw').getBoundingClientRect();if(r.bottom>0)b.style.top=Math.round(r.bottom+6)+'px'}catch(e){}const ok=ANNUL&&state==='play'&&performance.now()-ANNUL.t<20000;b.style.display=ok&&!document.body.classList.contains('obs')?'block':'none'}
 setInterval(majUndo,1000);
 $('undo').onclick=()=>{if(!ANNUL)return;const A=ANNUL;ANNUL=null;
   for(const c of A.C){c.dead=true;if(c.col&&c.sp.id==='reine'&&c.col.queen!==c&&!creatures.some(o=>!o.dead&&o.col===c.col&&o!==c)){c.col.dead=true}}
   creatures=creatures.filter(c=>!c.dead);
   for(const p of A.P){p.alive=false;for(let r=0;r<p.h;r++){const k=K(p.col,p.base-r);if(k>=0&&STEM[k]>0)STEM[k]--}}plants=plants.filter(p=>p.alive);
   for(const it of A.I)it.dead=true;items=items.filter(it=>!it.dead);
-  if(!lvl.sandbox)stock=A.stock;refreshPalette();say('↶ Dernière pose annulée');majUndo()};
+  if(!lvl.sandbox&&A.nom&&stock[A.nom]!=null)stock[A.nom]+=1;refreshPalette();say('↶ Dernière pose annulée');majUndo()};
 
 // ---------- 36. suivre une bête (appui long) ; 37. loupe ----------
 let FOLLOW=null,lpT=0;
@@ -5153,7 +5171,7 @@ cv.addEventListener('pointerup',()=>clearTimeout(lpT));
 $('sstop').onclick=()=>{FOLLOW=null;suivreUI()};
 {const d0=draw;draw=function(){if(FOLLOW&&!FOLLOW.dead&&view==='side'&&state==='play'){camX+=(FOLLOW.x-camX)*0.12;camY+=(FOLLOW.y-camY)*0.12;camClamp()}d0()}}
 {const sl=startLevel;startLevel=function(i){FOLLOW=null;ANNUL=null;sl(i);suivreUI()}}
-{const ev=enterViv;enterViv=function(v){FOLLOW=null;ANNUL=null;ev(v);suivreUI()}}
+{const ev=enterViv;enterViv=function(v){FOLLOW=null;ANNUL=null;ev(v);ANNUL=null;majUndo();suivreUI()}}
 let LOUPE=null;
 function ouvrirLoupe(c){if(!c)return;const O=ovl('loupep'),F=FICHES[c.sp.id]||{},R=REAL[c.sp.id];
   O.innerHTML=`<div class="box"><div class="mhead"><h1>🔍 ${F.ic||''} ${c.sp.vnom||F.nom||''}</h1><button class="back" id="lclose">Fermer</button></div>
@@ -5251,7 +5269,7 @@ const DECOUV=[
  {k:'dos',ic:'🦂',nom:'Sur le dos de maman',txt:"Voir des petits scorpions portés par leur mère."},
  {k:'lueur',ic:'✨',nom:'La lueur du ver luisant',txt:"Voir un ver luisant briller la nuit."},
  {k:'chant',ic:'🎶',nom:'Le chant du grillon',txt:"Entendre (ou voir) un grillon chanter la nuit."},
- {k:'dionee',ic:'🪤',nom:'Une plante carnivore',txt:"Voir une dionée refermer son piège.",re:/dionée a attrapé/},
+ {k:'dionee',ic:'🪤',nom:'Une plante carnivore',txt:"Voir une dionée refermer son piège.",re:/dionée a (attrapé|mangé)/},
  {k:'guerre',ic:'⚔',nom:'Une guerre de fourmis',txt:"Voir deux colonies s'affronter.",re:/Bataille/},
  {k:'malade',ic:'🍄',nom:'Un champignon',txt:"Voir une bête attaquée par un champignon.",re:/champignon attaque/},
  {k:'moisi',ic:'🧫',nom:'Des moisissures',txt:"Voir des moisissures sur un sol détrempé.",re:/moisissures/},
@@ -5276,7 +5294,7 @@ const pick1=a=>a[Math.floor(Math.random()*a.length)],melange=a=>a.map(x=>[Math.r
 const ANIM=()=>Object.keys(FICHES).filter(id=>id!=='plante'&&SPI[id]&&PLUS[id]&&REL[id]);
 function questions(){const Q=[],ids=ANIM();
   const q1=()=>{const id=pick1(ids.filter(i=>REL[i].par&&REL[i].par.some(p=>FICHES[p.split(':')[0]])));if(!id)return null;const bons=REL[id].par.map(p=>p.split(':')[0]).filter(p=>FICHES[p]);const bon=pick1(bons);
-    const faux=melange(ids.filter(i=>!bons.includes(i)&&i!==id)).slice(0,3);return {q:`Qui mange ${FICHES[id].ic} ${FICHES[id].nom.toLowerCase()} ?`,r:melange([bon,...faux]).map(i=>[FICHES[i].ic+' '+FICHES[i].nom,i===bon])}};
+    const mangeBetes=x=>(REL[x].mange||[]).some(m=>FICHES[m.split(':')[0]]&&m!=='plante')||SCORP_PREY[id]&&x==='scorpion'||x==='mante'||x==='araignee'||x==='scolopendre'||x==='luciole';const faux=melange(ids.filter(i=>!bons.includes(i)&&i!==id&&!mangeBetes(i))).slice(0,3);if(faux.length<3)return null;return {q:`Qui mange ${FICHES[id].ic} ${FICHES[id].nom.toLowerCase()} ?`,r:melange([bon,...faux]).map(i=>[FICHES[i].ic+' '+FICHES[i].nom,i===bon])}};
   const q2=()=>{const L=melange(ids.filter(i=>REAL[i])).slice(0,4);if(L.length<4)return null;const g=L.reduce((a,b)=>REAL[a][0]>REAL[b][0]?a:b);return {q:'Laquelle de ces bêtes est la plus grande ?',r:L.map(i=>[FICHES[i].ic+' '+FICHES[i].nom,i===g])}};
   const q3=()=>{const id=pick1(ids),faux=melange(ids.filter(i=>i!==id)).slice(0,3);return {q:`Où vit ${FICHES[id].ic} ${FICHES[id].nom.toLowerCase()} ?`,r:melange([id,...faux]).map(i=>[PLUS[i].ou,i===id])}};
   const q4=()=>{const id=pick1(ids),faux=melange(ids.filter(i=>i!==id)).slice(0,3);return {q:`À qui correspond cette anecdote ? « ${FICHES[id].nom.split(/[ ']/).filter(w=>w.length>3).reduce((t,w)=>t.replace(new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g,'')+'[a-zà-ÿ]*','ig'),'…'),PLUS[id].anec)} »`,r:melange([id,...faux]).map(i=>[FICHES[i].ic+' '+FICHES[i].nom,i===id])}};

@@ -203,11 +203,13 @@ const EN_D={
 "Un sol détrempé trop longtemps : un champignon blanc pousse sur les bêtes (elles s'affaiblissent et peuvent contaminer leurs voisines de la même espèce) et des moisissures couvrent le sol (elles abîment les plantes).":"Soil soaked for too long: a white fungus grows on the creatures (they weaken and can infect neighbours of the same species) and mould covers the soil (it damages plants).",
 "Les amis de l'humidité : lombrics, escargots, cloportes, vers luisants.":"The damp-lovers: earthworms, snails, woodlice, glow-worms.",
 "Brumiser moins, ouvrir la ventilation, garder la lumière, écarter la bête malade des autres. Elle guérit quand le sol redevient sec.":"Mist less, open the ventilation, keep the light on, move the sick creature away from the others. It heals when the soil is dry again.",
-"💡 Dans la nature aussi, l'humidité confinée favorise les champignons : c'est pour ça que les éleveurs aèrent leurs terrariums.":"💡 In nature too, trapped humidity helps fungi grow: that's why keepers ventilate their terrariums."
+"💡 Dans la nature aussi, l'humidité confinée favorise les champignons : c'est pour ça que les éleveurs aèrent leurs terrariums.":"💡 In nature too, trapped humidity helps fungi grow: that's why keepers ventilate their terrariums.",
+"asticot":"maggot","La dionée":"The flytrap","Les fruits tombés.":"Fallen fruit.","La litière, les graines, les cadavres et les fruits tombés.":"Leaf litter, seeds, carcasses and fallen fruit."
 };
 
 // Modèles : {} = morceau variable (traduit à son tour). Dans la traduction, {} = morceaux dans l'ordre, {0} {1}… = morceau n°.
 const EN_T=[
+["Un {} se change en nymphe","A {} turns into a pupa"],["Un {} devient adulte","A {} becomes an adult"],
 ["🍄 {} bêtes sont malades","🍄 {} creatures are sick"],["{} est guéri(e)","{} is cured"],["🌀 Ouvre la ventilation{} pour sécher l'air.","🌀 Open the ventilation{} to dry the air."],[" (pas encore débloquée ici)"," (not unlocked here yet)"],["Moisissures sur {} endroits.","Mould in {} places."],["Moisissures sur {} endroit.","Mould in {} place."],["{} — fais sécher le sol pour qu'elle guérisse","{} — dry the soil so it heals"],
 ["{} est morte","{} died"],["{} est mort de faim","{} died of hunger"],["{} est morte de faim","{} died of hunger"],["{} est mort de vieillesse","{} died of old age"],["{} est morte de vieillesse","{} died of old age"],["{} est mort","{} died"],
 ["{} a mangé : {}","{} ate: {}"],["{} pris(e) dans une toile","{} caught in a web"],
