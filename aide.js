@@ -11,7 +11,8 @@ const REL={
   lombric:{mange:['litiere'],par:['scolopendre','araignee:sol']},
   scolopendre:{mange:['cloporte','lombric','fourmi','coccinelle','rhinoceros'],par:[]},
   araignee:{mange:['abeille','mouche','coccinelle','papillon'],par:['mante']},
-  'araignee:sol':{mange:CHASSE_SOL,par:[]},
+  'araignee:sol':{mange:[...CHASSE_SOL,'mouche'],par:[]},
+  'araignee:saut':{mange:['mouche','papillon','puceron','abeille','chenille'],par:['mante','araignee']},
   abeille:{mange:['fleurs'],par:['araignee','mante']},
   mouche:{mange:['cadavre'],par:['araignee','mante']},
   phasme:{mange:['plante'],par:['araignee:sol']},
@@ -23,7 +24,7 @@ const REL={
   bousier:{mange:['litiere','cadavre'],par:['scorpion']},
   rhinoceros:{mange:['litiere','plante'],par:['scolopendre']}};
 // les araignées chasseuses (loup, sauteuse, mygales) ne tissent pas : elles chassent au sol
-const relKey=id=>{const g=grpOf(id);return g==='araignee'&&VSP[id]&&VSP[id].beh?'araignee:sol':g};
+const relKey=id=>{const g=grpOf(id);if(g==='araignee'&&VSP[id]&&VSP[id].beh)return VSP[id].beh==='sauteuse'?'araignee:saut':'araignee:sol';return g};
 function present(r){const n=counts();
   if(r==='plante')return plants.filter(p=>p.alive).length;
   if(r==='fleurs')return plants.filter(p=>p.alive&&p.fl&&p.fl.open).length;

@@ -79,7 +79,9 @@ function drawSoie(){const lw=Math.max(0.18,0.55/camZ);
     const p2=clamp((o.prog-0.35)/0.65,0,1);if(p2>0){ctx.globalAlpha=0.45*a;ctx.beginPath();const turns=7,steps=Math.floor(turns*NR*p2);
       for(let q=0;q<=steps;q++){const f=q/(turns*NR),t=q/NR*TAU+0.2,rr=o.r*(1-f*0.85);const x=X+Math.cos(t)*rr,y=Y+Math.sin(t)*rr;q?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.stroke()}
     ctx.globalAlpha=0.7*a;ctx.fillStyle='#f4f6fa';ctx.beginPath();ctx.arc(X,Y,Math.max(0.5,o.r*0.06),0,TAU);ctx.fill();ctx.restore()}
-  for(const n of nests){if(n.world!==T)continue;ctx.save();zT(n.z);ctx.strokeStyle='#e6e9ee';ctx.lineWidth=lw;ctx.globalAlpha=0.6;ctx.beginPath();
+  for(const n of nests){if(n.world!==T)continue;
+    if(n.kind==='tente'){ctx.save();zT(n.z);ctx.globalAlpha=0.55;ctx.fillStyle='#eef2f6';ctx.strokeStyle='#ffffff';ctx.lineWidth=lw;ctx.beginPath();ctx.ellipse(n.x,n.ys,4.5,3,0,Math.PI,TAU);ctx.closePath();ctx.fill();ctx.globalAlpha=0.7;ctx.beginPath();for(let q=0;q<5;q++){const a=Math.PI+q/4*Math.PI;ctx.moveTo(n.x+Math.cos(a)*4.5,n.ys+Math.sin(a)*3);ctx.lineTo(n.x+Math.cos(a)*7,n.ys+Math.sin(a)*5.5)}ctx.stroke();ctx.restore();continue}
+    ctx.save();zT(n.z);ctx.strokeStyle='#e6e9ee';ctx.lineWidth=lw;ctx.globalAlpha=0.6;ctx.beginPath();
     // collerette de soie autour de l'entrée, et soie le long des parois
     for(let q=0;q<9;q++){const a=Math.PI+q/8*Math.PI;ctx.moveTo(n.x,n.ys);ctx.lineTo(n.x+Math.cos(a)*7,n.ys+Math.sin(a)*2.2)}
     for(const sd of [-1,1]){ctx.moveTo(n.x+sd*CS*0.45,n.ys);ctx.lineTo(n.x+sd*CS*0.45,n.yb)}ctx.stroke();ctx.restore()}

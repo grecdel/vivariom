@@ -24,7 +24,7 @@ python3 assemble.py        # produit biome.html (le jeu complet) et le dossier w
 
 Ordre des fichiers :
 - **core** : biome_core.js, variants.js, unlocks.js, decor.js, topview.js, profile.js, devices.js, links.js, lure.js, species2.js, species3.js
-- **main** : biome_main.js, menu.js, extras.js, tutorial.js, ambiance.js, save.js, bascule.js, tiroir.js, soie.js, aide.js, ctrl.js, fixes.js (en dernier : il remplace certaines fonctions)
+- **main** : biome_main.js, menu.js, extras.js, tutorial.js, ambiance.js, save.js, bascule.js, tiroir.js, soie.js, instincts.js, aide.js, ctrl.js, fixes.js (en dernier : il remplace certaines fonctions)
 
 ## Repères
 - **Monde** :
@@ -47,6 +47,7 @@ Ordre des fichiers :
   - tiroir « Bêtes » (tiroir.js) : une case par espèce (variantes + larves regroupées : chenille→papillon, ver de farine→ténébrion, ver blanc→rhinocéros), ordre alphabétique des noms courts, bouton « ▾ n » qui ouvre la liste des variantes ; dernière variante choisie retenue (clé `biome_vsel`) ;
   - fourmis : les ouvrières creusent des galeries en ligne qui se ramifient, avec de petites chambres (`antDigTarget`, têtes `col.heads`), même quand la colonie a faim ; la reine a un halo doré ;
   - araignées (soie.js) : l'épeire tisse une toile ronde (`orbs`) au centre de ses fils de cadre ; les mygales creusent un terrier tapissé de soie (`nests`) ; toutes pondent un cocon (`sacs` : dans la toile, au fond du terrier, ou porté par la loup/sauteuse) d'où sortent les petits. Repère du vivarium courant : la grille `T` (recréée à chaque vivarium) ;
+  - instincts.js : araignée sauteuse (comportement `sauteuse` : guette, s'approche, bondit `spiderLeap`/`leapStep`, même sur un insecte qui vole bas ; tente de soie au pied d'une plante pour la nuit et le cocon) ; mygale à l'affût à l'entrée du terrier ; loup qui bondit sur les insectes posés près d'elle. `mission(c)` : ce que fait la bête sélectionnée, affiché sous le HUD ;
   - species2 : phasme, mante, escargot, chenille/papillon ;
   - species3 : scorpion, ténébrion, bousier, rhinocéros.
 - **Dessin des bêtes** : style « naturel » choisi par l'utilisateur (`DESSIN='nature'` en tête de profile.js : corps pleins aux couleurs `natFill`/`natLine`, sans halo néon ni points aux articulations). Le même réglage s'applique à la vue de côté (profile.js), aux petites bêtes (`drawTiny`, fixes.js) et au dessin vu de dessus (vignettes, vue du dessus : remplacements dans assemble.py). Les styles 'actuel' et 'fin' restent disponibles.
