@@ -11,53 +11,53 @@ Ajoute un commentaire après une ligne si quelque chose ne va pas, par exemple :
 Coche quand c'est vérifié et que ça marche. Si ça ne marche pas, laisse `[ ]` et écris ce qui ne va pas.
 
 ### Campagne
-- [ ] Choix de difficulté (Facile / Normal / Expert) en haut de la campagne
-- [ ] Carte des chapitres en forme de jardin (bouton « ☰ Liste » pour revenir à la liste)
+- [x ] Choix de difficulté (Facile / Normal / Expert) en haut de la campagne
+- [ x] Carte des chapitres en forme de jardin (bouton « ☰ Liste » pour revenir à la liste)
 - [ ] Défi du jour
-- [ ] Mode Survie (se débloque après 3 niveaux)
+- [ x] Mode Survie (se débloque après 3 niveaux)
 - [ ] Défi de chapitre (⚔, après un chapitre terminé)
-- [ ] Coups durs annoncés (canicule, nuit froide, panne, invasion, intrus)
-- [ ] Bilan de fin de niveau (courbes, naissances, morts)
-- [ ] Saisons en campagne (dès le niveau 4)
+- [ x] Coups durs annoncés (canicule, nuit froide, panne, invasion, intrus)
+- [ x] Bilan de fin de niveau (courbes, naissances, morts)
+- [ x] Saisons en campagne (dès le niveau 4)
 - [ ] La difficulté Normal te paraît juste (ni trop facile, ni impossible)
 
 ### Bêtes et plantes
-- [ ] Grillon qui chante la nuit, ver luisant qui brille la nuit
-- [ ] Pucerons ailés qui changent de plante
-- [ ] Petits scorpions sur le dos de leur mère
-- [ ] Larves et nymphes de coccinelle et de mouche
-- [ ] Bébés plus petits qui grandissent, vieilles bêtes plus pâles
-- [ ] Champignon blanc sur les bêtes et moisissures quand le sol est trop mouillé
-- [ ] Fougère arborescente, dionée (attrape les mouches), champignons, fruits
+- [ x] Grillon qui chante la nuit, ver luisant qui brille la nuit
+- [x ] Pucerons ailés qui changent de plante
+- [x ] Petits scorpions sur le dos de leur mère
+- [ x] Larves et nymphes de coccinelle et de mouche
+- [ x] Bébés plus petits qui grandissent, vieilles bêtes plus pâles
+- [ x] Champignon blanc sur les bêtes et moisissures quand le sol est trop mouillé
+- [ x] Fougère arborescente, dionée (attrape les mouches), champignons, fruits
 
 ### Bac à sable et salle
-- [ ] Modèles tout prêts (Forêt, Désert, Mare) à la création d'un bac
-- [ ] Climat du bac (Tempéré, Tropical, Désert) et étiquette de couleur
-- [ ] Partager un bac (📤 dans la fiche) et le recevoir (📥 dans la salle)
-- [ ] « Pendant ton absence » : le bac a vécu quand tu reviens
-- [ ] Mode observation 👁 (✕ en haut à droite pour revenir)
+- [ x] Modèles tout prêts (Forêt, Désert, Mare) à la création d'un bac
+- [ x] Climat du bac (Tempéré, Tropical, Désert) et étiquette de couleur
+- [ x] Partager un bac (📤 dans la fiche) et le recevoir (📥 dans la salle)
+- [ x] « Pendant ton absence » : le bac a vécu quand tu reviens
+- [ x] Mode observation 👁 (✕ en haut à droite pour revenir)
 - [ ] Album photo 🖼 (les photos 📷 s'y rangent)
-- [ ] Salle plus sombre le soir et la nuit
+- [ x] Salle plus sombre le soir et la nuit
 
 ### Confort
-- [ ] Bouton ↶ Annuler après avoir posé une bête ou une plante
-- [ ] Appui long sur une bête pour la suivre, puis 🔍 Loupe
-- [ ] Options : taille des textes, contraste fort, couleurs pour daltonisme
-- [ ] Vibrations (naissance, victoire, défaite)
-- [ ] Sons : bourdonnements, pas, pluie
-- [ ] Tutoriel plus court avec la main 👆
-- [ ] Fiches des espèces : taille réelle, où elle vit, anecdote
-- [ ] Quiz 🧠 et Découvertes 🔎 dans les fiches
-- [ ] Version anglaise (Options → Langue → English)
-- [ ] Téléphone en paysage (outils en colonne)
+- [ x] Bouton ↶ Annuler après avoir posé une bête ou une plante
+- [ x] Appui long sur une bête pour la suivre, puis 🔍 Loupe
+- [ x] Options : taille des textes, contraste fort, couleurs pour daltonisme
+- [ x] Vibrations (naissance, victoire, défaite)
+- [ x] Sons : bourdonnements, pas, pluie
+- [ x] Tutoriel plus court avec la main 👆
+- [ x] Fiches des espèces : taille réelle, où elle vit, anecdote
+- [ x] Quiz 🧠 et Découvertes 🔎 dans les fiches
+- [ x] Version anglaise (Options → Langue → English)
+- [ x] Téléphone en paysage (outils en colonne)
 
 ### Bestioles (le bonus)
-- [ ] Android : s'installe, se lance, widget et bouton des réglages rapides
-- [ ] Android : Réglages (quelles bêtes, combien), miette, goutte de miel
-- [ ] Windows : se lance, icône près de l'horloge
-- [ ] Linux : se lance, icône près de l'horloge
-- [ ] Ordinateur : les bêtes fuient la souris, « Tenir une miette » les fait suivre
-- [ ] Papillons le jour, vers luisants le soir
+- [x ] Android : s'installe, se lance, widget et bouton des réglages rapides
+- [ x] Android : Réglages (quelles bêtes, combien), miette, goutte de miel
+- [ x] Windows : se lance, icône près de l'horloge
+- [ x] Linux : se lance, icône près de l'horloge
+- [x ] Ordinateur : les bêtes fuient la souris, « Tenir une miette » les fait suivre
+- [ x] Papillons le jour, vers luisants le soir
 
 ---
 
@@ -66,7 +66,7 @@ Coche quand c'est vérifié et que ça marche. Si ça ne marche pas, laisse `[ ]
 Coche celles que tu veux. Claude les fera dans l'ordre de la liste.
 
 ### Jeu
-- [ ] 1. Mode « histoire » : un petit naturaliste qui commente tes progrès et te donne des missions
+- [x ] 1. Mode « histoire » : un petit naturaliste qui commente tes progrès et te donne des missions
 - [ ] 2. Visiteurs rares : papillon de nuit, lézard (qui mange tout !), oiseau derrière la vitre
 - [ ] 3. Événements du calendrier : neige à Noël, citrouilles en octobre, vers luisants en juin
 - [ ] 4. Classement personnel : meilleurs temps par niveau, progrès de la semaine
@@ -74,24 +74,24 @@ Coche celles que tu veux. Claude les fera dans l'ordre de la liste.
 - [ ] 6. Éditeur de niveaux : choisir espèces, réserves et objectif, puis envoyer à un ami
 
 ### Bêtes et nature
-- [ ] 7. Nouvelles espèces : perce-oreille, gendarme, libellule, têtard qui devient grenouille
-- [ ] 8. Vraie mare avec vie aquatique : larves de moustique, gerris sur l'eau
-- [ ] 9. Maladies des plantes : virus transmis par les pucerons, feuilles tachées
-- [ ] 10. Fourmis champignonnistes qui coupent des feuilles
-- [ ] 11. Essaims d'abeilles qui partent fonder une nouvelle ruche
+- [ x] 7. Nouvelles espèces : perce-oreille, gendarme, libellule, têtard qui devient grenouille
+- [ x] 8. Vraie mare avec vie aquatique : larves de moustique, gerris sur l'eau
+- [ x] 9. Maladies des plantes : virus transmis par les pucerons, feuilles tachées
+- [ x] 10. Fourmis champignonnistes qui coupent des feuilles
+- [ x] 11. Essaims d'abeilles qui partent fonder une nouvelle ruche
 
 ### Bac à sable
-- [ ] 12. Bacs plus grands, mode « terrarium mural » plein écran
-- [ ] 13. Plusieurs étages dans un même bac : sol, souche, mare, plantes grimpantes
-- [ ] 14. Fond d'écran vivant sur ordinateur
+- [ x] 12. Bacs plus grands, mode « terrarium mural » plein écran
+- [ x] 13. Plusieurs étages dans un même bac : sol, souche, mare, plantes grimpantes
+- [ x] 14. Fond d'écran vivant sur ordinateur
 - [ ] 15. Concours entre amis : le plus beau bac de la semaine
 
 ### Confort
-- [ ] 16. Notification sur le téléphone (« Tes pucerons ont envahi le bac ! »), si tu le veux bien
-- [ ] 17. Mode « pour les enfants » : textes simplifiés, plus d'aide, pas de mort affichée
+- [ x] 16. Notification sur le téléphone (« Tes pucerons ont envahi le bac ! »), si tu le veux bien
+- [x ] 17. Mode « pour les enfants » : textes simplifiés, plus d'aide, pas de mort affichée
 - [ ] 18. Voix qui lit les fiches à voix haute
 - [ ] 19. Vraie appli Android dans le Play Store (compte développeur payant, une fois)
-- [ ] 20. Version tablette : bac et fiche côte à côte
+- [x ] 20. Version tablette : bac et fiche côte à côte
 
 ---
 
