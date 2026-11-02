@@ -1,4 +1,5 @@
-# Fabrique les applis « Bestioles » (Android ; Windows et Linux). Les fichiers sont à télécharger depuis l'onglet Actions (connecté au compte).
+# Fabrique les applis « Bestioles » (Android ; Windows et Linux) et les publie dans la page Releases du dépôt (tag « bestioles »),
+# avec l'accord de l'utilisateur.
 name: Bestioles
 on:
   push:
@@ -62,3 +63,22 @@ jobs:
         with:
           name: ${{ matrix.fichier }}
           path: bestioles/bureau/dist/${{ matrix.fichier }}
+
+  publier:
+    needs: [android, bureau]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v7
+        with:
+          path: fichiers
+          merge-multiple: true
+      - name: Publier dans « Releases »
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          ls -la fichiers
+          gh release view bestioles >/dev/null 2>&1 || gh release create bestioles --title "Bestioles" --notes "Petites bêtes de Vivariom qui se promènent sur l'écran, par-dessus les applis. Android : Bestioles-android.apk (widget, réglages rapides). Windows : Bestioles-windows.exe (icône près de l'horloge). Linux : Bestioles-linux.AppImage. © 2026 grecdel — tous droits réservés."
+          gh release upload bestioles fichiers/Bestioles-android.apk fichiers/Bestioles-windows.exe fichiers/Bestioles-linux.AppImage --clobber

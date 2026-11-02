@@ -66,7 +66,7 @@ Petites bêtes qui vivent sur l'écran du téléphone ou de l'ordinateur, par-de
 - `bestioles/moteur/` : page transparente commune (bestioles.js : espèces, comportements, interactions, menu au clic ; API `window.Bestioles` : demarrer, arreter, action, ajouter, survol, etat, _avancer).
 - `bestioles/android/` : appli Kotlin (sans dépendance) : superposition WebView non tactile (alpha 0,8 pour Android 12+) + une zone tactile invisible par bête → MenuActivity ; widget et tuile des réglages rapides passent par BasculeActivity ; service au premier plan (type specialUse) avec notification « Éteindre ».
 - `bestioles/bureau/` : appli Electron (Windows .exe portable, Linux .AppImage) : fenêtre transparente toujours au-dessus, clics qui traversent sauf sur une bête/le menu (position de la souris envoyée toutes les 60 ms) ; icône près de l'horloge (allumer/éteindre, lancer au démarrage, quitter).
-- Fabrication : `.github/workflows/bestioles.yml` à chaque mise à jour de `bestioles/` ; fichiers dans l'onglet Actions (pas de page Releases publique : à décider avec l'utilisateur). APK signé avec une clé de débogage (une mise à jour peut demander de désinstaller l'ancienne version).
+- Fabrication : `.github/workflows/bestioles.yml` à chaque mise à jour de `bestioles/` ; publiés (accord de l'utilisateur) dans la page Releases, tag `bestioles` (fichiers remplacés à chaque version). APK signé avec une clé de débogage (une mise à jour peut demander de désinstaller l'ancienne version).
 - Non testé sur un vrai appareil par Claude : à valider par l'utilisateur.
 
 ## Paysage sur téléphone
