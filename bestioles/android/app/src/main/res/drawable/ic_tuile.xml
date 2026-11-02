@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- coccinelle simplifiée (blanche) pour la tuile des réglages rapides -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24">
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M12,6.5c-3.6,0 -6.5,3 -6.5,7s2.9,7 6.5,7s6.5,-3 6.5,-7S15.6,6.5 12,6.5zM11.3,19.4c-2.6,-0.4 -4.4,-2.9 -4.4,-5.9c0,-1 0.2,-2 0.6,-2.8h3.8V19.4zM12.7,19.4v-8.7h3.8c0.4,0.8 0.6,1.8 0.6,2.8C17.1,16.5 15.3,19 12.7,19.4z" />
+    <path android:fillColor="#FFFFFFFF" android:pathData="M9,3.5c0,0 1,1.6 3,1.6s3,-1.6 3,-1.6l0.9,0.5c0,0 -0.5,1.2 -1.8,1.9c0.4,0.3 0.7,0.6 0.9,0.9H8c0.2,-0.3 0.5,-0.6 0.9,-0.9C7.6,5.2 7.1,4 7.1,4L9,3.5z" />
+</vector>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- widget : un seul bouton, allumer / éteindre les bestioles -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_bouton"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="horizontal" android:gravity="center"
+    android:background="@drawable/fond_widget" android:padding="8dp">
+    <ImageView android:id="@+id/widget_icone" android:layout_width="36dp" android:layout_height="36dp"
+        android:src="@mipmap/ic_launcher" android:contentDescription="@string/app_name" />
+    <TextView android:id="@+id/widget_texte"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_marginStart="8dp" android:textColor="#FFE8EEE4" android:textSize="14sp"
+        android:text="Bestioles\néteintes" />
+</LinearLayout>

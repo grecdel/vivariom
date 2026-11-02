@@ -145,7 +145,7 @@ function dessiner(){g.setTransform(DPR,0,0,DPR,0,0);g.clearRect(0,0,W,H);
 function boucle(t){if(!actif)return;const dt=Math.min(0.05,(t-(tPrec||t))/1000);tPrec=t;vivre(dt);dessiner();
   if(window.AndroidBestioles&&(t-(boucle.envoi||0))>60){boucle.envoi=t;try{AndroidBestioles.positions(JSON.stringify(cibles()))}catch(e){}}
   requestAnimationFrame(boucle)}
-function cibles(){return betes.map(b=>({id:b.id,x:Math.round(b.x),y:Math.round(b.y),r:Math.round(Math.max(22,b.E.L*0.9))}))}
+function cibles(){return betes.map(b=>({id:b.id,x:Math.round(b.x),y:Math.round(b.y),r:Math.round(Math.max(22,b.E.L*0.9)),esp:b.esp,nom:b.E.nom,ic:b.E.ic,calme:b.calme?1:0,etat:b.calme?'calme':b.etat}))}
 function toucher(x,y){let best=null,bd=1e9;for(const b of betes){const d=hyp(b.x-x,b.y-y),R=Math.max(22,b.E.L*0.9);if(d<R&&d<bd){bd=d;best=b}}return best}
 
 // ---------- menu (navigateur, Windows, Linux) ----------

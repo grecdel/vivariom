@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Bestioles" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:colorAccent">#FFE94D</item>
+        <item name="android:windowBackground">@color/fond</item>
+        <item name="android:statusBarColor">@color/fond</item>
+    </style>
+    <style name="Theme.Bestioles.Invisible" parent="@android:style/Theme.Translucent.NoTitleBar">
+        <item name="android:windowNoDisplay">false</item>
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+    <style name="Theme.Bestioles.Menu" parent="@android:style/Theme.Material.Dialog.NoActionBar">
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="android:colorAccent">#FFE94D</item>
+        <item name="android:windowBackground">@drawable/fond_menu</item>
+    </style>
+    <color name="fond">#FF0B0E0A</color>
+</resources>
