@@ -35,7 +35,7 @@ rep("    if(i===0){ctx.globalAlpha=alpha;ctx.fillStyle=lc;ctx.fillRect(len/2-3,-
 core=open('biome_core.js').read()+'\n'+open('variants.js').read()+'\n'+open('unlocks.js').read()+'\n'+open('decor.js').read()+'\n'+open('topview.js').read()+'\n'+open('profile.js').read()+'\n'+open('devices.js').read()+'\n'+open('links.js').read()+'\n'+open('lure.js').read()+'\n'+open('species2.js').read()+'\n'+open('species3.js').read()
 main=open('biome_main.js').read()+'\n'+open('menu.js').read()+'\n'+open('extras.js').read()+"\n"+open('tutorial.js').read()+"\n"+open('ambiance.js').read()+'\n'+open('save.js').read()+'\n'+open('bascule.js').read()+'\n'+open('tiroir.js').read()+'\n'+open('soie.js').read()+'\n'+open('instincts.js').read()+'\n'+open('decor_top.js').read()+'\n'+open('aide.js').read()+'\n'+open('ctrl.js').read()+'\n'+open('defis.js').read()+'\n'+open('langue.js').read()+'\n'+open('fixes.js').read()+"\n"
 # fichiers ajoutés après fixes.js (modes de jeu, bêtes, milieu, salle, confort, savoir)
-for f in ['progres.js','vie.js','milieu.js','salle2.js']:
+for f in ['progres.js','vie.js','milieu.js','salle2.js','confort.js']:
     main+=open(f).read()+'\n'
 main=main.replace("for(const id of order)for(const c of creatures)if(c.sp.id===id)drawCreature(c,1,false);",
  "for(const id of order)for(const c of creatures)if(c.sp.id===id){drawProfile(c,1,false);if(c.load){const h=c.segs[0];ctx.fillStyle=c.load.type==='grain'?(c.load.t===1?'#8a6a3a':'#d8b060'):'#ffb43a';ctx.fillRect(h.x+Math.cos(h.a)*5-1.5,h.y+Math.sin(h.a)*5-1.5,3,3)}}")
@@ -319,6 +319,18 @@ body.land #ctrlbar button{flex:1;width:auto;min-width:0;flex-direction:row;justi
 body.obs>*:not(#c):not(#obsx):not(#toast){display:none!important}body.obs #obsx{display:block}body.obs #c{left:0!important}
 .nuitsalle{position:absolute;inset:0;background:#030818;pointer-events:none;z-index:1}.viv.allume{z-index:2;box-shadow:0 0 18px #ffe9a055}
 #rimp,#ralb{margin-left:4px}#partp,#albp,#albv,#absp{z-index:60}#albv{z-index:61}
+/* Confort (confort.js) */
+#tuto .thand{display:none;position:fixed;font-size:30px;z-index:41;pointer-events:none;filter:drop-shadow(0 2px 4px #000);animation:tap 1.1s ease-in-out infinite}
+@keyframes tap{0%,100%{transform:translate(0,10px) scale(1)}45%{transform:translate(0,0) scale(.88)}55%{transform:translate(0,0) scale(.88)}}
+#undo{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:136px;z-index:4;background:#0b0b0bee;border:1px solid #ffe94d88;color:#ffe94d;border-radius:18px;padding:6px 14px;font:600 13px -apple-system,Roboto,sans-serif}
+body.land #undo{bottom:10px}
+#suivi{display:none;position:fixed;left:50%;transform:translateX(-50%);top:58px;z-index:4;gap:6px;align-items:center;background:#0b0b0bee;border:1px solid #6ad0ff88;border-radius:18px;padding:4px 6px 4px 12px;color:#cfe;font:600 12px -apple-system,Roboto,sans-serif}
+#suivi button{background:#111;border:1px solid #444;color:#ddd;border-radius:12px;padding:4px 8px;font:inherit}
+#loupep{z-index:62}#loupep canvas{width:100%;height:auto;border-radius:8px;background:#0b120b;display:block;margin:6px 0}
+body.grand .box,body.grand #hud,body.grand #pal,body.grand #ctrlbar,body.grand #vnav,body.grand #aide{zoom:1.15}
+body.tgrand .box,body.tgrand #hud,body.tgrand #pal,body.tgrand #ctrlbar,body.tgrand #vnav,body.tgrand #aide{zoom:1.32}
+body.contraste #c{filter:contrast(1.3) saturate(1.25) brightness(1.08)}body.contraste .box{border-color:#fff!important}body.contraste .dim{color:#ddd!important}body.contraste #hud{background:#000}
+body.dalto-d #c{filter:url(#fdeut)}body.dalto-p #c{filter:url(#fprot)}body.contraste.dalto-d #c{filter:url(#fdeut) contrast(1.3)}body.contraste.dalto-p #c{filter:url(#fprot) contrast(1.3)}
 </style>
 </head>
 <body>
