@@ -92,6 +92,7 @@ python3 assemble.py && node tests/fixcheck.js && node tests/all_lv.js && node te
 `__sim.startLevel` appelle la version non enveloppée : `#vnav` ne s'affiche pas dans les tests. C'est normal.
 
 ## Points ouverts (connus)
+- **Liste à cocher : A_FAIRE.md** (vérifications de l'utilisateur + idées choisies). À lire au début de chaque session, à tenir à jour.
 - Les ajouts de novembre 2026 (modes, nouvelles bêtes et plantes, salle, confort, savoir) n'ont été testés qu'automatiquement : à valider par l'utilisateur.
 - Galerie en ligne de photos : impossible sans serveur ; on partage par le bouton « Partager » du téléphone.
 - Paysage sur téléphone (hauteur < 520 px) : à valider sur un vrai téléphone (toucher, rotation, mode gaucher).
