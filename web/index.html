@@ -1740,11 +1740,15 @@ function camClamp(){camZ=clamp(camZ,fitZ*0.999,18);const wl=-8,wr=WW+8,wt=-16,wb
 function camFit(){fitZ=fitZoom();camZ=fitZ;camX=WW/2;camY=WH/2;camClamp()}
 const s2w=(sx,sy)=>[camX+(sx-W/2)/camZ,camY+(sy-H/2)/camZ];
 const w2s=(wx,wy)=>[(wx-camX)*camZ+W/2,(wy-camY)*camZ+H/2];
-function zoomAt(sx,sy,f){
-  if(view==='top'){topZoom(sx,sy,f);return}
-  if(view==='ens'){if(f>1)exitEns();return}
+// changement de vue à la molette / au pincement : coupe <-> 3/4 <-> dessus.
+// Pause après chaque bascule, et pour la molette il faut un nouveau geste (l'élan d'un pavé tactile ne compte pas).
+let vsT=0,wheelLast=0,wheelStart=0;
+function viewSwitchOK(src){const now=performance.now();return now-vsT>650&&(src!=='wheel'||wheelStart>vsT)}
+function zoomAt(sx,sy,f,src){
+  if(view==='top'){if(f<1&&ZM<=topFit()*1.001){if(viewSwitchOK(src)){vsT=performance.now()+1e4;snapTop();exitTopToEns()}return}topZoom(sx,sy,f);return}
+  if(view==='ens'){if(ensDir||!viewSwitchOK(src))return;vsT=performance.now()+1e4;if(f>1)exitEns();else enterTopFromEns(WW/2);return}
   if(view!=='side')return;
-  if(camZ<=fitZ*1.001&&f<1){enterEns();return}
+  if(camZ<=fitZ*1.001&&f<1){if(viewSwitchOK(src)){vsT=performance.now()+1e4;enterEns()}return}
   const [wx,wy]=s2w(sx,sy);camZ=clamp(camZ*f,fitZ,18);camX=wx-(sx-W/2)/camZ;camY=wy-(sy-H/2)/camZ;camClamp();
 }
 
@@ -2036,7 +2040,7 @@ const endPtr=e=>{const had=pts.has(e.pointerId);pts.delete(e.pointerId);if(!had|
   if(!gest.pinch&&!gest.moved&&pts.size===0)tapScreen((e.clientX-CVL),e.clientY);
   if(pts.size===0)gest=null};
 cv.addEventListener('pointerup',endPtr);cv.addEventListener('pointercancel',e=>{pts.delete(e.pointerId);if(!pts.size)gest=null});
-cv.addEventListener('wheel',e=>{e.preventDefault();zoomAt((e.clientX-CVL),e.clientY,e.deltaY<0?1.18:1/1.18)},{passive:false});
+cv.addEventListener('wheel',e=>{e.preventDefault();const now=performance.now();if(now-wheelLast>250)wheelStart=now;wheelLast=now;zoomAt((e.clientX-CVL),e.clientY,e.deltaY<0?1.18:1/1.18,'wheel')},{passive:false});
 // point du sol visé en vue 3/4 : abscisse (mm) et profondeur depuis la vitre (mm)
 function pickVolume(sx,sy){const R=ensRect(ensE),z=R.w/WW;let best=null,bd=1e9;
   for(let i=0;i<COLS;i++){const fy=R.y+surfY(i)*z;let f=R.dy?(sy-fy)/R.dy:0;if(f<-0.03||f>1.02)continue;f=clamp(f,0,0.96);
@@ -2847,9 +2851,9 @@ function frame(now){
   if(!paused){let sim=real*speed;while(sim>0){const d=Math.min(1/30,sim);update(d);sim-=d}
     for(const r of rings)r.t+=real;rings=rings.filter(r=>r.t<0.6);flashT-=real;
     for(const k in bucket)bucket[k]=Math.min(2,bucket[k]+6*real);gBucket=Math.min(10,gBucket+30*real)}
-  if(view==='anim'){anim.t+=real/1.3;const t=Math.min(1,anim.t),e=t*t*(3-2*t);renderTransition(anim.dir>0?e:1-e);if(anim.t>=1){view=anim.dir>0?'top':(anim.back||'side');if(view==='ens'){ensE=1;ensDir=0}anim=null;if(view==='side'&&pendingView==='ens'){pendingView=null;enterEns()}}}
+  if(view==='anim'){anim.t+=real/1.3;const t=Math.min(1,anim.t),e=t*t*(3-2*t);renderTransition(anim.dir>0?e:1-e);if(anim.t>=1){view=anim.dir>0?'top':(anim.back||'side');if(view==='ens'){ensE=1;ensDir=0}anim=null;vsT=performance.now();if(view==='side'&&pendingView==='ens'){pendingView=null;enterEns()}}}
   else if(view==='top'){if(!paused)updProxies(Math.min(real*speed,0.1));drawTop(mainCtx)}
-  else{if(ensDir){ensE=clamp(ensE+ensDir*real/0.6,0,1);if(ensE<=0&&ensDir<0){ensDir=0;view='side';camFit();if(pendingView==='top'){pendingView=null;enterTop(WW/2);say('Vue du dessus : glisse le doigt pour te déplacer')}}if(ensE>=1&&ensDir>0)ensDir=0}draw()}
+  else{if(ensDir){ensE=clamp(ensE+ensDir*real/0.6,0,1);if(ensE<=0&&ensDir<0){ensDir=0;vsT=performance.now();view='side';camFit();if(pendingView==='top'){pendingView=null;enterTop(WW/2);say('Vue du dessus : glisse le doigt pour te déplacer')}}if(ensE>=1&&ensDir>0){ensDir=0;vsT=performance.now()}}draw()}
   hudT-=real;if(hudT<=0){hud();hudT=0.25}
   requestAnimationFrame(frame);
 }
@@ -2861,7 +2865,7 @@ window.__sim={DBG,dbgk(id){return creatures.filter(c=>!c.dead&&c.sp.id===id).map
 const vsw=document.getElementById('viewsw');let vswLast='';
 function curView(){return view==='top'||view==='anim'&&anim&&anim.dir>0?'top':view==='ens'?'ens':'side'}
 function syncViewSw(){const v=curView();if(v===vswLast)return;vswLast=v;vsw.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===v))}
-function bareSide(){if(view==='top'||view==='anim'){anim=null;view='side'}if(view==='ens'){view='side';ensE=0;ensDir=0}document.getElementById('bback').style.display='none';camFit()}
+function bareSide(){vsT=0;if(view==='top'||view==='anim'){anim=null;view='side'}if(view==='ens'){view='side';ensE=0;ensDir=0}document.getElementById('bback').style.display='none';camFit()}
 vsw.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(state!=='play')return;initAudio();const v=b.dataset.v,cur=curView();if(v===cur||view==='anim')return;
   if(v==='side'){if(cur==='top'){topFromEns=false;exitTop()}else exitEns()}
   if(v==='ens'){if(cur==='top'){if(topFromEns)exitTop();else{pendingView='ens';exitTop()}}else enterEns()}
@@ -3536,6 +3540,64 @@ function openSave(){const O=$('opts');let pending=null;
 const openOpts2=openOpts;openOpts=function(){openOpts2();const h=[...$('opts').querySelectorAll('h3')].find(e=>e.textContent==='Données');
   if(h&&!$('osave')){h.insertAdjacentHTML('afterend','<button class="btn2" id="osave">💾 Sauvegarde : exporter / importer</button>');$('osave').onclick=openSave}};
 if(window.__sim)Object.assign(window.__sim,{saveCollect,saveEncode,saveDecode,saveSummary});
+
+// ---------- bascule 3/4 <-> dessus : un vrai bac en volume qui se redresse ----------
+// Le bac est un pavé : face avant = la coupe (vue de côté du bac entier), dessus = la vue du dessus,
+// côté droit = une paroi sombre. Projection « cavalière » de la vue 3/4 (profondeur décalée en haut à droite)
+// qui tourne jusqu'à la vue de dessus ; légère perspective au milieu du mouvement ; fondu avec les vraies vues
+// au début et à la fin.
+function texSide(){const sv=[view,ensE,ensDir,camZ,camX,camY];view='side';ensE=0;ensDir=0;camFit();draw();
+  const [x0,y0]=w2s(0,0),[x1,y1]=w2s(WW,WH),c=document.createElement('canvas');
+  c.width=Math.max(2,Math.round((x1-x0)*DPR));c.height=Math.max(2,Math.round((y1-y0)*DPR));
+  c.getContext('2d').drawImage(cv,Math.round(x0*DPR),Math.round(y0*DPR),c.width,c.height,0,0,c.width,c.height);
+  [view,ensE,ensDir,camZ,camX,camY]=sv;return c}
+function texTop(){const sv=[ZM,zx0,zz0,zCol];ZM=topFit();zx0=0;zz0=0;topClamp();
+  const fit={ZM,zx0,zz0},big=document.createElement('canvas');big.width=cv.width;big.height=cv.height;drawTop(big.getContext('2d'));
+  const x0=(0-zx0)*ZM,y0=TYB-(ZD-zz0)*ZM,c=document.createElement('canvas');
+  c.width=Math.max(2,Math.round(WW*ZM*DPR));c.height=Math.max(2,Math.round(ZD*ZM*DPR));
+  c.getContext('2d').drawImage(big,Math.round(x0*DPR),Math.round(y0*DPR),c.width,c.height,0,0,c.width,c.height);
+  [ZM,zx0,zz0,zCol]=sv;topClamp();return {c,fit}}
+function buildTex(){const R=ensRect(1),T=texTop();return {front:texSide(),top:T.c,fit:T.fit,R,k0:R.w/WW}}
+const enterTopFromEns0=enterTopFromEns;enterTopFromEns=function(x){enterTopFromEns0(x);if(anim)anim.tex=buildTex()};
+const exitTopToEns0=exitTopToEns;exitTopToEns=function(){exitTopToEns0();if(anim)anim.tex=buildTex()};
+
+const renderTransition0=renderTransition;
+renderTransition=function(u){if(!anim||anim.back!=='ens'||!anim.tex)return renderTransition0(u);bac3D(u)};
+function bac3D(u){const g=mainCtx,T=anim.tex,R=T.R,k0=T.k0,F=T.fit,P=DPR;
+  g.setTransform(1,0,0,1,0,0);g.fillStyle='#000';g.fillRect(0,0,cv.width,cv.height);
+  // paramètres de projection : X = x + a·z ; Y = c·y + b·z (profondeur z vers le haut quand b<0)
+  const a0=R.dx/(k0*ZD),b0=R.dy/(k0*ZD),ph0=Math.asin(clamp(-b0,0.05,0.95)),ph=ph0+(Math.PI/2-ph0)*u;
+  const a=a0*(1-u),c=Math.max(0,Math.cos(ph)/Math.cos(ph0)),b=-Math.sin(ph);
+  // échelle et position : de la vue 3/4 (k0, coin R) à la vue de dessus cadrée (ZM, zx0, zz0)
+  const k=k0*Math.pow(F.ZM/k0,u),Ox=R.x+(-F.zx0*F.ZM-R.x)*u,Oy=R.y+((TYB+F.zz0*F.ZM)-R.y)*u;
+  // perspective : nulle aux deux bouts, la plus forte au milieu ; les points proches de la caméra grossissent
+  const pr=0.45*Math.sin(Math.PI*u),L=Math.max(WW,WH,ZD),dv=(y,z)=>(z*Math.cos(ph)-(WH-y)*Math.sin(ph))/L,dvc=dv(WH/2,ZD/2);
+  const cx=Ox+k*(WW/2+a*ZD/2),cy=Oy+k*(c*WH/2+b*ZD/2);
+  const pt=(x,y,z)=>{const X=Ox+k*(x+a*z),Y=Oy+k*(c*y+b*z),s=1/(1+pr*(dv(y,z)-dvc));return [cx+(X-cx)*s,cy+(Y-cy)*s]};
+  // une bande de texture -> trapèze projeté (exact : la perspective ne varie pas le long d'une bande)
+  const strip=(img,j0,j1,A,B,C)=>{const tw=img.width,h=j1-j0;
+    g.setTransform((B[0]-A[0])*P/tw,(B[1]-A[1])*P/tw,(C[0]-A[0])*P/h,(C[1]-A[1])*P/h,A[0]*P-(C[0]-A[0])*P/h*j0,A[1]*P-(C[1]-A[1])*P/h*j0);
+    g.drawImage(img,0,j0,tw,Math.min(img.height-j0,h+1),0,j0,tw,Math.min(img.height-j0,h+1))};
+  const poly=(pts,fill)=>{g.setTransform(P,0,0,P,0,0);g.beginPath();pts.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.closePath();g.fillStyle=fill;g.fill()};
+  g.globalAlpha=1;
+  // côté droit (paroi sombre), visible tant que la profondeur part vers la droite
+  if(a>0.01){const q=[pt(WW,0,0),pt(WW,0,ZD),pt(WW,WH,ZD),pt(WW,WH,0)];g.setTransform(P,0,0,P,0,0);const gr=g.createLinearGradient(q[0][0],q[0][1],q[1][0],q[1][1]);gr.addColorStop(0,'#3a4350');gr.addColorStop(1,'#1c2229');poly(q,gr)}
+  // dessus : bandes de la vue de dessus, de l'arrière (haut de l'image) vers l'avant
+  const TT=T.top,ST=6;if(-b>0.02)for(let j=0;j<TT.height;j+=ST){const z0=ZD*(1-j/TT.height),z1=ZD*(1-Math.min(TT.height,j+ST)/TT.height);strip(TT,j,Math.min(TT.height,j+ST),pt(0,0,z0),pt(WW,0,z0),pt(0,0,z1))}
+  poly([pt(0,0,0),pt(WW,0,0),pt(WW,0,ZD),pt(0,0,ZD)],`rgba(0,0,0,${(0.55*(1-Math.sin(ph))).toFixed(3)})`);
+  // face avant : bandes de la coupe, de haut en bas
+  const TF=T.front;if(c>0.01){for(let j=0;j<TF.height;j+=ST){const y0=WH*j/TF.height,y1=WH*Math.min(TF.height,j+ST)/TF.height;strip(TF,j,Math.min(TF.height,j+ST),pt(0,y0,0),pt(WW,y0,0),pt(0,y1,0))}
+    poly([pt(0,0,0),pt(WW,0,0),pt(WW,WH,0),pt(0,WH,0)],`rgba(0,0,0,${(0.6*(1-c)).toFixed(3)})`)}
+  // arêtes de verre
+  g.setTransform(P,0,0,P,0,0);g.strokeStyle='rgba(200,220,235,0.55)';g.lineWidth=1;g.beginPath();
+  const E=[[[0,0,0],[WW,0,0]],[[WW,0,0],[WW,0,ZD]],[[WW,0,ZD],[0,0,ZD]],[[0,0,ZD],[0,0,0]]];
+  if(c>0.01)E.push([[0,0,0],[0,WH,0]],[[WW,0,0],[WW,WH,0]],[[0,WH,0],[WW,WH,0]]);if(a>0.01)E.push([[WW,0,ZD],[WW,WH,ZD]],[[WW,WH,0],[WW,WH,ZD]]);
+  for(const [p,q] of E){const A=pt(...p),B=pt(...q);g.moveTo(A[0],A[1]);g.lineTo(B[0],B[1])}g.stroke();
+  // fondu avec les vraies vues (3/4 au début, dessus à la fin)
+  g.setTransform(1,0,0,1,0,0);
+  if(u<0.18){g.globalAlpha=1-u/0.18;g.drawImage(sideSnap,0,0)}
+  else if(u>0.82){g.globalAlpha=(u-0.82)/0.18;g.drawImage(topSnap,0,0)}
+  g.globalAlpha=1}
 
 // ================= CORRECTIFS DE RECETTE =================
 // HUD : le sélecteur de vues et la barre de gauche se placent sous le HUD, quelle que soit sa hauteur

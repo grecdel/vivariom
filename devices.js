@@ -30,11 +30,15 @@ function camClamp(){camZ=clamp(camZ,fitZ*0.999,18);const wl=-8,wr=WW+8,wt=-16,wb
 function camFit(){fitZ=fitZoom();camZ=fitZ;camX=WW/2;camY=WH/2;camClamp()}
 const s2w=(sx,sy)=>[camX+(sx-W/2)/camZ,camY+(sy-H/2)/camZ];
 const w2s=(wx,wy)=>[(wx-camX)*camZ+W/2,(wy-camY)*camZ+H/2];
-function zoomAt(sx,sy,f){
-  if(view==='top'){topZoom(sx,sy,f);return}
-  if(view==='ens'){if(f>1)exitEns();return}
+// changement de vue à la molette / au pincement : coupe <-> 3/4 <-> dessus.
+// Pause après chaque bascule, et pour la molette il faut un nouveau geste (l'élan d'un pavé tactile ne compte pas).
+let vsT=0,wheelLast=0,wheelStart=0;
+function viewSwitchOK(src){const now=performance.now();return now-vsT>650&&(src!=='wheel'||wheelStart>vsT)}
+function zoomAt(sx,sy,f,src){
+  if(view==='top'){if(f<1&&ZM<=topFit()*1.001){if(viewSwitchOK(src)){vsT=performance.now()+1e4;snapTop();exitTopToEns()}return}topZoom(sx,sy,f);return}
+  if(view==='ens'){if(ensDir||!viewSwitchOK(src))return;vsT=performance.now()+1e4;if(f>1)exitEns();else enterTopFromEns(WW/2);return}
   if(view!=='side')return;
-  if(camZ<=fitZ*1.001&&f<1){enterEns();return}
+  if(camZ<=fitZ*1.001&&f<1){if(viewSwitchOK(src)){vsT=performance.now()+1e4;enterEns()}return}
   const [wx,wy]=s2w(sx,sy);camZ=clamp(camZ*f,fitZ,18);camX=wx-(sx-W/2)/camZ;camY=wy-(sy-H/2)/camZ;camClamp();
 }
 
@@ -326,7 +330,7 @@ const endPtr=e=>{const had=pts.has(e.pointerId);pts.delete(e.pointerId);if(!had|
   if(!gest.pinch&&!gest.moved&&pts.size===0)tapScreen((e.clientX-CVL),e.clientY);
   if(pts.size===0)gest=null};
 cv.addEventListener('pointerup',endPtr);cv.addEventListener('pointercancel',e=>{pts.delete(e.pointerId);if(!pts.size)gest=null});
-cv.addEventListener('wheel',e=>{e.preventDefault();zoomAt((e.clientX-CVL),e.clientY,e.deltaY<0?1.18:1/1.18)},{passive:false});
+cv.addEventListener('wheel',e=>{e.preventDefault();const now=performance.now();if(now-wheelLast>250)wheelStart=now;wheelLast=now;zoomAt((e.clientX-CVL),e.clientY,e.deltaY<0?1.18:1/1.18,'wheel')},{passive:false});
 // point du sol visé en vue 3/4 : abscisse (mm) et profondeur depuis la vitre (mm)
 function pickVolume(sx,sy){const R=ensRect(ensE),z=R.w/WW;let best=null,bd=1e9;
   for(let i=0;i<COLS;i++){const fy=R.y+surfY(i)*z;let f=R.dy?(sy-fy)/R.dy:0;if(f<-0.03||f>1.02)continue;f=clamp(f,0,0.96);

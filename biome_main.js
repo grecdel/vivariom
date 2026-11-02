@@ -324,9 +324,9 @@ function frame(now){
   if(!paused){let sim=real*speed;while(sim>0){const d=Math.min(1/30,sim);update(d);sim-=d}
     for(const r of rings)r.t+=real;rings=rings.filter(r=>r.t<0.6);flashT-=real;
     for(const k in bucket)bucket[k]=Math.min(2,bucket[k]+6*real);gBucket=Math.min(10,gBucket+30*real)}
-  if(view==='anim'){anim.t+=real/1.3;const t=Math.min(1,anim.t),e=t*t*(3-2*t);renderTransition(anim.dir>0?e:1-e);if(anim.t>=1){view=anim.dir>0?'top':(anim.back||'side');if(view==='ens'){ensE=1;ensDir=0}anim=null;if(view==='side'&&pendingView==='ens'){pendingView=null;enterEns()}}}
+  if(view==='anim'){anim.t+=real/1.3;const t=Math.min(1,anim.t),e=t*t*(3-2*t);renderTransition(anim.dir>0?e:1-e);if(anim.t>=1){view=anim.dir>0?'top':(anim.back||'side');if(view==='ens'){ensE=1;ensDir=0}anim=null;vsT=performance.now();if(view==='side'&&pendingView==='ens'){pendingView=null;enterEns()}}}
   else if(view==='top'){if(!paused)updProxies(Math.min(real*speed,0.1));drawTop(mainCtx)}
-  else{if(ensDir){ensE=clamp(ensE+ensDir*real/0.6,0,1);if(ensE<=0&&ensDir<0){ensDir=0;view='side';camFit();if(pendingView==='top'){pendingView=null;enterTop(WW/2);say('Vue du dessus : glisse le doigt pour te déplacer')}}if(ensE>=1&&ensDir>0)ensDir=0}draw()}
+  else{if(ensDir){ensE=clamp(ensE+ensDir*real/0.6,0,1);if(ensE<=0&&ensDir<0){ensDir=0;vsT=performance.now();view='side';camFit();if(pendingView==='top'){pendingView=null;enterTop(WW/2);say('Vue du dessus : glisse le doigt pour te déplacer')}}if(ensE>=1&&ensDir>0){ensDir=0;vsT=performance.now()}}draw()}
   hudT-=real;if(hudT<=0){hud();hudT=0.25}
   requestAnimationFrame(frame);
 }
@@ -338,7 +338,7 @@ window.__sim={DBG,dbgk(id){return creatures.filter(c=>!c.dead&&c.sp.id===id).map
 const vsw=document.getElementById('viewsw');let vswLast='';
 function curView(){return view==='top'||view==='anim'&&anim&&anim.dir>0?'top':view==='ens'?'ens':'side'}
 function syncViewSw(){const v=curView();if(v===vswLast)return;vswLast=v;vsw.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===v))}
-function bareSide(){if(view==='top'||view==='anim'){anim=null;view='side'}if(view==='ens'){view='side';ensE=0;ensDir=0}document.getElementById('bback').style.display='none';camFit()}
+function bareSide(){vsT=0;if(view==='top'||view==='anim'){anim=null;view='side'}if(view==='ens'){view='side';ensE=0;ensDir=0}document.getElementById('bback').style.display='none';camFit()}
 vsw.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(state!=='play')return;initAudio();const v=b.dataset.v,cur=curView();if(v===cur||view==='anim')return;
   if(v==='side'){if(cur==='top'){topFromEns=false;exitTop()}else exitEns()}
   if(v==='ens'){if(cur==='top'){if(topFromEns)exitTop();else{pendingView='ens';exitTop()}}else enterEns()}

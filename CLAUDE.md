@@ -24,13 +24,15 @@ python3 assemble.py        # produit biome.html (le jeu complet) et le dossier w
 
 Ordre des fichiers :
 - **core** : biome_core.js, variants.js, unlocks.js, decor.js, topview.js, profile.js, devices.js, links.js, lure.js, species2.js, species3.js
-- **main** : biome_main.js, menu.js, extras.js, tutorial.js, ambiance.js, save.js, fixes.js (en dernier : il remplace certaines fonctions)
+- **main** : biome_main.js, menu.js, extras.js, tutorial.js, ambiance.js, save.js, bascule.js, fixes.js (en dernier : il remplace certaines fonctions)
 
 ## Repères
 - **Monde** :
   - grille en mm, CS = 2,5 mm ; COLS/ROWS/ZD dépendent du format (FORMATS : std, fourmi, grand, cube) ;
   - profondeur z sur les bêtes, les plantes et les objets.
 - **Vues** : coupe (2D), 3/4 (`zT`/`zP`, décors en sprites hors écran) et dessus (topview.js, à l'échelle réelle).
+  - Molette / pincement (`zoomAt`, devices.js) : coupe ⇄ 3/4 ⇄ dessus ; en dessus, la molette zoome, et au zoom minimum la molette arrière ramène en 3/4. Pause de 650 ms après chaque bascule (`vsT`) et nouveau geste exigé pour la molette (l'élan est ignoré).
+  - Bascule 3/4 ⇄ dessus : bascule.js dessine un pavé en volume (face avant = coupe, dessus = vue de dessus, paroi droite) qui se redresse, avec fondu vers les vraies vues aux deux bouts.
 - **Campagne** :
   - 22 niveaux en 9 chapitres (CHAPTERS/LEVELS dans biome_core.js) ;
   - récompenses et déblocages dans unlocks.js ;
@@ -59,7 +61,7 @@ Quand l'écran fait moins de 520 px de haut en paysage, `resize()` pose la class
 
 Les tests utilisent Playwright (`npm i playwright` si besoin) et passent par `window.__sim` : startLevel, go, tap, run, counts, win, bench…
 ```
-python3 assemble.py && node tests/fixcheck.js && node tests/all_lv.js && node tests/sauvegarde.js && node tests/appli_web.js && node tests/salle.js
+python3 assemble.py && node tests/fixcheck.js && node tests/all_lv.js && node tests/sauvegarde.js && node tests/appli_web.js && node tests/salle.js && node tests/bascule.js
 ```
 `__sim.startLevel` appelle la version non enveloppée : `#vnav` ne s'affiche pas dans les tests. C'est normal.
 

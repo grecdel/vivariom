@@ -1,5 +1,5 @@
-// Vivariom — fonctionnement hors ligne. Version f7668cf563 (changée à chaque assemblage).
-const CACHE='vivariom-f7668cf563';
+// Vivariom — fonctionnement hors ligne. Version 41d1778411 (changée à chaque assemblage).
+const CACHE='vivariom-41d1778411';
 const FILES=['./','index.html','manifest.webmanifest','icones/icone-192.png','icones/icone-512.png','icones/icone-192-masque.png','icones/icone-512-masque.png','icones/apple-touch-icon.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
