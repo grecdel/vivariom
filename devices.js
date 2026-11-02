@@ -287,10 +287,14 @@ function row(label,inner){return `<div class="drow"><span>${label}</span>${inner
 function dayRow(){return row(`Durée du jour <b>${DEV.time.day}%</b>`,`<input type="range" min="20" max="100" value="${DEV.time.day}" data-k="time.day">`)+`<p class="dim">${isDay()?'☀ Il fait jour':'☾ Il fait nuit'} · cycle de ${DAYLEN} s, partagé par les deux lampes</p>`}
 function openDev(id){
   if(!id){devp.style.display='none';return}
-  let h='';
   if(devLocked(id)){const T={neon:'▬ Néon T5',vent:'🌀 Ventilation',heat:'🔥 Tapis chauffant',thermo:'🌡 Thermo-hygromètre'}[id];
     devp.innerHTML=`<div class="dbox"><h2>${T}</h2><p>${lockTxt(DEV_KEY[id])}</p><button class="btn2" data-act="close">Fermer</button></div>`;devp.style.display='flex';
     devp.querySelector('[data-act]').onclick=()=>openDev(null);return}
+  const h=devHTML(id);
+  devp.innerHTML=`<div class="dbox">${h}<button class="btn2" data-act="close">Fermer</button></div>`;devp.style.display='flex';
+  wireDev(devp,id,()=>openDev(id),()=>openDev(null))}
+// contenu des réglages d'un appareil (fenêtre de l'appareil, panneau de contrôle)
+function devHTML(id){let h='';
   if(id==='spot')h=`<h2>💡 Spot LED</h2><p>Lumière chaude et concentrée. Elle fait pousser les plantes, mais elle <b>chauffe</b> (jusqu'à +3,5 °C) et assèche le sol.</p>`+row('Allumé',`<input type="checkbox" data-k="spot.on" ${DEV.spot.on?'checked':''}>`)+row(`Intensité <b>${DEV.spot.int}%</b>`,`<input type="range" min="10" max="100" value="${DEV.spot.int}" data-k="spot.int">`)+dayRow();
   if(id==='neon')h=`<h2>▬ Néon T5</h2><p>Lumière diffuse sur toute la largeur, qui chauffe peu. Le type de tube change la croissance et l'ambiance du vivarium.</p>`+row('Allumé',`<input type="checkbox" data-k="neon.on" ${DEV.neon.on?'checked':''}>`)+row(`Intensité <b>${DEV.neon.int}%</b>`,`<input type="range" min="10" max="100" value="${DEV.neon.int}" data-k="neon.int">`)
     +`<div class="drow"><span>Tube</span><span class="seg">${Object.entries(NEON).map(([k,v])=>`<button data-neon="${k}" class="${DEV.neon.type===k?'on':''}" style="--c:rgb(${v.rgb})" ${k!=='blanc'&&!has('tubes')?'disabled':''}>${k!=='blanc'&&!has('tubes')?'🔒 ':''}${v.nom}</button>`).join('')}</span></div>`
@@ -300,12 +304,14 @@ function openDev(id){
   if(id==='heat')h=`<h2>🔥 Tapis chauffant</h2><p>La chaleur accélère tout le monde : les bêtes mangent plus et se reproduisent plus vite… et le sol sèche plus vite.</p>`+row('Allumé',`<input type="checkbox" data-k="heat.on" ${DEV.heat.on?'checked':''}>`)+row(`Température visée <b>${DEV.heat.target}°C</b>`,`<input type="range" min="18" max="32" value="${DEV.heat.target}" data-k="heat.target">`);
   if(id==='vent')h=`<h2>🌀 Ventilation</h2><p>Ouverte : l'air se renouvelle et le sol sèche plus vite. Fermée : l'humidité reste.</p>`+row('Grille ouverte',`<input type="checkbox" data-k="vent.open" ${DEV.vent.open?'checked':''}>`);
   if(id==='thermo')h=`<h2>🌡 Thermo-hygromètre</h2>`+gaugeSVG()+histSVG()+row('Température',`<b>${temp().toFixed(1).replace('.',',')} °C</b>`)+row('Humidité de surface',`<b>${Math.round(surfWet()*100)} %</b>`)+row('Humidité en profondeur',`<b>${Math.round(deepWet()*100)} %</b>`)+row('Lumière',`<b>${isDay()?'jour':'nuit'} · ×${lightF().toFixed(2).replace('.',',')}</b>`)+row('Métabolisme des bêtes',`<b>×${metabF().toFixed(2).replace('.',',')}</b>`)+`<p class="dim">Plantes : 20–90 % d'humidité. Cloportes et lombrics : plus de 25–30 %.</p>`;
-  devp.innerHTML=`<div class="dbox">${h}<button class="btn2" data-act="close">Fermer</button></div>`;devp.style.display='flex';
-  devp.querySelectorAll('[data-k]').forEach(inp=>inp.oninput=inp.onchange=()=>{const [a,b]=inp.dataset.k.split('.');DEV[a][b]=inp.type==='checkbox'?inp.checked:+inp.value;openDev(id)});
-  devp.querySelectorAll('[data-neon]').forEach(bt=>bt.onclick=()=>{DEV.neon.type=bt.dataset.neon;openDev(id)});
-  devp.querySelectorAll('[data-act]').forEach(bt=>bt.onclick=()=>{const a=bt.dataset.act;if(a==='close')openDev(null);
-    if(a==='refill'){DEV.pump.level=100;openDev(id)}
-    if(a==='mistnow'){if(lvl.stock.pluie!=null){if(stock.pluie<=0){say('Plus de brumisation en réserve');return}stock.pluie--;refreshPalette()}for(const x of nozzles())rainAt(x,DEV.mist.dur);openDev(null)}});
+  return h}
+// réglages : curseurs, cases, boutons (re = redessiner, done = après « brumiser maintenant »)
+function wireDev(root,id,re,done){
+  root.querySelectorAll('[data-k]').forEach(inp=>inp.oninput=inp.onchange=()=>{const [a,b]=inp.dataset.k.split('.');DEV[a][b]=inp.type==='checkbox'?inp.checked:+inp.value;re()});
+  root.querySelectorAll('[data-neon]').forEach(bt=>bt.onclick=()=>{DEV.neon.type=bt.dataset.neon;re()});
+  root.querySelectorAll('[data-act]').forEach(bt=>bt.onclick=()=>{const a=bt.dataset.act;if(a==='close'){openDev(null);return}
+    if(a==='refill'){DEV.pump.level=100;re()}
+    if(a==='mistnow'){if(lvl.stock.pluie!=null){if(stock.pluie<=0){say('Plus de brumisation en réserve');return}stock.pluie--;refreshPalette()}for(const x of nozzles())rainAt(x,DEV.mist.dur);done()}});
 }
 devp.addEventListener('click',e=>{if(e.target===devp)openDev(null)});
 // ================= GESTES =================

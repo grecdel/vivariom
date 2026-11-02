@@ -238,6 +238,22 @@ button:not(:disabled):active,.lv:not(.lock):active,.cat:active,.chip:active{box-
 #aide .atxt{flex:1;min-width:160px;font-size:11px;color:#bbb}
 @media (min-width:900px){body:not(.land) #aide{left:50%;right:auto;width:min(calc(100% - 16px),640px);transform:translateX(-50%)}}
 body.land #aide{left:184px;right:66px;bottom:auto;top:50px}body.land.left #aide{left:66px;right:184px}
+/* Panneau de contrôle du matériel (ctrl.js) */
+#ctrl{display:none;position:fixed;right:8px;top:48px;bottom:8px;width:300px;box-sizing:border-box;overflow-y:auto;overscroll-behavior:contain;z-index:3;background:#0b0e0bf4;border:1px solid #2d4a2f;border-radius:14px;padding:6px 12px 10px;font-size:12px;line-height:1.4;color:#ccc}
+#ctrl.sheet{left:6px;right:6px;top:auto;bottom:6px;width:auto;max-height:62vh;z-index:6;box-shadow:0 -10px 30px #000c}
+#ctrl .chead{position:sticky;top:-6px;background:#0b0e0b;display:flex;align-items:center;gap:8px;padding:6px 0;z-index:1}#ctrl .chead b{font-size:14px;color:#fff}#ctrl .chead .dim{flex:1;font-size:11px}
+#ctrl .cx{background:#111;border:1px solid #444;color:#ccc;border-radius:50%;width:26px;height:26px;padding:0}
+#ctrl .cs{border-top:1px solid #1f2a1f;padding:6px 0 2px}#ctrl h3{display:flex;align-items:center;gap:6px;margin:2px 0;font:600 13px -apple-system,Roboto,sans-serif;color:#e8eee4}
+#ctrl .cst{margin-left:auto;font:600 11px ui-monospace,monospace;color:#8bff6a}#ctrl p{margin:3px 0 6px;color:#8a948a;font-size:11px}#ctrl .drow{margin:5px 0}#ctrl .btn{padding:8px;font-size:13px;margin-top:4px}
+#ctrl svg{max-width:100%;height:auto}
+body.ctrlw #viewsw,body.ctrlw #zoomui{right:318px!important}body.ctrlw #aide{right:318px}
+body.ctrlw #pal,body.ctrlw #drawer{left:8px!important;right:318px!important;width:auto!important;transform:none!important}body.ctrlw #bar{right:318px!important}body.ctrlw #aide{left:8px;right:318px;width:auto;transform:none}
+@media (max-width:700px){body:not(.land) #ctrlbar{flex-direction:row;left:6px;right:6px;top:auto;bottom:132px;gap:4px}body:not(.land) #ctrlbar button{flex:1;width:auto;min-width:0}}
+#ctrlbtn{display:none;position:fixed;right:8px;top:118px;z-index:3;background:#0b0b0bee;border:1px solid #3d6b3f;color:#cfe;border-radius:12px;padding:7px 10px;font:600 12px -apple-system,Roboto,sans-serif}
+body.land #ctrlbtn{top:166px;right:6px;width:50px;padding:7px 0;font-size:0}body.land #ctrlbtn::first-letter{font-size:17px}body.land.left #ctrlbtn{right:auto;left:6px}
+#ctrlbar{display:none;position:fixed;left:8px;top:160px;flex-direction:column;gap:5px;z-index:3}
+#ctrlbar button{width:70px;background:#0b0e0bee;border:1px solid #2d4a2f;border-radius:10px;color:#ddd;padding:4px 2px;display:flex;flex-direction:column;align-items:center;gap:1px}#ctrlbar .ci{font-size:17px;line-height:1.1}#ctrlbar .cs2{font:600 9.5px ui-monospace,monospace;color:#8bff6a;white-space:nowrap}#ctrlbar button.lock{opacity:.45}
+body.land #ctrlbar{left:184px;top:52px}body.land.left #ctrlbar{left:66px}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0b0d0a">
@@ -2046,10 +2062,14 @@ function row(label,inner){return `<div class="drow"><span>${label}</span>${inner
 function dayRow(){return row(`Durée du jour <b>${DEV.time.day}%</b>`,`<input type="range" min="20" max="100" value="${DEV.time.day}" data-k="time.day">`)+`<p class="dim">${isDay()?'☀ Il fait jour':'☾ Il fait nuit'} · cycle de ${DAYLEN} s, partagé par les deux lampes</p>`}
 function openDev(id){
   if(!id){devp.style.display='none';return}
-  let h='';
   if(devLocked(id)){const T={neon:'▬ Néon T5',vent:'🌀 Ventilation',heat:'🔥 Tapis chauffant',thermo:'🌡 Thermo-hygromètre'}[id];
     devp.innerHTML=`<div class="dbox"><h2>${T}</h2><p>${lockTxt(DEV_KEY[id])}</p><button class="btn2" data-act="close">Fermer</button></div>`;devp.style.display='flex';
     devp.querySelector('[data-act]').onclick=()=>openDev(null);return}
+  const h=devHTML(id);
+  devp.innerHTML=`<div class="dbox">${h}<button class="btn2" data-act="close">Fermer</button></div>`;devp.style.display='flex';
+  wireDev(devp,id,()=>openDev(id),()=>openDev(null))}
+// contenu des réglages d'un appareil (fenêtre de l'appareil, panneau de contrôle)
+function devHTML(id){let h='';
   if(id==='spot')h=`<h2>💡 Spot LED</h2><p>Lumière chaude et concentrée. Elle fait pousser les plantes, mais elle <b>chauffe</b> (jusqu'à +3,5 °C) et assèche le sol.</p>`+row('Allumé',`<input type="checkbox" data-k="spot.on" ${DEV.spot.on?'checked':''}>`)+row(`Intensité <b>${DEV.spot.int}%</b>`,`<input type="range" min="10" max="100" value="${DEV.spot.int}" data-k="spot.int">`)+dayRow();
   if(id==='neon')h=`<h2>▬ Néon T5</h2><p>Lumière diffuse sur toute la largeur, qui chauffe peu. Le type de tube change la croissance et l'ambiance du vivarium.</p>`+row('Allumé',`<input type="checkbox" data-k="neon.on" ${DEV.neon.on?'checked':''}>`)+row(`Intensité <b>${DEV.neon.int}%</b>`,`<input type="range" min="10" max="100" value="${DEV.neon.int}" data-k="neon.int">`)
     +`<div class="drow"><span>Tube</span><span class="seg">${Object.entries(NEON).map(([k,v])=>`<button data-neon="${k}" class="${DEV.neon.type===k?'on':''}" style="--c:rgb(${v.rgb})" ${k!=='blanc'&&!has('tubes')?'disabled':''}>${k!=='blanc'&&!has('tubes')?'🔒 ':''}${v.nom}</button>`).join('')}</span></div>`
@@ -2059,12 +2079,14 @@ function openDev(id){
   if(id==='heat')h=`<h2>🔥 Tapis chauffant</h2><p>La chaleur accélère tout le monde : les bêtes mangent plus et se reproduisent plus vite… et le sol sèche plus vite.</p>`+row('Allumé',`<input type="checkbox" data-k="heat.on" ${DEV.heat.on?'checked':''}>`)+row(`Température visée <b>${DEV.heat.target}°C</b>`,`<input type="range" min="18" max="32" value="${DEV.heat.target}" data-k="heat.target">`);
   if(id==='vent')h=`<h2>🌀 Ventilation</h2><p>Ouverte : l'air se renouvelle et le sol sèche plus vite. Fermée : l'humidité reste.</p>`+row('Grille ouverte',`<input type="checkbox" data-k="vent.open" ${DEV.vent.open?'checked':''}>`);
   if(id==='thermo')h=`<h2>🌡 Thermo-hygromètre</h2>`+gaugeSVG()+histSVG()+row('Température',`<b>${temp().toFixed(1).replace('.',',')} °C</b>`)+row('Humidité de surface',`<b>${Math.round(surfWet()*100)} %</b>`)+row('Humidité en profondeur',`<b>${Math.round(deepWet()*100)} %</b>`)+row('Lumière',`<b>${isDay()?'jour':'nuit'} · ×${lightF().toFixed(2).replace('.',',')}</b>`)+row('Métabolisme des bêtes',`<b>×${metabF().toFixed(2).replace('.',',')}</b>`)+`<p class="dim">Plantes : 20–90 % d'humidité. Cloportes et lombrics : plus de 25–30 %.</p>`;
-  devp.innerHTML=`<div class="dbox">${h}<button class="btn2" data-act="close">Fermer</button></div>`;devp.style.display='flex';
-  devp.querySelectorAll('[data-k]').forEach(inp=>inp.oninput=inp.onchange=()=>{const [a,b]=inp.dataset.k.split('.');DEV[a][b]=inp.type==='checkbox'?inp.checked:+inp.value;openDev(id)});
-  devp.querySelectorAll('[data-neon]').forEach(bt=>bt.onclick=()=>{DEV.neon.type=bt.dataset.neon;openDev(id)});
-  devp.querySelectorAll('[data-act]').forEach(bt=>bt.onclick=()=>{const a=bt.dataset.act;if(a==='close')openDev(null);
-    if(a==='refill'){DEV.pump.level=100;openDev(id)}
-    if(a==='mistnow'){if(lvl.stock.pluie!=null){if(stock.pluie<=0){say('Plus de brumisation en réserve');return}stock.pluie--;refreshPalette()}for(const x of nozzles())rainAt(x,DEV.mist.dur);openDev(null)}});
+  return h}
+// réglages : curseurs, cases, boutons (re = redessiner, done = après « brumiser maintenant »)
+function wireDev(root,id,re,done){
+  root.querySelectorAll('[data-k]').forEach(inp=>inp.oninput=inp.onchange=()=>{const [a,b]=inp.dataset.k.split('.');DEV[a][b]=inp.type==='checkbox'?inp.checked:+inp.value;re()});
+  root.querySelectorAll('[data-neon]').forEach(bt=>bt.onclick=()=>{DEV.neon.type=bt.dataset.neon;re()});
+  root.querySelectorAll('[data-act]').forEach(bt=>bt.onclick=()=>{const a=bt.dataset.act;if(a==='close'){openDev(null);return}
+    if(a==='refill'){DEV.pump.level=100;re()}
+    if(a==='mistnow'){if(lvl.stock.pluie!=null){if(stock.pluie<=0){say('Plus de brumisation en réserve');return}stock.pluie--;refreshPalette()}for(const x of nozzles())rainAt(x,DEV.mist.dur);done()}});
 }
 devp.addEventListener('click',e=>{if(e.target===devp)openDev(null)});
 // ================= GESTES =================
@@ -3835,6 +3857,52 @@ const openDrawer1=openDrawer;openDrawer=function(c){openDrawer1(c);aideShow()};
 // mise à jour des nombres pendant le jeu
 setInterval(()=>{if(aideId&&state==='play')aideShow();else if($('aide')&&$('aide').style.display!=='none')aideShow()},1000);
 if(window.__sim)window.__sim.aide=()=>{const el=$('aide');return el&&el.style.display!=='none'?el.innerText.replace(/\s+/g,' '):''};
+
+// ---------- panneau de contrôle du matériel, à côté du vivarium ----------
+// CTRL : 'aucun' (réglages seulement en touchant les appareils en 3/4),
+//        'panneau' (panneau à droite sur grand écran, tiroir du bas sur téléphone),
+//        'barre' (colonne d'icônes avec l'état de chaque appareil ; un clic ouvre ses réglages).
+let CTRL='aucun';
+const CTRL_IDS=['thermo','spot','neon','mist','pump','heat','vent'];
+const CTRL_NOM={thermo:['🌡','Thermo-hygromètre'],spot:['💡','Spot LED'],neon:['▬','Néon T5'],mist:['💨','Brumisateur'],pump:['🚰','Réservoir'],heat:['🔥','Tapis chauffant'],vent:['🌀','Ventilation']};
+const fr1=v=>v.toFixed(1).replace('.',',');
+function ctrlEtat(id){if(devLocked(id))return '🔒';
+  if(id==='thermo')return `${fr1(temp())} °C · ${Math.round(surfWet()*100)} %`;
+  if(id==='spot')return DEV.spot.on?`${DEV.spot.int} %`:'éteint';
+  if(id==='neon')return DEV.neon.on?`${DEV.neon.int} %`:'éteint';
+  if(id==='mist'){const broken=lvl.showers===false||!has('prog');return broken?'manuel':DEV.mist.auto?`auto · ${Math.max(0,Math.ceil(showerT))} s`:'manuel'}
+  if(id==='pump')return `${Math.round(DEV.pump.level)} %`;
+  if(id==='heat')return DEV.heat.on?`→ ${DEV.heat.target} °C`:'éteint';
+  if(id==='vent')return DEV.vent.open?'ouverte':'fermée';return ''}
+const ctrlOn=()=>CTRL!=='aucun'&&state==='play';
+const ctrlWide=()=>window.innerWidth>=1000&&!LAND;
+let ctrlOpen=false,ctrlBusy=0;
+(()=>{const p=document.createElement('div');p.id='ctrl';document.body.appendChild(p);
+  const b=document.createElement('button');b.id='ctrlbtn';b.textContent='🎛 Matériel';document.body.appendChild(b);b.onclick=()=>{ctrlOpen=!ctrlOpen;ctrlDraw()};
+  const r=document.createElement('div');r.id='ctrlbar';document.body.appendChild(r);
+  p.addEventListener('pointerdown',()=>{ctrlBusy=performance.now()+1e5});addEventListener('pointerup',()=>{if(ctrlBusy)ctrlBusy=performance.now()+400})})();
+function ctrlSection(id){const [ic,nom]=CTRL_NOM[id];
+  let body=devLocked(id)?`<p class="dim">${lockTxt(DEV_KEY[id])}</p>`:devHTML(id).replace(/<h2>[^<]*<\/h2>/,'');
+  // thermomètre : dans le panneau, seulement les chiffres (le cadran et la courbe restent dans sa fenêtre)
+  if(id==='thermo')body=body.replace(/<svg[\s\S]*?<\/svg>/g,'').replace(/<img [^>]*>/g,'').replace(/<p class="dim">La dernière minute\.<\/p>/,'');
+  return `<section class="cs" data-id="${id}"><h3>${ic} ${nom}<span class="cst">${ctrlEtat(id)}</span></h3><div class="csb">${body}</div></section>`}
+function ctrlDraw(){const p=$('ctrl'),b=$('ctrlbtn'),r=$('ctrlbar');if(!p)return;
+  const panel=ctrlOn()&&CTRL==='panneau',bar=ctrlOn()&&CTRL==='barre';
+  document.body.classList.toggle('ctrlw',panel&&ctrlWide());
+  b.style.display=panel&&!ctrlWide()?'block':'none';
+  p.style.display=panel&&(ctrlWide()||ctrlOpen)?'block':'none';
+  r.style.display=bar?'flex':'none';
+  if(p.style.display==='block'){p.classList.toggle('sheet',!ctrlWide());
+    p.innerHTML=`<div class="chead"><b>🎛 Matériel</b><span class="dim">${isDay()?'☀ jour':'☾ nuit'} · métabolisme ×${fr1(metabF())}</span>${ctrlWide()?'':'<button class="cx">✕</button>'}</div>`+CTRL_IDS.map(ctrlSection).join('');
+    for(const s of p.querySelectorAll('.cs'))wireDev(s,s.dataset.id,ctrlDraw,ctrlDraw);
+    const x=p.querySelector('.cx');if(x)x.onclick=()=>{ctrlOpen=false;ctrlDraw()}}
+  if(bar){r.innerHTML=CTRL_IDS.map(id=>`<button data-id="${id}" class="${devLocked(id)?'lock':''}" title="${CTRL_NOM[id][1]}"><span class="ci">${CTRL_NOM[id][0]}</span><span class="cs2">${id==='thermo'&&!devLocked(id)?fr1(temp())+'°':ctrlEtat(id).replace('auto · ','⏱ ')}</span></button>`).join('');
+    r.querySelectorAll('button').forEach(bt=>bt.onclick=()=>openDev(bt.dataset.id))}}
+// mise à jour de l'état chaque seconde (sauf pendant qu'on manipule un réglage)
+setInterval(()=>{if(CTRL==='aucun')return;if(performance.now()<ctrlBusy){const p=$('ctrl');if(p)for(const s of p.querySelectorAll('.cs'))s.querySelector('.cst').textContent=ctrlEtat(s.dataset.id);return}ctrlDraw()},1000);
+// le panneau large prend de la place à droite : la zone de jeu se réduit d'autant
+const resize1=resize;resize=function(){resize1();if(CTRL==='panneau'&&ctrlOn()&&ctrlWide()){CVR+=318;W=window.innerWidth-CVL-CVR;cv.width=W*DPR;cv.style.width=W+'px';if(COLS)camFit()}};
+let ctrlLast='';setInterval(()=>{const k=CTRL+'|'+ctrlOn()+'|'+ctrlWide();if(k!==ctrlLast){ctrlLast=k;resize();ctrlDraw()}},300);
 
 // ================= CORRECTIFS DE RECETTE =================
 // HUD : le sélecteur de vues et la barre de gauche se placent sous le HUD, quelle que soit sa hauteur

@@ -24,7 +24,7 @@ python3 assemble.py        # produit biome.html (le jeu complet) et le dossier w
 
 Ordre des fichiers :
 - **core** : biome_core.js, variants.js, unlocks.js, decor.js, topview.js, profile.js, devices.js, links.js, lure.js, species2.js, species3.js
-- **main** : biome_main.js, menu.js, extras.js, tutorial.js, ambiance.js, save.js, bascule.js, tiroir.js, soie.js, aide.js, fixes.js (en dernier : il remplace certaines fonctions)
+- **main** : biome_main.js, menu.js, extras.js, tutorial.js, ambiance.js, save.js, bascule.js, tiroir.js, soie.js, aide.js, ctrl.js, fixes.js (en dernier : il remplace certaines fonctions)
 
 ## Repères
 - **Monde** :
@@ -71,6 +71,7 @@ python3 assemble.py && node tests/fixcheck.js && node tests/all_lv.js && node te
 `__sim.startLevel` appelle la version non enveloppée : `#vnav` ne s'affiche pas dans les tests. C'est normal.
 
 ## Points ouverts (connus)
+- Panneau de contrôle du matériel (ctrl.js) : `CTRL` = 'aucun' (actuel), 'panneau' (A : panneau à droite sur grand écran, tiroir « 🎛 Matériel » sur téléphone) ou 'barre' (B : icônes d'état, clic = fenêtre de l'appareil). Prototypes proposés, choix en attente. Les réglages d'un appareil viennent de `devHTML(id)` / `wireDev()` (devices.js), partagés avec la fenêtre `openDev`.
 - Paysage sur téléphone (hauteur < 520 px) : à valider sur un vrai téléphone (toucher, rotation, mode gaucher).
 
 ## Publication

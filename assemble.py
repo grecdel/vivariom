@@ -33,7 +33,7 @@ rep("    shapePath(sh,len,wid,0,0,1);ctx.strokeStyle=lc;ctx.globalAlpha=alpha*br
 rep("    if(i===0){ctx.globalAlpha=alpha;ctx.fillStyle=lc;ctx.fillRect(len/2-3,-wid/2+1,2,2);ctx.fillRect(len/2-3,wid/2-3,2,2)}",
     "    if(i===0){ctx.globalAlpha=alpha;if(NAT()&&!gray){ctx.fillStyle='#0a0a0a';for(const sy of [-1,1]){ctx.beginPath();ctx.arc(len/2-2,sy*(wid/2-1.6),0.9,0,TAU);ctx.fill()}}else{ctx.fillStyle=lc;ctx.fillRect(len/2-3,-wid/2+1,2,2);ctx.fillRect(len/2-3,wid/2-3,2,2)}}")
 core=open('biome_core.js').read()+'\n'+open('variants.js').read()+'\n'+open('unlocks.js').read()+'\n'+open('decor.js').read()+'\n'+open('topview.js').read()+'\n'+open('profile.js').read()+'\n'+open('devices.js').read()+'\n'+open('links.js').read()+'\n'+open('lure.js').read()+'\n'+open('species2.js').read()+'\n'+open('species3.js').read()
-main=open('biome_main.js').read()+'\n'+open('menu.js').read()+'\n'+open('extras.js').read()+"\n"+open('tutorial.js').read()+"\n"+open('ambiance.js').read()+'\n'+open('save.js').read()+'\n'+open('bascule.js').read()+'\n'+open('tiroir.js').read()+'\n'+open('soie.js').read()+'\n'+open('aide.js').read()+'\n'+open('fixes.js').read()+"\n"
+main=open('biome_main.js').read()+'\n'+open('menu.js').read()+'\n'+open('extras.js').read()+"\n"+open('tutorial.js').read()+"\n"+open('ambiance.js').read()+'\n'+open('save.js').read()+'\n'+open('bascule.js').read()+'\n'+open('tiroir.js').read()+'\n'+open('soie.js').read()+'\n'+open('aide.js').read()+'\n'+open('ctrl.js').read()+'\n'+open('fixes.js').read()+"\n"
 main=main.replace("for(const id of order)for(const c of creatures)if(c.sp.id===id)drawCreature(c,1,false);",
  "for(const id of order)for(const c of creatures)if(c.sp.id===id){drawProfile(c,1,false);if(c.load){const h=c.segs[0];ctx.fillStyle=c.load.type==='grain'?(c.load.t===1?'#8a6a3a':'#d8b060'):'#ffb43a';ctx.fillRect(h.x+Math.cos(h.a)*5-1.5,h.y+Math.sin(h.a)*5-1.5,3,3)}}")
 html=r'''<!DOCTYPE html>
@@ -276,6 +276,22 @@ button:not(:disabled):active,.lv:not(.lock):active,.cat:active,.chip:active{box-
 #aide .atxt{flex:1;min-width:160px;font-size:11px;color:#bbb}
 @media (min-width:900px){body:not(.land) #aide{left:50%;right:auto;width:min(calc(100% - 16px),640px);transform:translateX(-50%)}}
 body.land #aide{left:184px;right:66px;bottom:auto;top:50px}body.land.left #aide{left:66px;right:184px}
+/* Panneau de contrôle du matériel (ctrl.js) */
+#ctrl{display:none;position:fixed;right:8px;top:48px;bottom:8px;width:300px;box-sizing:border-box;overflow-y:auto;overscroll-behavior:contain;z-index:3;background:#0b0e0bf4;border:1px solid #2d4a2f;border-radius:14px;padding:6px 12px 10px;font-size:12px;line-height:1.4;color:#ccc}
+#ctrl.sheet{left:6px;right:6px;top:auto;bottom:6px;width:auto;max-height:62vh;z-index:6;box-shadow:0 -10px 30px #000c}
+#ctrl .chead{position:sticky;top:-6px;background:#0b0e0b;display:flex;align-items:center;gap:8px;padding:6px 0;z-index:1}#ctrl .chead b{font-size:14px;color:#fff}#ctrl .chead .dim{flex:1;font-size:11px}
+#ctrl .cx{background:#111;border:1px solid #444;color:#ccc;border-radius:50%;width:26px;height:26px;padding:0}
+#ctrl .cs{border-top:1px solid #1f2a1f;padding:6px 0 2px}#ctrl h3{display:flex;align-items:center;gap:6px;margin:2px 0;font:600 13px -apple-system,Roboto,sans-serif;color:#e8eee4}
+#ctrl .cst{margin-left:auto;font:600 11px ui-monospace,monospace;color:#8bff6a}#ctrl p{margin:3px 0 6px;color:#8a948a;font-size:11px}#ctrl .drow{margin:5px 0}#ctrl .btn{padding:8px;font-size:13px;margin-top:4px}
+#ctrl svg{max-width:100%;height:auto}
+body.ctrlw #viewsw,body.ctrlw #zoomui{right:318px!important}body.ctrlw #aide{right:318px}
+body.ctrlw #pal,body.ctrlw #drawer{left:8px!important;right:318px!important;width:auto!important;transform:none!important}body.ctrlw #bar{right:318px!important}body.ctrlw #aide{left:8px;right:318px;width:auto;transform:none}
+@media (max-width:700px){body:not(.land) #ctrlbar{flex-direction:row;left:6px;right:6px;top:auto;bottom:132px;gap:4px}body:not(.land) #ctrlbar button{flex:1;width:auto;min-width:0}}
+#ctrlbtn{display:none;position:fixed;right:8px;top:118px;z-index:3;background:#0b0b0bee;border:1px solid #3d6b3f;color:#cfe;border-radius:12px;padding:7px 10px;font:600 12px -apple-system,Roboto,sans-serif}
+body.land #ctrlbtn{top:166px;right:6px;width:50px;padding:7px 0;font-size:0}body.land #ctrlbtn::first-letter{font-size:17px}body.land.left #ctrlbtn{right:auto;left:6px}
+#ctrlbar{display:none;position:fixed;left:8px;top:160px;flex-direction:column;gap:5px;z-index:3}
+#ctrlbar button{width:70px;background:#0b0e0bee;border:1px solid #2d4a2f;border-radius:10px;color:#ddd;padding:4px 2px;display:flex;flex-direction:column;align-items:center;gap:1px}#ctrlbar .ci{font-size:17px;line-height:1.1}#ctrlbar .cs2{font:600 9.5px ui-monospace,monospace;color:#8bff6a;white-space:nowrap}#ctrlbar button.lock{opacity:.45}
+body.land #ctrlbar{left:184px;top:52px}body.land.left #ctrlbar{left:66px}
 </style>
 </head>
 <body>
