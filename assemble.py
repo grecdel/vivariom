@@ -12,6 +12,26 @@ def fn(name):
 parts=[fn(n) for n in ['angDiff','segDist','colors','restPos','kneeOf','local','pulseAt','glowSprite','shapePath','drawWings','drawFeatures','drawSegPattern','drawCreature','drawTag','drawWaves']]
 lib='\n'.join(parts)
 lib=lib.replace("flying=!gray&&c.alt>1","flying=false").replace("air=preview||c.alt>3","air=preview||c.fly")
+# style « fin » / « naturel » (DESSIN, profile.js) appliqué aussi au dessin vu de dessus (vignettes, vue du dessus)
+def rep(a,b):
+    global lib
+    assert lib.count(a)==1,a[:70]
+    lib=lib.replace(a,b)
+rep("const col=gray?'#777':(c.state==='caught'&&Math.sin(simT*30)>0?'#ffffff':(c.infest>0&&Math.sin(simT*8)>0.6?'#ff6ad5':c.cLine));",
+    "const col=gray?'#777':(c.state==='caught'&&Math.sin(simT*30)>0?'#ffffff':(c.infest>0&&Math.sin(simT*8)>0.6?'#ff6ad5':(NAT()?natLine(c):c.cLine)));")
+rep("  // halo pulsé\n  if(!gray){\n    ctx.globalCompositeOperation='lighter';","  // halo pulsé\n  if(!gray&&!NAT()){\n    ctx.globalCompositeOperation='lighter';")
+rep("    ctx.strokeStyle=col;ctx.globalAlpha=alpha*bright*(0.12+0.3*P0);ctx.lineWidth=3.2;ctx.stroke();\n    ctx.globalAlpha=alpha*(0.45+0.5*bright);ctx.lineWidth=1;ctx.stroke();\n    for(const l of c.legs){",
+    "    ctx.strokeStyle=col;if(!FIN()){ctx.globalAlpha=alpha*bright*(0.12+0.3*P0);ctx.lineWidth=3.2;ctx.stroke()}\n    ctx.globalAlpha=alpha*(0.45+0.5*bright);ctx.lineWidth=FIN()?0.7:1;ctx.stroke();\n    if(!FIN())for(const l of c.legs){")
+rep("    if(!gray){ctx.fillStyle=c.segT[i];ctx.globalAlpha=alpha*(0.5+0.5*p);ctx.fill()}\n    ctx.save();ctx.clip();\n    const gx=clamp(Math.round(len/6),1,4)",
+    "    if(!gray){if(NAT()){ctx.fillStyle=natFill(c);ctx.globalAlpha=alpha}else{ctx.fillStyle=c.segT[i];ctx.globalAlpha=alpha*(0.5+0.5*p)}ctx.fill()}\n    ctx.save();ctx.clip();\n    const gx=clamp(Math.round(len/6),1,4)")
+rep("    if(!gray){ctx.fillStyle=lc;for(let a=0;a<gx;a++)for(let b=0;b<gy;b++){const lit=((a*7+b*3+i*5+c.beats)%4)===0;\n      ctx.globalAlpha=alpha*bright*(lit?",
+    "    if(!gray&&!NAT()){ctx.fillStyle=lc;const kf=FIN()?0.4:1;for(let a=0;a<gx;a++)for(let b=0;b<gy;b++){const lit=((a*7+b*3+i*5+c.beats)%4)===0;\n      ctx.globalAlpha=alpha*bright*kf*(lit?")
+rep("    ctx.globalAlpha=alpha*0.5;ctx.strokeStyle=lc;ctx.lineWidth=0.6;ctx.beginPath();\n    for(let a=1;a<gx;a++)",
+    "    ctx.globalAlpha=alpha*(FIN()?0.25:0.5);ctx.strokeStyle=lc;ctx.lineWidth=FIN()?0.35:0.6;ctx.beginPath();\n    for(let a=1;a<gx;a++)")
+rep("    shapePath(sh,len,wid,0,0,1);ctx.strokeStyle=lc;ctx.globalAlpha=alpha*bright*(0.15+0.45*p);ctx.lineWidth=3;ctx.stroke();\n    ctx.globalAlpha=alpha*(0.6+0.4*bright);ctx.lineWidth=1;ctx.stroke();\n    if(!gray&&len*wid>25){",
+    "    shapePath(sh,len,wid,0,0,1);ctx.strokeStyle=lc;if(!NAT()){ctx.globalAlpha=alpha*bright*(0.15+0.45*p)*(FIN()?0.5:1);ctx.lineWidth=FIN()?1.6:3;ctx.stroke()}\n    ctx.globalAlpha=alpha*(0.6+0.4*bright);ctx.lineWidth=FIN()?0.6:1;ctx.stroke();\n    if(!gray&&!FIN()&&len*wid>25){")
+rep("    if(i===0){ctx.globalAlpha=alpha;ctx.fillStyle=lc;ctx.fillRect(len/2-3,-wid/2+1,2,2);ctx.fillRect(len/2-3,wid/2-3,2,2)}",
+    "    if(i===0){ctx.globalAlpha=alpha;if(NAT()&&!gray){ctx.fillStyle='#0a0a0a';for(const sy of [-1,1]){ctx.beginPath();ctx.arc(len/2-2,sy*(wid/2-1.6),0.9,0,TAU);ctx.fill()}}else{ctx.fillStyle=lc;ctx.fillRect(len/2-3,-wid/2+1,2,2);ctx.fillRect(len/2-3,wid/2-3,2,2)}}")
 core=open('biome_core.js').read()+'\n'+open('variants.js').read()+'\n'+open('unlocks.js').read()+'\n'+open('decor.js').read()+'\n'+open('topview.js').read()+'\n'+open('profile.js').read()+'\n'+open('devices.js').read()+'\n'+open('links.js').read()+'\n'+open('lure.js').read()+'\n'+open('species2.js').read()+'\n'+open('species3.js').read()
 main=open('biome_main.js').read()+'\n'+open('menu.js').read()+'\n'+open('extras.js').read()+"\n"+open('tutorial.js').read()+"\n"+open('ambiance.js').read()+'\n'+open('save.js').read()+'\n'+open('bascule.js').read()+'\n'+open('tiroir.js').read()+'\n'+open('soie.js').read()+'\n'+open('aide.js').read()+'\n'+open('fixes.js').read()+"\n"
 main=main.replace("for(const id of order)for(const c of creatures)if(c.sp.id===id)drawCreature(c,1,false);",

@@ -408,12 +408,12 @@ function drawCreature(c,alpha,gray,preview){
     for(let i=0;i<c.segs.length;i++){const g=c.segs[i],d=c.dims[i];ctx.beginPath();ctx.ellipse(g.x+2,g.y+3,d[0]/2+1,d[1]/2+1,g.a,0,TAU);ctx.fill()}
     if(sp.w){const th=c.segs[1]||c.segs[0];ctx.globalAlpha=alpha*0.18;ctx.beginPath();ctx.ellipse(th.x+2,th.y+3,sp.w.wid*0.8,sp.w.len*0.9,th.a,0,TAU);ctx.fill()}}
   ctx.save();ctx.translate(ox,oy);
-  const col=gray?'#777':(c.state==='caught'&&Math.sin(simT*30)>0?'#ffffff':(c.infest>0&&Math.sin(simT*8)>0.6?'#ff6ad5':c.cLine));
+  const col=gray?'#777':(c.state==='caught'&&Math.sin(simT*30)>0?'#ffffff':(c.infest>0&&Math.sin(simT*8)>0.6?'#ff6ad5':(NAT()?natLine(c):c.cLine)));
   const en=gray?0.5:clamp(c.energy/(ROLES[c.role].start),0.2,1.3);
   let bright=0.5+0.5*Math.min(1,en);if(!gray&&!preview&&en<0.35&&Math.random()<0.18)bright*=0.25;
   const P0=gray?0:pulseAt(c,0);
   // halo pulsé
-  if(!gray){
+  if(!gray&&!NAT()){
     ctx.globalCompositeOperation='lighter';const spr=glowSprite(c.hue);const stepI=c.segs.length>8?2:1;
     for(let i=0;i<c.segs.length;i+=stepI){const g=c.segs[i],p=pulseAt(c,i);const R=(c.dims[i][1]*1.5+9)*(0.75+p*0.7);
       ctx.globalAlpha=alpha*bright*(0.07+0.35*p)*(sp.firefly?1.6:1);ctx.drawImage(spr,g.x-R,g.y-R,R*2,R*2)}
@@ -428,9 +428,9 @@ function drawCreature(c,alpha,gray,preview){
   // pattes
   if(c.legs.length){
     ctx.beginPath();for(const l of c.legs){const k=kneeOf(c,l);ctx.moveTo(l.hx,l.hy);ctx.lineTo(k[0],k[1]);ctx.lineTo(l.fx,l.fy)}
-    ctx.strokeStyle=col;ctx.globalAlpha=alpha*bright*(0.12+0.3*P0);ctx.lineWidth=3.2;ctx.stroke();
-    ctx.globalAlpha=alpha*(0.45+0.5*bright);ctx.lineWidth=1;ctx.stroke();
-    for(const l of c.legs){const k=kneeOf(c,l);const pl=gray?0:pulseAt(c,l.seg);ctx.fillStyle=gray||col!==c.cLine?col:c.segL[l.seg];ctx.globalAlpha=alpha*(0.5+0.5*bright);ctx.fillRect(k[0]-1.2,k[1]-1.2,2.4,2.4);
+    ctx.strokeStyle=col;if(!FIN()){ctx.globalAlpha=alpha*bright*(0.12+0.3*P0);ctx.lineWidth=3.2;ctx.stroke()}
+    ctx.globalAlpha=alpha*(0.45+0.5*bright);ctx.lineWidth=FIN()?0.7:1;ctx.stroke();
+    if(!FIN())for(const l of c.legs){const k=kneeOf(c,l);const pl=gray?0:pulseAt(c,l.seg);ctx.fillStyle=gray||col!==c.cLine?col:c.segL[l.seg];ctx.globalAlpha=alpha*(0.5+0.5*bright);ctx.fillRect(k[0]-1.2,k[1]-1.2,2.4,2.4);
       ctx.globalAlpha=alpha*Math.min(1,0.55+pl);ctx.beginPath();ctx.arc(l.fx,l.fy,1.4+pl*1.3,0,TAU);ctx.fill()}
     ctx.globalAlpha=alpha;
   }
@@ -442,23 +442,23 @@ function drawCreature(c,alpha,gray,preview){
     const lc=gray?'#777':(col===c.cLine?c.segL[i]:col);
     ctx.save();ctx.translate(g.x,g.y);ctx.rotate(g.a);
     ctx.globalAlpha=alpha;ctx.fillStyle='#000';shapePath(sh,len,wid,0,0,1);ctx.fill();
-    if(!gray){ctx.fillStyle=c.segT[i];ctx.globalAlpha=alpha*(0.5+0.5*p);ctx.fill()}
+    if(!gray){if(NAT()){ctx.fillStyle=natFill(c);ctx.globalAlpha=alpha}else{ctx.fillStyle=c.segT[i];ctx.globalAlpha=alpha*(0.5+0.5*p)}ctx.fill()}
     ctx.save();ctx.clip();
     const gx=clamp(Math.round(len/6),1,4),gy=clamp(Math.round(wid/6),1,3),cw=len/gx,chh=wid/gy;
-    if(!gray){ctx.fillStyle=lc;for(let a=0;a<gx;a++)for(let b=0;b<gy;b++){const lit=((a*7+b*3+i*5+c.beats)%4)===0;
-      ctx.globalAlpha=alpha*bright*(lit?0.15+0.6*p:0.03+0.12*p);ctx.fillRect(-len/2+a*cw+1,-wid/2+b*chh+1,cw-2,chh-2)}}
-    ctx.globalAlpha=alpha*0.5;ctx.strokeStyle=lc;ctx.lineWidth=0.6;ctx.beginPath();
+    if(!gray&&!NAT()){ctx.fillStyle=lc;const kf=FIN()?0.4:1;for(let a=0;a<gx;a++)for(let b=0;b<gy;b++){const lit=((a*7+b*3+i*5+c.beats)%4)===0;
+      ctx.globalAlpha=alpha*bright*kf*(lit?0.15+0.6*p:0.03+0.12*p);ctx.fillRect(-len/2+a*cw+1,-wid/2+b*chh+1,cw-2,chh-2)}}
+    ctx.globalAlpha=alpha*(FIN()?0.25:0.5);ctx.strokeStyle=lc;ctx.lineWidth=FIN()?0.35:0.6;ctx.beginPath();
     for(let a=1;a<gx;a++){const x=-len/2+len*a/gx;ctx.moveTo(x,-wid/2);ctx.lineTo(x,wid/2)}
     for(let b=1;b<gy;b++){const y=-wid/2+wid*b/gy;ctx.moveTo(-len/2,y);ctx.lineTo(len/2,y)}ctx.stroke();
     if(!gray)drawSegPattern(c,i,len,wid,sh,alpha,lc);
     ctx.restore();
-    shapePath(sh,len,wid,0,0,1);ctx.strokeStyle=lc;ctx.globalAlpha=alpha*bright*(0.15+0.45*p);ctx.lineWidth=3;ctx.stroke();
-    ctx.globalAlpha=alpha*(0.6+0.4*bright);ctx.lineWidth=1;ctx.stroke();
-    if(!gray&&len*wid>25){ctx.fillStyle=c.cCore;ctx.globalAlpha=alpha*Math.min(1,bright*(0.2+0.85*p));const r=(1+1.5*p)*Math.min(1.6,Math.sqrt(len*wid)/9);
+    shapePath(sh,len,wid,0,0,1);ctx.strokeStyle=lc;if(!NAT()){ctx.globalAlpha=alpha*bright*(0.15+0.45*p)*(FIN()?0.5:1);ctx.lineWidth=FIN()?1.6:3;ctx.stroke()}
+    ctx.globalAlpha=alpha*(0.6+0.4*bright);ctx.lineWidth=FIN()?0.6:1;ctx.stroke();
+    if(!gray&&!FIN()&&len*wid>25){ctx.fillStyle=c.cCore;ctx.globalAlpha=alpha*Math.min(1,bright*(0.2+0.85*p));const r=(1+1.5*p)*Math.min(1.6,Math.sqrt(len*wid)/9);
       if(c.role==='tisseur'){if(i===0){ctx.beginPath();ctx.moveTo(0,-r*1.6);ctx.lineTo(r*1.6,0);ctx.lineTo(0,r*1.6);ctx.lineTo(-r*1.6,0);ctx.closePath();ctx.fill()}
         else if(i===1){ctx.beginPath();ctx.moveTo(-r*2,-r*1.7);ctx.lineTo(r*2,-r*1.7);ctx.lineTo(0,0);ctx.closePath();ctx.moveTo(-r*2,r*1.7);ctx.lineTo(r*2,r*1.7);ctx.lineTo(0,0);ctx.closePath();ctx.fill()}}
       else ctx.fillRect(-r,-r,r*2,r*2)}
-    if(i===0){ctx.globalAlpha=alpha;ctx.fillStyle=lc;ctx.fillRect(len/2-3,-wid/2+1,2,2);ctx.fillRect(len/2-3,wid/2-3,2,2)}
+    if(i===0){ctx.globalAlpha=alpha;if(NAT()&&!gray){ctx.fillStyle='#0a0a0a';for(const sy of [-1,1]){ctx.beginPath();ctx.arc(len/2-2,sy*(wid/2-1.6),0.9,0,TAU);ctx.fill()}}else{ctx.fillStyle=lc;ctx.fillRect(len/2-3,-wid/2+1,2,2);ctx.fillRect(len/2-3,wid/2-3,2,2)}}
     ctx.restore();
   }
   if(c.carry&&!gray){const h=c.segs[0];drawTag(c.carry,h.x+Math.cos(h.a)*10,h.y+Math.sin(h.a)*10,h.a+Math.PI/2*0.3,'#ffe94d',alpha)}
@@ -1589,9 +1589,10 @@ function renderTransition(e){
 }
 
 // style de dessin des bêtes : 'actuel' (néon, articulations en points), 'fin' (sans points, pattes effilées), 'nature' (corps pleins, couleurs naturelles)
-let DESSIN='actuel';
+let DESSIN='nature';
 const FIN=()=>DESSIN!=='actuel',NAT=()=>DESSIN==='nature';
-const natFill=c=>hsl(c.sp.h,c.sp.s*0.5,14+c.sp.l*0.22),natLine=c=>hsl(c.sp.h,c.sp.s*0.6,30+c.sp.l*0.35);
+// couleurs naturelles : plus sourdes que le néon, mais assez claires pour se voir sur fond sombre
+const natFill=c=>hsl(c.sp.h,c.sp.s*0.5,24+c.sp.l*0.28),natLine=c=>hsl(c.sp.h,c.sp.s*0.55,Math.min(82,48+c.sp.l*0.38));
 // ================= VUE DE PROFIL (coupe) =================
 function ik2(hx,hy,fx,fy,L1,L2,up){let d=Math.hypot(fx-hx,fy-hy);d=clamp(d,0.01,L1+L2-0.01);
   const a=Math.acos(clamp((L1*L1+d*d-L2*L2)/(2*L1*d),-1,1)),b=Math.atan2(fy-hy,fx-hx);

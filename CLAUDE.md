@@ -49,6 +49,7 @@ Ordre des fichiers :
   - araignées (soie.js) : l'épeire tisse une toile ronde (`orbs`) au centre de ses fils de cadre ; les mygales creusent un terrier tapissé de soie (`nests`) ; toutes pondent un cocon (`sacs` : dans la toile, au fond du terrier, ou porté par la loup/sauteuse) d'où sortent les petits. Repère du vivarium courant : la grille `T` (recréée à chaque vivarium) ;
   - species2 : phasme, mante, escargot, chenille/papillon ;
   - species3 : scorpion, ténébrion, bousier, rhinocéros.
+- **Dessin des bêtes** : style « naturel » choisi par l'utilisateur (`DESSIN='nature'` en tête de profile.js : corps pleins aux couleurs `natFill`/`natLine`, sans halo néon ni points aux articulations). Le même réglage s'applique à la vue de côté (profile.js), aux petites bêtes (`drawTiny`, fixes.js) et au dessin vu de dessus (vignettes, vue du dessus : remplacements dans assemble.py). Les styles 'actuel' et 'fin' restent disponibles.
 - **Options** : OPT (volume, vitesse, qualité, vibrations, étiquettes, astuces, ambiance, gaucher, saisons).
 - **Sauvegardes** :
   - `LS.get/LS.set`, clés `biome_*` ;
@@ -70,7 +71,6 @@ python3 assemble.py && node tests/fixcheck.js && node tests/all_lv.js && node te
 `__sim.startLevel` appelle la version non enveloppée : `#vnav` ne s'affiche pas dans les tests. C'est normal.
 
 ## Points ouverts (connus)
-- Style de dessin des bêtes : `DESSIN` en tête de profile.js ('actuel', 'fin', 'nature') ; prototypes proposés, choix de l'utilisateur en attente (défaut : 'actuel'). `drawTiny` (fixes.js) suit aussi ce réglage.
 - Paysage sur téléphone (hauteur < 520 px) : à valider sur un vrai téléphone (toucher, rotation, mode gaucher).
 
 ## Publication

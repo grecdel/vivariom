@@ -1,7 +1,8 @@
 // style de dessin des bêtes : 'actuel' (néon, articulations en points), 'fin' (sans points, pattes effilées), 'nature' (corps pleins, couleurs naturelles)
-let DESSIN='actuel';
+let DESSIN='nature';
 const FIN=()=>DESSIN!=='actuel',NAT=()=>DESSIN==='nature';
-const natFill=c=>hsl(c.sp.h,c.sp.s*0.5,14+c.sp.l*0.22),natLine=c=>hsl(c.sp.h,c.sp.s*0.6,30+c.sp.l*0.35);
+// couleurs naturelles : plus sourdes que le néon, mais assez claires pour se voir sur fond sombre
+const natFill=c=>hsl(c.sp.h,c.sp.s*0.5,24+c.sp.l*0.28),natLine=c=>hsl(c.sp.h,c.sp.s*0.55,Math.min(82,48+c.sp.l*0.38));
 // ================= VUE DE PROFIL (coupe) =================
 function ik2(hx,hy,fx,fy,L1,L2,up){let d=Math.hypot(fx-hx,fy-hy);d=clamp(d,0.01,L1+L2-0.01);
   const a=Math.acos(clamp((L1*L1+d*d-L2*L2)/(2*L1*d),-1,1)),b=Math.atan2(fy-hy,fx-hx);
