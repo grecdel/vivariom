@@ -199,6 +199,9 @@ body.land.left #drawer{left:62px!important;right:180px!important}body.land.left 
 body.land.left #vnav{left:auto;right:184px}body.land.left #vstrip{left:60px;right:178px}
 /* Survol à la souris (ordinateur seulement : pas d'effet collant au doigt sur téléphone) */
 @media (hover:hover) and (pointer:fine){button,.lv,.cat,.chip,.ghostc{transition:box-shadow .12s,outline-color .12s}button:not(:disabled),.lv,.cat,.chip{cursor:pointer}button:not(:disabled):hover,.lv:hover,.cat:hover,.chip:hover{box-shadow:inset 0 0 0 100vmax #ffffff1c;outline:1px solid #ffe94dbb;outline-offset:-1px}.btn:not(:disabled):hover{box-shadow:inset 0 0 0 100vmax #ffffff40;outline:none}button:disabled:hover,.lv.lock:hover{cursor:default}.lv.lock:hover{box-shadow:none;outline:none}}
+/* Appui (souris ou doigt) : le bouton s'éclaire pendant qu'on appuie */
+button:not(:disabled):active,.lv:not(.lock):active,.cat:active,.chip:active{box-shadow:inset 0 0 0 100vmax #ffffff30!important;outline:1px solid #ffe94d!important;outline-offset:-1px}
+.btn:not(:disabled):active{box-shadow:inset 0 0 0 100vmax #00000030!important}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0b0d0a">
@@ -3519,6 +3522,8 @@ for(const v of ROOM.list)if(v.name)v.name=String(v.name).replace(/[<>&"'`]/g,'')
 // effacer la progression : tout, sauf les options et la décoration de la salle, puis on recharge
 {const oo=openOpts;openOpts=function(){oo();const b=$('oreset');if(!b)return;let arm=false;b.onclick=()=>{if(!arm){arm=true;b.textContent='⚠ Toucher encore pour tout effacer';return}
   try{for(const k of Object.keys(localStorage))if(k.startsWith('biome_')&&k!=='biome_opts'&&k!=='biome_style')localStorage.removeItem(k)}catch(e){}location.reload()}};$('topt').onclick=()=>openOpts()}
+// iOS n'applique l'effet d'appui (:active) qu'avec un écouteur de toucher sur la page
+document.addEventListener('touchstart',()=>{},{passive:true});
 
 
 })();

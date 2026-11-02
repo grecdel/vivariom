@@ -217,6 +217,9 @@ body.land.left #drawer{left:62px!important;right:180px!important}body.land.left 
 body.land.left #vnav{left:auto;right:184px}body.land.left #vstrip{left:60px;right:178px}
 /* Survol à la souris (ordinateur seulement : pas d'effet collant au doigt sur téléphone) */
 @media (hover:hover) and (pointer:fine){button,.lv,.cat,.chip,.ghostc{transition:box-shadow .12s,outline-color .12s}button:not(:disabled),.lv,.cat,.chip{cursor:pointer}button:not(:disabled):hover,.lv:hover,.cat:hover,.chip:hover{box-shadow:inset 0 0 0 100vmax #ffffff1c;outline:1px solid #ffe94dbb;outline-offset:-1px}.btn:not(:disabled):hover{box-shadow:inset 0 0 0 100vmax #ffffff40;outline:none}button:disabled:hover,.lv.lock:hover{cursor:default}.lv.lock:hover{box-shadow:none;outline:none}}
+/* Appui (souris ou doigt) : le bouton s'éclaire pendant qu'on appuie */
+button:not(:disabled):active,.lv:not(.lock):active,.cat:active,.chip:active{box-shadow:inset 0 0 0 100vmax #ffffff30!important;outline:1px solid #ffe94d!important;outline-offset:-1px}
+.btn:not(:disabled):active{box-shadow:inset 0 0 0 100vmax #00000030!important}
 </style>
 </head>
 <body>
@@ -316,7 +319,8 @@ const FILES=['./','index.html','manifest.webmanifest','icones/icone-192.png','ic
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{const r=e.request;if(r.method!=='GET'||new URL(r.url).origin!==location.origin)return;
-  e.respondWith(fetch(r).then(res=>{if(res.ok){const cp=res.clone();caches.open(CACHE).then(c=>c.put(r,cp))}return res})
+  // pages : on redemande toujours au serveur s'il y a plus récent (sinon le navigateur peut garder l'ancienne 10 min)
+  e.respondWith(fetch(r,r.mode==='navigate'||/\\/(index\\.html)?$/.test(new URL(r.url).pathname)?{cache:'no-cache'}:{}).then(res=>{if(res.ok){const cp=res.clone();caches.open(CACHE).then(c=>c.put(r,cp))}return res})
     .catch(()=>caches.match(r,{ignoreSearch:true}).then(m=>m||(r.mode==='navigate'?caches.match('index.html'):Response.error()))))});
 """.replace('VERSION', version)
 open('web/sw.js', 'w').write(sw)

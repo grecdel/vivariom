@@ -16,3 +16,5 @@ for(const v of ROOM.list)if(v.name)v.name=String(v.name).replace(/[<>&"'`]/g,'')
 // effacer la progression : tout, sauf les options et la décoration de la salle, puis on recharge
 {const oo=openOpts;openOpts=function(){oo();const b=$('oreset');if(!b)return;let arm=false;b.onclick=()=>{if(!arm){arm=true;b.textContent='⚠ Toucher encore pour tout effacer';return}
   try{for(const k of Object.keys(localStorage))if(k.startsWith('biome_')&&k!=='biome_opts'&&k!=='biome_style')localStorage.removeItem(k)}catch(e){}location.reload()}};$('topt').onclick=()=>openOpts()}
+// iOS n'applique l'effet d'appui (:active) qu'avec un écouteur de toucher sur la page
+document.addEventListener('touchstart',()=>{},{passive:true});
