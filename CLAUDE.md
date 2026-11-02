@@ -24,7 +24,7 @@ python3 assemble.py        # produit biome.html (le jeu complet) et le dossier w
 
 Ordre des fichiers :
 - **core** : biome_core.js, variants.js, unlocks.js, decor.js, topview.js, profile.js, devices.js, links.js, lure.js, species2.js, species3.js
-- **main** : biome_main.js, menu.js, extras.js, tutorial.js, ambiance.js, save.js, bascule.js, tiroir.js, soie.js, instincts.js, aide.js, ctrl.js, fixes.js (en dernier : il remplace certaines fonctions)
+- **main** : biome_main.js, menu.js, extras.js, tutorial.js, ambiance.js, save.js, bascule.js, tiroir.js, soie.js, instincts.js, decor_top.js, aide.js, ctrl.js, fixes.js (en dernier : il remplace certaines fonctions)
 
 ## Repères
 - **Monde** :
@@ -51,6 +51,7 @@ Ordre des fichiers :
   - species2 : phasme, mante, escargot, chenille/papillon ;
   - species3 : scorpion, ténébrion, bousier, rhinocéros.
 - **Dessin des bêtes** : style « naturel » choisi par l'utilisateur (`DESSIN='nature'` en tête de profile.js : corps pleins aux couleurs `natFill`/`natLine`, sans halo néon ni points aux articulations). Le même réglage s'applique à la vue de côté (profile.js), aux petites bêtes (`drawTiny`, fixes.js) et au dessin vu de dessus (vignettes, vue du dessus : remplacements dans assemble.py). Les styles 'actuel' et 'fin' restent disponibles.
+- **Décors vus de dessus** : decor_top.js remplace `drawDecosTop` ; chaque décor dessiné en volume (lumière en haut à gauche, ombre portée), forme stable tirée de `d.seed` (`decoRng`).
 - **Options** : OPT (volume, vitesse, qualité, vibrations, étiquettes, astuces, ambiance, gaucher, saisons).
 - **Sauvegardes** :
   - `LS.get/LS.set`, clés `biome_*` ;
