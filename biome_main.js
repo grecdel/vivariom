@@ -165,7 +165,7 @@ function draw(){
   drawStrands();drawItems();
   ctx.save();const ws=waves;waves=[];for(const w of ws){waves=[w];ctx.save();zT(w.z);drawWaves();ctx.restore()}waves=ws;ctx.restore();
   const order={lombric:0,cloporte:1,fourmi:2,reine:3,scolopendre:4,puceron:5,coccinelle:6,araignee:7,abeille:8,mouche:9};
-  for(const c of creatures.slice().sort((a,b)=>back(a,b)||order[a.sp.id]-order[b.sp.id])){if(drawChrysalis(c))continue;ctx.save();zT(c.z);if(realLen(c)*camZ<4.5)drawTiny(c);else drawProfile(c,1,false);if(c.load){const F=c.sp.sf,h=c.segs[0];ctx.fillStyle=c.load.type==='grain'?(c.load.t===1?'#8a6a3a':'#d8b060'):'#ffb43a';ctx.fillRect(h.x*F+Math.cos(h.a)*5-1.5,h.y*F+Math.sin(h.a)*5-1.5,3,3)}ctx.restore()}
+  for(const c of creatures.slice().sort((a,b)=>back(a,b)||order[a.sp.id]-order[b.sp.id])){if(drawChrysalis(c))continue;ctx.save();zT(c.z);if(c.sp.id==='reine'){/* halo doré : la reine se repère parmi les ouvrières */const R=(9+2*Math.sin(simT*2.2))*Math.max(1,3/camZ);ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=0.6;ctx.drawImage(glowSprite(48),c.x-R,c.y-R,R*2,R*2);ctx.restore()}if(realLen(c)*camZ<4.5)drawTiny(c);else drawProfile(c,1,false);if(c.load){const F=c.sp.sf,h=c.segs[0];ctx.fillStyle=c.load.type==='grain'?(c.load.t===1?'#8a6a3a':'#d8b060'):'#ffb43a';ctx.fillRect(h.x*F+Math.cos(h.a)*5-1.5,h.y*F+Math.sin(h.a)*5-1.5,3,3)}ctx.restore()}
   if(showLinks)drawLinks();
   drawSel();
   for(const r of rings){const a=1-r.t/0.6;ctx.save();zT(r.z);ctx.globalAlpha=a;ctx.strokeStyle=r.col;ctx.lineWidth=1/camZ;ctx.beginPath();ctx.arc(r.x,r.y,r.r*(0.6+0.4*r.t/0.6),0,TAU);ctx.stroke();ctx.restore()}

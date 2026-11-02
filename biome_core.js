@@ -5,7 +5,7 @@ const INS=o=>({dims:[o.hd,o.th,...(o.mid||[]),o.ab],legs:legsFrom(o.ls??1,o.n||3
 const ARA=o=>({dims:[o.ce,o.ab],legs:legsFrom(0,4,o.sp??60,o.L||[16,20])});
 const MYR=o=>({dims:[o.hd,...Array.from({length:o.n},()=>o.sg.slice()),...(o.tl?[o.tl]:[])],legs:[],chain:{n:o.n,sg:o.sg,per:o.per??1,L:o.L||[1,1],tl:o.tl}});
 const BSP=[
-{id:'fourmi',nom:'Fourmi rousse',la:'Formica rufa',role:'mangeur',h:12,s:75,l:36,spd:24,hz:2.8,ant:7,f:['mandibules'],start:45,decay:0.22,age:300,...INS({hd:[4,4,'o'],th:[5,3.5,'o'],mid:[[2,2,'o']],ab:[6,5.5,'o'],L:[5,6]})},
+{id:'fourmi',nom:'Fourmi rousse',la:'Formica rufa',role:'mangeur',h:12,s:75,l:36,spd:24,hz:2.8,ant:7,f:['mandibules'],start:45,decay:0.14,age:300,...INS({hd:[4,4,'o'],th:[5,3.5,'o'],mid:[[2,2,'o']],ab:[6,5.5,'o'],L:[5,6]})},
 {id:'reine',nom:'Reine fourmi',la:'Formica rufa ♀',role:'mangeur',h:5,s:80,l:40,spd:9,hz:1.2,ant:7,f:['mandibules'],start:110,decay:0.12,age:1400,...INS({hd:[5,5,'o'],th:[7,5,'o'],mid:[[2.5,2.5,'o']],ab:[13,9,'o'],L:[6,7]})},
 {id:'puceron',nom:'Puceron',la:'Aphis fabae',role:'mangeur',h:100,s:70,l:55,spd:4,hz:3,ant:4,start:22,decay:0.35,age:160,...INS({hd:[2.5,2.5,'o'],th:[2.5,3.5,'o'],ab:[5,5,'o'],L:[3,3.5]})},
 {id:'coccinelle',nom:'Coccinelle',la:'Coccinella septempunctata',role:'chasseur',h:2,s:85,l:45,spd:12,fspd:38,hz:1.8,ant:3,f:['points','elytres'],w:{n:2,len:10,wid:4.5,hz:22},start:65,decay:0.55,age:360,...INS({hd:[3,4,'o'],th:[2.5,6,'o'],ab:[9,9,'o'],L:[5,5.5]})},
@@ -368,6 +368,22 @@ function uReine(c,dt){
     else if(workers<6&&col.eggs.length<2&&c.energy>45){c.energy-=12;col.eggs.push({t:0,k:c.k})}} // fondation : la reine pond sur ses réserves
   if(c.energy<90&&col.food>=1&&Math.random()<dt*0.5){col.food-=1;c.energy+=10}
 }
+// galeries : quelques « têtes » qui avancent en ligne (horizontale ou en pente), se ramifient,
+// et s'élargissent en petite chambre de temps en temps
+function antDigTarget(col){col.heads=col.heads||[];col.heads=col.heads.filter(h=>!h.dead&&h.n<60);
+  const ok=(i,j)=>i>=1&&i<COLS-1&&j<ROWS-2&&j>SURF[i]+3&&T[K(i,j)]&&T[K(i,j)]!==5&&WET[K(i,j)]<=0.9;
+  if(col.heads.length<2+Math.floor(col.cells.length/80)&&(Math.random()<0.25||!col.heads.length)){
+    const src=Math.random()<0.5&&col.chamber.size?[...col.chamber]:col.cells;const from=src[Math.floor(Math.random()*src.length)];
+    if(from!=null)col.heads.push({k:from,di:Math.random()<0.5?-1:1,dj:Math.random()<0.45?1:0,n:0,fail:0})}
+  for(let tries=0;tries<4&&col.heads.length;tries++){const h=col.heads[Math.floor(Math.random()*col.heads.length)];
+    const i=h.k%COLS,j=(h.k-i)/COLS;
+    // petite chambre tous les 9 pas : on creuse au-dessus / en dessous de la galerie
+    if(h.n>0&&h.n%9===0&&!h.room){h.room=1;for(const dj of [-1,1,2]){if(ok(i,j+dj))return {k:K(i,j+dj),from:h.k,h:null}}}
+    if(h.n%9!==0)h.room=0;
+    if(Math.random()<0.18)h.dj=h.dj?0:1;if(Math.random()<0.05)h.di=-h.di;
+    let ti=i+h.di,tj=j+h.dj;if(!ok(ti,tj)){tj=j;if(!ok(ti,tj)){h.di=-h.di;ti=i+h.di;if(!ok(ti,tj)){h.dead=true;continue}}}
+    return {k:K(ti,tj),from:h.k,h}}
+  return null}
 function updColony(col,dt){
   if(col.dead)return;
   for(const e of col.eggs){e.t+=dt;if(WET[e.k]>0.85)e.dead=true;else if(e.t>10){e.dead=true;const [x,y]=cxy(e.k);const b=born(col.wsp||'fourmi',x,y,{energy:40});b.col=col;b.k=e.k}}
@@ -390,12 +406,15 @@ function uFourmi(c,dt){
       c.t-=dt;if(c.t>0)return;c.t=rnd(0.3,1);
       const workers=pop.fourmi||1;
       if(c.energy<22&&col.food>=1){c.state='eat';if(!goTo(c,k=>col.chamber.has(k),20000))c.state='idle';break}
-      const r=Math.random();
-      if(col.food<10+workers*1.2||r<0.5){ // récolte
+      // répartition du travail : creuser même quand la colonie a faim (sinon les galeries ne s'étendent jamais)
+      const r=Math.random(),hungry=col.food<10+workers*1.2,canDig=col.cells.length<150+workers*30,pDig=canDig?(!foodMap.size?0.65:hungry?0.3:0.45):0; // rien à ramasser : autant creuser
+      if(r<pDig){c.state='dig';const tgt=antDigTarget(col);if(!tgt){c.state='idle';break}
+        c.dig=tgt.k;c.digFrom=tgt.from;c.head=tgt.h;if(!goTo(c,k=>k===tgt.from,20000)){if(tgt.h&&++tgt.h.fail>3)tgt.h.dead=true;c.state='idle'}else c.state='dig2';break}
+      if(hungry||r<pDig+0.35){ // récolte
         let best=null,bd=1e9;for(const it of foodMap.values()){if(it.carried)continue;const d=dist3(c,it);if(d<bd){bd=d;best=it}}
         if(best&&goTo(c,k=>foodMap.get(k)===best,22000)){c.goal=best;c.state='go'}
         else{c.state='explore';const ti=clamp(col.i+Math.round(rnd(-70,70)),0,COLS-1);goTo(c,k=>k===K(ti,SURF[ti]-1),20000)||randomWalk(c)}
-      }else if(r<0.82&&col.cells.length<150+workers*30){c.state='dig';
+      }else if(false){c.state='dig';
         const from=Math.random()<0.3&&col.chamber.size?[...col.chamber][Math.floor(Math.random()*col.chamber.size)]:col.cells[Math.floor(Math.random()*col.cells.length)];
         if(from==null){c.state='idle';break}
         const i=from%COLS,j=(from-i)/COLS;const dirs=[[0,1],[1,0],[-1,0],[1,1],[-1,1]];const [di,dj]=dirs[Math.floor(Math.random()*dirs.length)];
@@ -411,7 +430,7 @@ function uFourmi(c,dt){
     case 'explore':c.state='idle';break;
     case 'dig2':{const tk=c.dig;if(!T[tk]||T[tk]===5){c.state='idle';break}
       const [tx,ty]=cxy(tk);c.ang+=angDiff(c.ang,Math.atan2(ty-c.y,tx-c.x))*0.2;c.v=0;
-      c.t+=dt;if(c.t>=TYPES[T[tk]].hard*0.35*(1+WET[tk]*1.5)){c.t=0;const typ=digCell(tk,col);
+      c.t+=dt;if(c.t>=TYPES[T[tk]].hard*0.22*(1+WET[tk]*1.5)){c.t=0;const typ=digCell(tk,col);if(c.head){c.head.k=tk;c.head.n++;c.head=null}
         if(col.chamber.has(c.digFrom)&&col.chamber.size<36+(pop.fourmi||0)*1.5)col.chamber.add(tk);
         c.load={type:'grain',t:typ};c.state='haul';if(!goTo(c,k=>{const i=k%COLS,j=(k-i)/COLS;return Math.abs(i-col.i)<=1&&j<=SURF[i]-1&&j>=SURF[i]-2},24000)){c.load=null;c.state='idle'}}
       break}
@@ -479,7 +498,7 @@ function uScolo(c,dt){
     else{c.state='idle';randomWalk(c,25)}}
   if(c.state==='hunt'&&c.beatT===0)antTips(c).forEach(t=>wave({x:t[0],y:t[1],arc:c.ang,spr:0.4,max:40,sp:90,col:c.cLine,dash:true,a:0.5,w:0.4}));
   stepPath(c,dt,c.state==='hunt'?0.95:0.6);
-  if(c.energy>118&&c.age>90&&canRepro(c.sp.id,3)&&Math.random()<dt*0.02){c.energy-=60;const b=born('scolopendre',c.x,c.y,{energy:80});b.k=c.k}
+  if(c.energy>118&&c.age>90&&canRepro(c.sp.id,3)&&Math.random()<dt*0.02){if(c.sp.id==='araignee'){if(!sacOf(c)){c.energy-=60;spiderLay(c)}}else{c.energy-=60;const b=born('scolopendre',c.x,c.y,{energy:80});b.k=c.k}}
 }
 // ----- ARAIGNÉE -----
 function anchorOn(p){const r=Math.floor(rnd(2,Math.max(3,p.h)));const k=K(p.col,p.base-r+1);const [x,y]=cxy(k);return {x,y,z:p.z,p,r}}
@@ -495,7 +514,7 @@ function uAraignee(c,dt){
   else{c.v=0;c.t+=dt;if(c.t>0.6){c.t=0;
     if(c.anchor&&c.anchor.p.alive&&c.anchor.p!==c.tg.p&&dist3(c.anchor,c.tg)<110){strands.push({a:c.anchor,b:c.tg,owner:c,life:rnd(60,90),hits:0,glow:0,vib:0});const mine=strands.filter(q=>q.owner===c&&q.life>0);if(mine.length>6)mine[0].life=0}
     c.anchor=c.tg;c.tg=null}}
-  if(c.energy>175&&canRepro('araignee',4)){c.energy-=95;const b=born('araignee',c.x,c.y,{energy:70});b.home=clamp(c.x+rnd(-140,140),20,WW-20)}
+  if(c.energy>175&&canRepro('araignee',4)&&!sacOf(c)){c.energy-=95;spiderLay(c)}
 }
 function spiderMove(c,tx,ty,dt,mul){const a=Math.atan2(ty-c.y,tx-c.x);c.ang+=clamp(angDiff(c.ang,a),-6*dt,6*dt);const sp=c.sp.spd*mul;c.x+=Math.cos(c.ang)*sp*dt;c.y+=Math.sin(c.ang)*sp*dt;c.v=sp;airClamp(c)}
 // ----- ABEILLE -----

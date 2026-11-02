@@ -24,7 +24,7 @@ python3 assemble.py        # produit biome.html (le jeu complet) et le dossier w
 
 Ordre des fichiers :
 - **core** : biome_core.js, variants.js, unlocks.js, decor.js, topview.js, profile.js, devices.js, links.js, lure.js, species2.js, species3.js
-- **main** : biome_main.js, menu.js, extras.js, tutorial.js, ambiance.js, save.js, bascule.js, tiroir.js, fixes.js (en dernier : il remplace certaines fonctions)
+- **main** : biome_main.js, menu.js, extras.js, tutorial.js, ambiance.js, save.js, bascule.js, tiroir.js, soie.js, fixes.js (en dernier : il remplace certaines fonctions)
 
 ## Repères
 - **Monde** :
@@ -44,6 +44,8 @@ Ordre des fichiers :
 - **Espèces** :
   - variantes (VARS/VSP dans variants.js) ;
   - tiroir « Bêtes » (tiroir.js) : une case par espèce (variantes + larves regroupées : chenille→papillon, ver de farine→ténébrion, ver blanc→rhinocéros), ordre alphabétique des noms courts, bouton « ▾ n » qui ouvre la liste des variantes ; dernière variante choisie retenue (clé `biome_vsel`) ;
+  - fourmis : les ouvrières creusent des galeries en ligne qui se ramifient, avec de petites chambres (`antDigTarget`, têtes `col.heads`), même quand la colonie a faim ; la reine a un halo doré ;
+  - araignées (soie.js) : l'épeire tisse une toile ronde (`orbs`) au centre de ses fils de cadre ; les mygales creusent un terrier tapissé de soie (`nests`) ; toutes pondent un cocon (`sacs` : dans la toile, au fond du terrier, ou porté par la loup/sauteuse) d'où sortent les petits. Repère du vivarium courant : la grille `T` (recréée à chaque vivarium) ;
   - species2 : phasme, mante, escargot, chenille/papillon ;
   - species3 : scorpion, ténébrion, bousier, rhinocéros.
 - **Options** : OPT (volume, vitesse, qualité, vibrations, étiquettes, astuces, ambiance, gaucher, saisons).
