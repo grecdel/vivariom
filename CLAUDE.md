@@ -24,7 +24,8 @@ python3 assemble.py        # produit biome.html (le jeu complet) et le dossier w
 
 Ordre des fichiers :
 - **core** : biome_core.js, variants.js, unlocks.js, decor.js, topview.js, profile.js, devices.js, links.js, lure.js, species2.js, species3.js
-- **main** : biome_main.js, menu.js, extras.js, tutorial.js, ambiance.js, save.js, bascule.js, tiroir.js, soie.js, instincts.js, decor_top.js, aide.js, ctrl.js, defis.js, fixes.js (en dernier : il remplace certaines fonctions)
+- **main** : biome_main.js, menu.js, extras.js, tutorial.js, ambiance.js, save.js, bascule.js, tiroir.js, soie.js, instincts.js, decor_top.js, aide.js, ctrl.js, defis.js, langue.js, fixes.js (il remplace certaines fonctions)
+- **ajouts** (boucle à part dans assemble.py, après fixes.js) : progres.js, vie.js, milieu.js, salle2.js, confort.js, savoir.js
 
 ## Repères
 - **Monde** :
@@ -55,7 +56,14 @@ Ordre des fichiers :
 - **Dessin des bêtes** : style « naturel » choisi par l'utilisateur (`DESSIN='nature'` en tête de profile.js : corps pleins aux couleurs `natFill`/`natLine`, sans halo néon ni points aux articulations). Le même réglage s'applique à la vue de côté (profile.js), aux petites bêtes (`drawTiny`, fixes.js) et au dessin vu de dessus (vignettes, vue du dessus : remplacements dans assemble.py). Les styles 'actuel' et 'fin' restent disponibles.
 - **Décors vus de dessus** : decor_top.js remplace `drawDecosTop` ; chaque décor dessiné en volume (lumière en haut à gauche, ombre portée), forme stable tirée de `d.seed` (`decoRng`).
 - **Matériel** : barre d'état compacte (ctrl.js, `CTRL='barre'`, choix de l'utilisateur) : une icône par appareil avec son état ; un clic ouvre ses réglages (`openDev`). Colonne à gauche sur grand écran, ligne au-dessus des outils sur téléphone. Le mode 'panneau' (panneau latéral) existe encore mais n'est pas utilisé. Réglages d'un appareil : `devHTML(id)` / `wireDev()` (devices.js).
-- **Options** : OPT (volume, vitesse, qualité, vibrations, étiquettes, astuces, ambiance, gaucher, saisons).
+- **Options** : OPT (volume, vitesse, qualité, vibrations, étiquettes, astuces, ambiance, gaucher, saisons du bac à sable, `seasonsC` saisons de campagne, `texte`/`contraste`/`dalto` accessibilité).
+- **Langue** (langue.js) : anglais via Options → Langue (clé `biome_lang`, anglais par défaut si le navigateur n'est pas en français, français sous Playwright). Traduction à l'affichage seulement (MutationObserver + fillText) : tout nouveau texte doit avoir son entrée dans `EN_D` (phrases) ou `EN_T` (modèles avec `{}`).
+- **Modes en plus** (progres.js) : défi de chapitre (règles Expert, `biome_defis`), défi du jour (tiré avec la date, `biome_jours`), survie (niveau 12, coups durs rapprochés, record `biome_survie`) ; un mode spécial = copie d'un niveau passée à `startSpecial`. Bilan de fin (courbes, naissances, morts). Succès difficiles.
+- **Vie des bêtes** (vie.js) : grillon et ver luisant (nouvelles espèces, BSP4), pucerons ailés (`c.vol`), petits scorpions sur le dos (`c.dos`), frappe de la mante, guerre entre colonies, champignon (`c.malade`), larves/nymphes de coccinelle et mouche (`c.stade`), bébés qui grandissent (`c.bebe`, `ech`), bêtes âgées (`c.vieux`, plus lentes, plus pâles). Tous les UPD passent par un enrobage commun.
+- **Milieu** (milieu.js) : plantes `arbo`, `dionee` (carnivore), `champignon` ; fruits (item `fruit`) ; plantes assoiffées affaissées ; moisissures (`MOI` par colonne) ; saisons en campagne (75 s chacune, dès le niveau 4) ; climat du bac (`v.climat` : tempéré, tropical, désert).
+- **Salle** (salle2.js) : partage d'un bac par code `VIVB1:` ou fichier `.vivarium` (📥 dans la salle), modèles Forêt/Désert/Mare, étiquette de couleur, mode observation 👁, rattrapage à l'ouverture (jusqu'à 5 min simulées selon l'absence, `v.vu`), carnet daté, album photo (IndexedDB `vivariom-album`), salle éclairée selon l'heure.
+- **Confort** (confort.js) : main animée du tutoriel, ↶ Annuler (20 s), appui long sur une bête = la suivre (🔍 loupe), accessibilité, sons (bourdonnements, pas, pluie), vibrations.
+- **Savoir** (savoir.js) : fiches enrichies (`PLUS` : où elle vit, anecdote, taille réelle), quiz (un sans-faute débloque des décors de salle), découvertes (`biome_decouv`), carte des chapitres en jardin (`biome_carte`), partage des photos.
 - **Sauvegardes** :
   - `LS.get/LS.set`, clés `biome_*` ;
   - grilles compressées en RLE (préfixe `R`).
@@ -84,6 +92,8 @@ python3 assemble.py && node tests/fixcheck.js && node tests/all_lv.js && node te
 `__sim.startLevel` appelle la version non enveloppée : `#vnav` ne s'affiche pas dans les tests. C'est normal.
 
 ## Points ouverts (connus)
+- Les ajouts de novembre 2026 (modes, nouvelles bêtes et plantes, salle, confort, savoir) n'ont été testés qu'automatiquement : à valider par l'utilisateur.
+- Galerie en ligne de photos : impossible sans serveur ; on partage par le bouton « Partager » du téléphone.
 - Paysage sur téléphone (hauteur < 520 px) : à valider sur un vrai téléphone (toucher, rotation, mode gaucher).
 
 ## Publication
