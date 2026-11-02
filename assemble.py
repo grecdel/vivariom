@@ -287,11 +287,13 @@ body.land #aide{left:184px;right:66px;bottom:auto;top:50px}body.land.left #aide{
 body.ctrlw #viewsw,body.ctrlw #zoomui{right:318px!important}body.ctrlw #aide{right:318px}
 body.ctrlw #pal,body.ctrlw #drawer{left:8px!important;right:318px!important;width:auto!important;transform:none!important}body.ctrlw #bar{right:318px!important}body.ctrlw #aide{left:8px;right:318px;width:auto;transform:none}
 @media (max-width:700px){body:not(.land) #ctrlbar{flex-direction:row;left:6px;right:6px;top:auto;bottom:132px;gap:4px}body:not(.land) #ctrlbar button{flex:1;width:auto;min-width:0}}
+@media (max-width:700px){body.ctrlb:not(.land) #aide{bottom:190px}}
 #ctrlbtn{display:none;position:fixed;right:8px;top:118px;z-index:3;background:#0b0b0bee;border:1px solid #3d6b3f;color:#cfe;border-radius:12px;padding:7px 10px;font:600 12px -apple-system,Roboto,sans-serif}
 body.land #ctrlbtn{top:166px;right:6px;width:50px;padding:7px 0;font-size:0}body.land #ctrlbtn::first-letter{font-size:17px}body.land.left #ctrlbtn{right:auto;left:6px}
 #ctrlbar{display:none;position:fixed;left:8px;top:160px;flex-direction:column;gap:5px;z-index:3}
 #ctrlbar button{width:70px;background:#0b0e0bee;border:1px solid #2d4a2f;border-radius:10px;color:#ddd;padding:4px 2px;display:flex;flex-direction:column;align-items:center;gap:1px}#ctrlbar .ci{font-size:17px;line-height:1.1}#ctrlbar .cs2{font:600 9.5px ui-monospace,monospace;color:#8bff6a;white-space:nowrap}#ctrlbar button.lock{opacity:.45}
-body.land #ctrlbar{left:184px;top:52px}body.land.left #ctrlbar{left:66px}
+body.land #ctrlbar{left:184px;right:66px;top:auto;bottom:4px;flex-direction:row;gap:4px}body.land.left #ctrlbar{left:66px;right:184px}
+body.land #ctrlbar button{flex:1;width:auto;min-width:0;flex-direction:row;justify-content:center;gap:4px;padding:6px 2px}body.land #ctrlbar .ci{font-size:14px}
 </style>
 </head>
 <body>

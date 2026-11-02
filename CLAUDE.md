@@ -53,6 +53,7 @@ Ordre des fichiers :
   - species3 : scorpion, ténébrion, bousier, rhinocéros.
 - **Dessin des bêtes** : style « naturel » choisi par l'utilisateur (`DESSIN='nature'` en tête de profile.js : corps pleins aux couleurs `natFill`/`natLine`, sans halo néon ni points aux articulations). Le même réglage s'applique à la vue de côté (profile.js), aux petites bêtes (`drawTiny`, fixes.js) et au dessin vu de dessus (vignettes, vue du dessus : remplacements dans assemble.py). Les styles 'actuel' et 'fin' restent disponibles.
 - **Décors vus de dessus** : decor_top.js remplace `drawDecosTop` ; chaque décor dessiné en volume (lumière en haut à gauche, ombre portée), forme stable tirée de `d.seed` (`decoRng`).
+- **Matériel** : barre d'état compacte (ctrl.js, `CTRL='barre'`, choix de l'utilisateur) : une icône par appareil avec son état ; un clic ouvre ses réglages (`openDev`). Colonne à gauche sur grand écran, ligne au-dessus des outils sur téléphone. Le mode 'panneau' (panneau latéral) existe encore mais n'est pas utilisé. Réglages d'un appareil : `devHTML(id)` / `wireDev()` (devices.js).
 - **Options** : OPT (volume, vitesse, qualité, vibrations, étiquettes, astuces, ambiance, gaucher, saisons).
 - **Sauvegardes** :
   - `LS.get/LS.set`, clés `biome_*` ;
@@ -74,7 +75,6 @@ python3 assemble.py && node tests/fixcheck.js && node tests/all_lv.js && node te
 `__sim.startLevel` appelle la version non enveloppée : `#vnav` ne s'affiche pas dans les tests. C'est normal.
 
 ## Points ouverts (connus)
-- Panneau de contrôle du matériel (ctrl.js) : `CTRL` = 'aucun' (actuel), 'panneau' (A : panneau à droite sur grand écran, tiroir « 🎛 Matériel » sur téléphone) ou 'barre' (B : icônes d'état, clic = fenêtre de l'appareil). Prototypes proposés, choix en attente. Les réglages d'un appareil viennent de `devHTML(id)` / `wireDev()` (devices.js), partagés avec la fenêtre `openDev`.
 - Paysage sur téléphone (hauteur < 520 px) : à valider sur un vrai téléphone (toucher, rotation, mode gaucher).
 
 ## Publication
