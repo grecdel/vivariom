@@ -60,8 +60,8 @@ function showMenu(){saveResume();hideAll();state='menu';paused=true;$('menu').st
 }
 // victoire : enregistre le niveau terminé
 const win0=win;win=function(){clearResume();const first=!done.has(lvlIdx);markDone(lvlIdx);unlocked=Math.max(unlocked,lvlIdx+2);win0();
-  const left=Object.keys(lvl.stock).reduce((a,k)=>a+(stock[k]||0),0),used=stock0-left,st=1+(lvlMissed?0:1)+(!lvlMissed&&used<=stock0/2?1:0);STARS[lvlIdx]=Math.max(STARS[lvlIdx]||0,st);LS.set('biome_stars',STARS);
-  $('endtxt').innerHTML+=`<div class="stars">${'★'.repeat(st)}<span>${'★'.repeat(3-st)}</span></div><p class="dim" style="text-align:center">★ réussi · ★★ sans jamais perdre une espèce · ★★★ en plus, avec moins de la moitié des réserves</p>`;
+  const left=Object.keys(lvl.stock).reduce((a,k)=>a+(stock[k]||0),0),used=stock0-left,ET=etoiles(used),st=ET.st;STARS[lvlIdx]=Math.max(STARS[lvlIdx]||0,st);LS.set('biome_stars',STARS);
+  $('endtxt').innerHTML+=`<div class="stars">${'★'.repeat(st)}<span>${'★'.repeat(3-st)}</span></div><p class="dim" style="text-align:center">${ET.legende}</p>`;
   if(st===3)ach('star3');if(Object.values(STARS).reduce((a,b)=>a+b,0)>=30)ach('stars30');if(LEVELS.every((_,i)=>done.has(i)))ach('camp');jlog('🏆',`Niveau réussi : ${'★'.repeat(st)}`);
   const r=REWARDS[lvlIdx];if(r)$('endtxt').innerHTML+=`<div class="reward"><span>${r.ic}</span><div><b>${first?'Débloqué':'Déjà débloqué'} : ${r.nom}</b><small>${r.txt}${!r.key.startsWith('trophee')?' Disponible dès le niveau suivant.':''}</small></div></div>`}
 

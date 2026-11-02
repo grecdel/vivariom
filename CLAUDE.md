@@ -24,7 +24,7 @@ python3 assemble.py        # produit biome.html (le jeu complet) et le dossier w
 
 Ordre des fichiers :
 - **core** : biome_core.js, variants.js, unlocks.js, decor.js, topview.js, profile.js, devices.js, links.js, lure.js, species2.js, species3.js
-- **main** : biome_main.js, menu.js, extras.js, tutorial.js, ambiance.js, save.js, bascule.js, tiroir.js, soie.js, instincts.js, decor_top.js, aide.js, ctrl.js, fixes.js (en dernier : il remplace certaines fonctions)
+- **main** : biome_main.js, menu.js, extras.js, tutorial.js, ambiance.js, save.js, bascule.js, tiroir.js, soie.js, instincts.js, decor_top.js, aide.js, ctrl.js, defis.js, fixes.js (en dernier : il remplace certaines fonctions)
 
 ## Repères
 - **Monde** :
@@ -34,6 +34,7 @@ Ordre des fichiers :
   - Molette / pincement (`zoomAt`, devices.js) : coupe ⇄ 3/4 ⇄ dessus ; en dessus, la molette zoome, et au zoom minimum la molette arrière ramène en 3/4. Pause de 650 ms après chaque bascule (`vsT`) et nouveau geste exigé pour la molette (l'élan est ignoré).
   - Bascule 3/4 ⇄ dessus : bascule.js dessine un pavé en volume (face avant = coupe, dessus = vue de dessus, paroi droite) qui se redresse, avec fondu vers les vraies vues aux deux bouts.
 - **Campagne** :
+  - difficulté (defis.js, clé `biome_diff`, Normal par défaut) : Facile = comme avant ; Normal/Expert = réserves ×0,75/×0,5, objectif de naissances (1 ou 2 par espèce animale du niveau, sauf pucerons, mouches et espèces lentes) avant que le chrono avance, coups durs annoncés (canicule, nuit froide, panne du programmateur, invasion de pucerons, scolopendre intruse), étoiles ★★★ = deux fois les naissances demandées. `checkGoal` est remplacé dans defis.js. Tests : `DIFF=normal node tests/duree.js`.
   - 22 niveaux en 9 chapitres (CHAPTERS/LEVELS dans biome_core.js) ;
   - récompenses et déblocages dans unlocks.js ;
   - étoiles, reprise de partie (`biome_resume`), tutoriel.

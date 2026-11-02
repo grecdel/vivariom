@@ -33,7 +33,7 @@ rep("    shapePath(sh,len,wid,0,0,1);ctx.strokeStyle=lc;ctx.globalAlpha=alpha*br
 rep("    if(i===0){ctx.globalAlpha=alpha;ctx.fillStyle=lc;ctx.fillRect(len/2-3,-wid/2+1,2,2);ctx.fillRect(len/2-3,wid/2-3,2,2)}",
     "    if(i===0){ctx.globalAlpha=alpha;if(NAT()&&!gray){ctx.fillStyle='#0a0a0a';for(const sy of [-1,1]){ctx.beginPath();ctx.arc(len/2-2,sy*(wid/2-1.6),0.9,0,TAU);ctx.fill()}}else{ctx.fillStyle=lc;ctx.fillRect(len/2-3,-wid/2+1,2,2);ctx.fillRect(len/2-3,wid/2-3,2,2)}}")
 core=open('biome_core.js').read()+'\n'+open('variants.js').read()+'\n'+open('unlocks.js').read()+'\n'+open('decor.js').read()+'\n'+open('topview.js').read()+'\n'+open('profile.js').read()+'\n'+open('devices.js').read()+'\n'+open('links.js').read()+'\n'+open('lure.js').read()+'\n'+open('species2.js').read()+'\n'+open('species3.js').read()
-main=open('biome_main.js').read()+'\n'+open('menu.js').read()+'\n'+open('extras.js').read()+"\n"+open('tutorial.js').read()+"\n"+open('ambiance.js').read()+'\n'+open('save.js').read()+'\n'+open('bascule.js').read()+'\n'+open('tiroir.js').read()+'\n'+open('soie.js').read()+'\n'+open('instincts.js').read()+'\n'+open('decor_top.js').read()+'\n'+open('aide.js').read()+'\n'+open('ctrl.js').read()+'\n'+open('fixes.js').read()+"\n"
+main=open('biome_main.js').read()+'\n'+open('menu.js').read()+'\n'+open('extras.js').read()+"\n"+open('tutorial.js').read()+"\n"+open('ambiance.js').read()+'\n'+open('save.js').read()+'\n'+open('bascule.js').read()+'\n'+open('tiroir.js').read()+'\n'+open('soie.js').read()+'\n'+open('instincts.js').read()+'\n'+open('decor_top.js').read()+'\n'+open('aide.js').read()+'\n'+open('ctrl.js').read()+'\n'+open('defis.js').read()+'\n'+open('fixes.js').read()+"\n"
 main=main.replace("for(const id of order)for(const c of creatures)if(c.sp.id===id)drawCreature(c,1,false);",
  "for(const id of order)for(const c of creatures)if(c.sp.id===id){drawProfile(c,1,false);if(c.load){const h=c.segs[0];ctx.fillStyle=c.load.type==='grain'?(c.load.t===1?'#8a6a3a':'#d8b060'):'#ffb43a';ctx.fillRect(h.x+Math.cos(h.a)*5-1.5,h.y+Math.sin(h.a)*5-1.5,3,3)}}")
 html=r'''<!DOCTYPE html>
@@ -294,6 +294,10 @@ body.land #ctrlbtn{top:166px;right:6px;width:50px;padding:7px 0;font-size:0}body
 #ctrlbar button{width:70px;background:#0b0e0bee;border:1px solid #2d4a2f;border-radius:10px;color:#ddd;padding:4px 2px;display:flex;flex-direction:column;align-items:center;gap:1px}#ctrlbar .ci{font-size:17px;line-height:1.1}#ctrlbar .cs2{font:600 9.5px ui-monospace,monospace;color:#8bff6a;white-space:nowrap}#ctrlbar button.lock{opacity:.45}
 body.land #ctrlbar{left:184px;right:66px;top:auto;bottom:4px;flex-direction:row;gap:4px}body.land.left #ctrlbar{left:66px;right:184px}
 body.land #ctrlbar button{flex:1;width:auto;min-width:0;flex-direction:row;justify-content:center;gap:4px;padding:6px 2px}body.land #ctrlbar .ci{font-size:14px}
+/* Choix de difficulté (campagne) */
+.diffs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px 0 10px}.diff{background:#111;border:1px solid #333;border-radius:10px;color:#ddd;padding:7px 8px;text-align:left;font:12px/1.3 -apple-system,Roboto,sans-serif}
+.diff b{display:block;font-size:13px;margin-bottom:2px}.diff small{color:#999;font-size:10.5px}.diff.on{border-color:#ffe94d;background:#2a2608}.diff.on b{color:#ffe94d}
+@media (max-width:480px){.diff small{display:none}}
 </style>
 </head>
 <body>
