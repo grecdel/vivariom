@@ -144,7 +144,7 @@ const EN_D={
 // ---------- divers ----------
 "Fourmis":"Ants","Pucerons":"Aphids","Coccinelles":"Ladybirds","Cloportes":"Woodlice","Lombrics":"Earthworms","Abeilles":"Bees","Mouches":"Flies","Araignées":"Spiders","Phasmes":"Stick insects","Mantes":"Mantises","Escargots":"Snails","Papillons":"Butterflies","Chenilles":"Caterpillars","Scorpions":"Scorpions","Ténébrions":"Mealworm beetles","Bousiers":"Dung beetles","Œufs":"Eggs","Œuf":"Egg","Cocon":"Egg sac","Oothèque":"Ootheca","Chrysalide":"Chrysalis","Nymphe":"Pupa","Larve":"Larva","Graine":"Seed","Cadavre":"Corpse","Ouvrière":"Worker","Ouvrières":"Workers",
 "Énergie":"Energy","Âge":"Age","Faim":"Hunger","Humidité":"Humidity","Nutriments":"Nutrients","Profondeur":"Depth","Vivant":"Alive","Mort":"Dead","vivants":"alive","morts":"dead",
-"Pause":"Pause","Reprendre":"Resume","Menu":"Menu","Options":"Options","Succès":"Achievements","Journal":"Logbook","Couveuse":"Incubator","Salle":"Room","Liste":"List","Bacs":"Tanks","Coupe":"Section","Dessus":"Top","Nouveau":"New","Vider":"Empty","Renommer":"Rename","Supprimer":"Delete","Annuler":"Cancel","Valider":"OK","Confirmer":"Confirm","Enregistrer":"Save","Suivant":"Next","Précédent":"Previous","Jour":"Day","Nuit":"Night","jour":"day","nuit":"night","auto":"auto",
+"Pause":"Pause","Reprendre":"Resume","Menu":"Menu","Options":"Options","Succès":"Achievements","Journal":"Logbook","Couveuse":"Incubator","Salle":"Room","Liste":"List","Bacs":"Tanks","Coupe":"Section","Dessus":"Top","Nouveau":"New","Vider":"Empty","Renommer":"Rename","Supprimer":"Delete","Annuler":"Cancel","Valider":"OK","Confirmer":"Confirm","Enregistrer":"Save","Suivant":"Next","Précédent":"Previous","Jour":"Day","Nuit":"Night","jour":"day","nuit":"night","auto":"auto","manuel":"manual","vide":"empty","vitesse":"speed","son":"sound","vivariums":"vivariums",
 };
 
 // Modèles : {} = morceau variable (traduit à son tour). Dans la traduction, {} = morceaux dans l'ordre, {0} {1}… = morceau n°.
@@ -213,7 +213,11 @@ function langCore(s,depth){
     if(typeof t.v==='function')return t.v(...g);
     const caps=g.slice(1).map(x=>langCore(langNorm(x),depth+1));let i=0;
     return t.v.replace(/\{(\d*)\}/g,(_,n)=>n===''?(caps[i++]??''):(caps[+n]??''))}
-  return s.replace(C.WR,w=>C.W.get(w)??w);
+  // « Titre : texte » : chaque moitié à part
+  const k=s.indexOf(' : ');
+  if(k>0&&depth<3){const a=langCore(s.slice(0,k),depth+1),b=langCore(s.slice(k+3),depth+1);if(a!==s.slice(0,k)||b!==s.slice(k+3))return a+': '+b}
+  const r2=s.replace(C.WR,w=>C.W.get(w)??w);
+  return r2===s?s:r2.replace(/ ([!?:;])/g,'$1');
 }
 function langTr(s){
   if(typeof s!=='string'||!s||!LANG_HASL.test(s))return s;
