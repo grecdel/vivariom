@@ -30,3 +30,35 @@ jobs:
         with:
           name: Bestioles-android
           path: Bestioles-android.apk
+
+  bureau:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            cible: --win portable
+            fichier: Bestioles-windows.exe
+          - os: ubuntu-latest
+            cible: --linux AppImage
+            fichier: Bestioles-linux.AppImage
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+      - name: Préparer la page des bestioles
+        shell: bash
+        run: cp -r bestioles/moteur bestioles/bureau/page
+      - name: Fabriquer
+        shell: bash
+        working-directory: bestioles/bureau
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: |
+          npm install --no-audit --no-fund
+          npx electron-builder ${{ matrix.cible }} --publish never
+      - uses: actions/upload-artifact@v6
+        with:
+          name: ${{ matrix.fichier }}
+          path: bestioles/bureau/dist/${{ matrix.fichier }}

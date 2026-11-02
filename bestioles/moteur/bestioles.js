@@ -175,7 +175,9 @@ function ajouter(esp,x,y){if(!ESP[esp])return;if(vivantes(esp).length>=(MAX[esp]
 const Bestioles=window.Bestioles={
   demarrer(){if(actif)return;if(!betes.length)peupler();actif=true;cv.hidden=false;tPrec=0;requestAnimationFrame(boucle)},
   arreter(){actif=false;cv.hidden=true;fermerMenu();hoteInteractif(false)},
-  action(id,a){action(+id,a)},ajouter,especes:()=>Object.entries(ESP).map(([k,e])=>({id:k,nom:e.nom,ic:e.ic})),
+  action(id,a){action(+id,a)},ajouter,
+  // ordinateur : position de la souris donnée par l'appli (sur Linux, la fenêtre ne reçoit rien tant qu'elle laisse passer les clics)
+  survol(x,y){const sur=!!toucher(x,y);hoteInteractif(sur||!menu.hidden);return sur},especes:()=>Object.entries(ESP).map(([k,e])=>({id:k,nom:e.nom,ic:e.ic})),
   etat:()=>({actif,betes:betes.length,parEspece:Object.fromEntries(Object.keys(ESP).map(k=>[k,vivantes(k).length]))}),
   _avancer(s){for(let t=0;t<s;t+=1/30)vivre(1/30);dessiner()}};
 if(!window.BESTIOLES_ATTENDRE)Bestioles.demarrer();

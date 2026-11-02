@@ -1,0 +1,27 @@
+{
+  "name": "bestioles",
+  "productName": "Bestioles",
+  "version": "1.0.0",
+  "description": "Petites bêtes de Vivariom qui vivent sur l'écran",
+  "author": "grecdel",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "33.2.1",
+    "electron-builder": "25.1.8"
+  },
+  "build": {
+    "appId": "com.vivariom.bestioles",
+    "productName": "Bestioles",
+    "copyright": "© 2026 grecdel — tous droits réservés",
+    "files": ["main.js", "preload.js", "icone.png", "page/**"],
+    "artifactName": "Bestioles-${os}.${ext}",
+    "win": { "target": "portable", "icon": "icone.png" },
+    "portable": { "artifactName": "Bestioles-windows.exe" },
+    "linux": { "target": "AppImage", "icon": "icone.png", "category": "Utility", "artifactName": "Bestioles-linux.AppImage" }
+  }
+}
