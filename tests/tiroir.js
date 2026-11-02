@@ -13,5 +13,5 @@ const {chromium}=require('playwright');const path=require('path');
   await p.waitForTimeout(1100);const aide=await p.evaluate(()=>window.__sim.aide());console.log('fiche d\'aide :',aide.slice(0,90));
   await p.click('#pal .cat >> nth=0');await p.waitForTimeout(300);
   const papillon=await p.evaluate(()=>{const c=[...document.querySelectorAll('#drawer .gcell .chip')].find(x=>x.querySelector('.nm').textContent==='Papillon');return c&&c.dataset.id});
-  const ok=/Mange/i.test(aide)&&noms.length===17&&JSON.stringify(noms)===JSON.stringify(trie)&&rangs.join()==='papillon,chenille'&&papillon==='chenille'&&!errs.length;
+  const ok=/Mange/i.test(aide)&&noms.length===19&&JSON.stringify(noms)===JSON.stringify(trie)&&rangs.join()==='papillon,chenille'&&papillon==='chenille'&&!errs.length;
   console.log(noms.join(', '),'\nPapillon :',rangs.join(' → '),'| retenu :',papillon,'\n',ok?'OK':'ÉCHEC','errors',errs);await b.close();process.exit(ok?0:1)})();
