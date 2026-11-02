@@ -24,7 +24,7 @@ python3 assemble.py        # produit biome.html (le jeu complet) et le dossier w
 
 Ordre des fichiers :
 - **core** : biome_core.js, variants.js, unlocks.js, decor.js, topview.js, profile.js, devices.js, links.js, lure.js, species2.js, species3.js
-- **main** : biome_main.js, menu.js, extras.js, tutorial.js, ambiance.js, save.js, bascule.js, tiroir.js, soie.js, fixes.js (en dernier : il remplace certaines fonctions)
+- **main** : biome_main.js, menu.js, extras.js, tutorial.js, ambiance.js, save.js, bascule.js, tiroir.js, soie.js, aide.js, fixes.js (en dernier : il remplace certaines fonctions)
 
 ## Repères
 - **Monde** :
@@ -40,7 +40,8 @@ Ordre des fichiers :
 - **Bac à sable** (menu.js) :
   - tout est débloqué ;
   - grande salle avec racks contre le mur (ROOM, roomGeom, fiche `#rsheet`) : 2 étagères au départ, jusqu'à RACK_MAX (clé `biome_racks`) ; « ＋ » sur chaque emplacement libre (`.slotfree`), étagère à ajouter en pointillé (`.raddr`), dernière étagère vide retirable (`.rdel`) ; glisser-déposer immédiat à la souris, après appui maintenu au doigt ;
-  - style, couveuse, tubes entre bacs.
+  - style, couveuse, tubes entre bacs ;
+  - fiche d'aide (aide.js, `#aide`) quand on prend une bête : ce qu'elle mange, qui la mange (table `REL`, avec le nombre présent dans le bac) et ses besoins ; masquable (✕), cachée si l'option « Messages d'aide » est coupée.
 - **Espèces** :
   - variantes (VARS/VSP dans variants.js) ;
   - tiroir « Bêtes » (tiroir.js) : une case par espèce (variantes + larves regroupées : chenille→papillon, ver de farine→ténébrion, ver blanc→rhinocéros), ordre alphabétique des noms courts, bouton « ▾ n » qui ouvre la liste des variantes ; dernière variante choisie retenue (clé `biome_vsel`) ;

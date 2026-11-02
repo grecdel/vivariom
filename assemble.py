@@ -13,7 +13,7 @@ parts=[fn(n) for n in ['angDiff','segDist','colors','restPos','kneeOf','local','
 lib='\n'.join(parts)
 lib=lib.replace("flying=!gray&&c.alt>1","flying=false").replace("air=preview||c.alt>3","air=preview||c.fly")
 core=open('biome_core.js').read()+'\n'+open('variants.js').read()+'\n'+open('unlocks.js').read()+'\n'+open('decor.js').read()+'\n'+open('topview.js').read()+'\n'+open('profile.js').read()+'\n'+open('devices.js').read()+'\n'+open('links.js').read()+'\n'+open('lure.js').read()+'\n'+open('species2.js').read()+'\n'+open('species3.js').read()
-main=open('biome_main.js').read()+'\n'+open('menu.js').read()+'\n'+open('extras.js').read()+"\n"+open('tutorial.js').read()+"\n"+open('ambiance.js').read()+'\n'+open('save.js').read()+'\n'+open('bascule.js').read()+'\n'+open('tiroir.js').read()+'\n'+open('soie.js').read()+'\n'+open('fixes.js').read()+"\n"
+main=open('biome_main.js').read()+'\n'+open('menu.js').read()+'\n'+open('extras.js').read()+"\n"+open('tutorial.js').read()+"\n"+open('ambiance.js').read()+'\n'+open('save.js').read()+'\n'+open('bascule.js').read()+'\n'+open('tiroir.js').read()+'\n'+open('soie.js').read()+'\n'+open('aide.js').read()+'\n'+open('fixes.js').read()+"\n"
 main=main.replace("for(const id of order)for(const c of creatures)if(c.sp.id===id)drawCreature(c,1,false);",
  "for(const id of order)for(const c of creatures)if(c.sp.id===id){drawProfile(c,1,false);if(c.load){const h=c.segs[0];ctx.fillStyle=c.load.type==='grain'?(c.load.t===1?'#8a6a3a':'#d8b060'):'#ffb43a';ctx.fillRect(h.x+Math.cos(h.a)*5-1.5,h.y+Math.sin(h.a)*5-1.5,3,3)}}")
 html=r'''<!DOCTYPE html>
@@ -242,6 +242,17 @@ button:not(:disabled):active,.lv:not(.lock):active,.cat:active,.chip:active{box-
 .vrow{position:relative;display:flex;align-items:center;gap:8px;background:#070707;border:1px solid #2a2a2a;border-radius:9px;padding:4px 6px;text-align:left;color:#ddd}
 .vrow.on{border-color:#ffe94d;color:#ffe94d}.vrow canvas{width:46px;height:30px;flex:none}.vrow b{font:600 12px -apple-system,Roboto,sans-serif}.vrow i{font:500 10px -apple-system,Roboto,sans-serif;color:#8a9}
 .vrow small{display:block;font:italic 10px Georgia,serif;color:#888}.vrow .st{position:absolute;top:3px;right:6px;font:600 9px ui-monospace,monospace;color:#ffe94d}
+/* Fiche d'aide du bac à sable : nourriture, prédateurs, besoins de la bête en main */
+#aide{display:none;position:fixed;left:8px;right:8px;bottom:134px;z-index:3;background:#0b0e0bf2;border:1px solid #3d6b3f;border-radius:12px;padding:7px 9px;font:12px/1.35 -apple-system,Roboto,sans-serif;color:#ddd;box-shadow:0 6px 20px #000a}
+#aide .ahead{display:flex;align-items:center;gap:8px;margin-bottom:4px}#aide .ahead b{font-size:13px;color:#fff;white-space:nowrap}
+#aide .abilan{flex:1;min-width:0;font-size:11px;color:#8bff6a}#aide .abilan.warn{color:#ffb35c}
+#aide .ax{background:#111;border:1px solid #444;color:#ccc;border-radius:50%;width:24px;height:24px;padding:0;font-size:11px;flex:none}
+#aide .arow{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-top:3px}#aide .alab{flex:none;width:66px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#8a9}
+#aide .apill{border-radius:20px;padding:2px 8px;font-size:11px;border:1px solid #333;background:#111;white-space:nowrap}#aide .apill b{margin-left:3px}
+#aide .apill.ok{border-color:#3d6b3f;color:#bfeaa8}#aide .apill.manque{border-color:#5a3a2a;color:#d9a07a;opacity:.85}#aide .apill.danger{border-color:#7a2a2a;color:#ff9a8a;background:#1c0d0d}#aide .apill.calme{color:#999}
+#aide .atxt{flex:1;min-width:160px;font-size:11px;color:#bbb}
+@media (min-width:900px){body:not(.land) #aide{left:50%;right:auto;width:min(calc(100% - 16px),640px);transform:translateX(-50%)}}
+body.land #aide{left:184px;right:66px;bottom:auto;top:50px}body.land.left #aide{left:66px;right:184px}
 </style>
 </head>
 <body>
