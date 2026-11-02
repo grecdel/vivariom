@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Vivariom — Bestioles</title>
+<!-- © 2026 grecdel — tous droits réservés. -->
+<style>
+  html,body{margin:0;height:100%;background:transparent;overflow:hidden;-webkit-user-select:none;user-select:none}
+  #bestioles{position:fixed;inset:0;display:block}
+  #bmenu{position:fixed;width:220px;box-sizing:border-box;background:#0d110cf2;border:1px solid #4a7a3e;border-radius:14px;padding:8px;
+    font:13px/1.3 -apple-system,"Segoe UI",Roboto,sans-serif;color:#e8eee4;box-shadow:0 8px 28px #000a;display:flex;flex-direction:column;gap:5px;z-index:2}
+  #bmenu[hidden]{display:none}
+  #bmenu .mt{display:flex;align-items:baseline;gap:6px;padding:2px 4px 4px}#bmenu .mt span{margin-left:auto;font-size:11px;color:#9fb48e;text-align:right}
+  #bmenu button{background:#161c15;border:1px solid #2f3f2a;border-radius:9px;color:#e8eee4;padding:7px 9px;text-align:left;font:inherit;cursor:pointer}
+  #bmenu button:hover{border-color:#ffe94d}
+  #bmenu .off{color:#ffb3a8}
+  #bmenu .ajout{display:grid;grid-template-columns:1fr 1fr;gap:4px}#bmenu .ajout[hidden]{display:none}#bmenu .ajout button{padding:5px 6px;font-size:12px}
+  /* page d'essai dans un navigateur : un faux bureau derrière */
+  body.essai{background:linear-gradient(135deg,#2b4a6a,#5a7a5a)}
+</style>
+</head>
+<body>
+<script>if(!window.AndroidBestioles&&!window.bestiolesHote&&location.protocol!=='app:')document.body.classList.add('essai')</script>
+<script src="bestioles.js"></script>
+</body>
+</html>
