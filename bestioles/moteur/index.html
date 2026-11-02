@@ -16,6 +16,13 @@
   #bmenu button:hover{border-color:#ffe94d}
   #bmenu .off{color:#ffb3a8}
   #bmenu .ajout{display:grid;grid-template-columns:1fr 1fr;gap:4px}#bmenu .ajout[hidden]{display:none}#bmenu .ajout button{padding:5px 6px;font-size:12px}
+  #bmenu{max-height:calc(100vh - 16px);overflow-y:auto}
+  #bmenu .duo{display:grid;grid-template-columns:1fr 1fr;gap:4px}#bmenu .duo button{padding:6px 7px;font-size:12px}
+  #bmenu .regl{display:flex;flex-direction:column;gap:3px;padding:2px 0}#bmenu .regl[hidden]{display:none}
+  #bmenu .regl p{margin:0 2px 3px;font-size:11px;color:#9fb48e}
+  #bmenu .rg{display:grid;grid-template-columns:1fr 28px 24px 28px;align-items:center;gap:3px;font-size:12px}
+  #bmenu .rg button{padding:3px 0;text-align:center;font-size:14px;line-height:1}#bmenu .rg b{text-align:center;font-variant-numeric:tabular-nums}
+  #bmenu .petit{font-size:11px;padding:5px 7px;color:#c9d2c4}
   /* page d'essai dans un navigateur : un faux bureau derrière */
   body.essai{background:linear-gradient(135deg,#2b4a6a,#5a7a5a)}
 </style>

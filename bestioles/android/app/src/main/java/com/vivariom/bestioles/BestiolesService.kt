@@ -42,6 +42,8 @@ class BestiolesService : Service() {
         const val BASCULER = "basculer"
         const val COMMANDE = "commande"   // extra "js" : commande pour la page (Bestioles.action(...))
         private const val CANAL = "bestioles"
+        const val PREFS = "bestioles"
+        const val REGLAGES = "reglages"   // JSON {espece: nombre}, écrit par la page (bestioles.js)
         @Volatile var actif = false
 
         /** Met à jour le texte du widget et l'état de la tuile. */
@@ -110,6 +112,7 @@ class BestiolesService : Service() {
         val w = WebView(this)
         w.setBackgroundColor(Color.TRANSPARENT)
         w.settings.javaScriptEnabled = true
+        w.settings.domStorageEnabled = true
         w.addJavascriptInterface(Pont(), "AndroidBestioles")
         w.loadUrl("file:///android_asset/index.html")
         val lp = WindowManager.LayoutParams(
@@ -129,6 +132,9 @@ class BestiolesService : Service() {
     inner class Pont {
         @JavascriptInterface fun positions(json: String) { principal.post { majZones(json) } }
         @JavascriptInterface fun touche(id: Int, esp: String, nom: String, calme: Int) { principal.post { ouvrirMenu(id) } }
+        /** Réglages (quelles bêtes, combien) : gardés aussi par l'appli, au cas où la page les perdrait. */
+        @JavascriptInterface fun lireReglages(): String = this@BestiolesService.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(REGLAGES, "") ?: ""
+        @JavascriptInterface fun ecrireReglages(json: String) { this@BestiolesService.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString(REGLAGES, json).apply() }
     }
 
     private fun majZones(json: String) {
