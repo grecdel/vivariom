@@ -220,6 +220,16 @@ body.land.left #vnav{left:auto;right:184px}body.land.left #vstrip{left:60px;righ
 /* Appui (souris ou doigt) : le bouton s'éclaire pendant qu'on appuie */
 button:not(:disabled):active,.lv:not(.lock):active,.cat:active,.chip:active{box-shadow:inset 0 0 0 100vmax #ffffff30!important;outline:1px solid #ffe94d!important;outline-offset:-1px}
 .btn:not(:disabled):active{box-shadow:inset 0 0 0 100vmax #00000030!important}
+/* Grande salle : ＋ sur les emplacements libres, étagère à ajouter en pointillé, cible du glisser-déposer */
+#radd{display:none!important}
+.rv{user-select:none;-webkit-user-select:none}.rv img{-webkit-user-drag:none;user-drag:none;pointer-events:none}.rv.drag{z-index:5}
+.slotfree{background:#ffffff06;border:1px dashed #ffffff40;border-radius:4px;color:#ffffff70;font:300 24px -apple-system,Roboto,sans-serif;padding:0;display:flex;align-items:center;justify-content:center}
+.raddr{position:absolute;background:#ffffff05;border:2px dashed #ffffff40;border-radius:8px;color:#ffffff80;font:300 34px -apple-system,Roboto,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:0}.raddr small{font:600 12px -apple-system,Roboto,sans-serif;letter-spacing:.5px}
+.rdel{position:absolute;width:28px;height:28px;border-radius:50%;background:#111;border:1px solid #555;color:#ccc;font-size:13px;padding:0;z-index:3}
+.rtgt{position:absolute;border:2px solid #ffe94d;border-radius:5px;box-shadow:0 0 14px #ffe94d66;pointer-events:none;z-index:4}
+/* Grands écrans : les panneaux du bas ne s'étirent plus sur toute la largeur */
+#rsheet{left:50%!important;right:auto!important;width:min(100%,640px);transform:translate(-50%,105%)!important;border-left:1px solid #555;border-right:1px solid #555;box-sizing:border-box}#rsheet.open{transform:translate(-50%,0)!important}
+@media (min-width:900px){body:not(.land) #pal{left:50%!important;right:auto!important;width:min(100%,860px);transform:translateX(-50%);box-sizing:border-box}body:not(.land) #drawer{left:50%!important;right:auto!important;width:min(calc(100% - 12px),860px);transform:translateX(-50%);box-sizing:border-box}}
 </style>
 </head>
 <body>

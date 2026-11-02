@@ -37,7 +37,7 @@ Ordre des fichiers :
   - étoiles, reprise de partie (`biome_resume`), tutoriel.
 - **Bac à sable** (menu.js) :
   - tout est débloqué ;
-  - grande salle avec racks contre le mur (ROOM, roomGeom, fiche `#rsheet`) ;
+  - grande salle avec racks contre le mur (ROOM, roomGeom, fiche `#rsheet`) : 2 étagères au départ, jusqu'à RACK_MAX (clé `biome_racks`) ; « ＋ » sur chaque emplacement libre (`.slotfree`), étagère à ajouter en pointillé (`.raddr`), dernière étagère vide retirable (`.rdel`) ; glisser-déposer immédiat à la souris, après appui maintenu au doigt ;
   - style, couveuse, tubes entre bacs.
 - **Espèces** :
   - variantes (VARS/VSP dans variants.js) ;
@@ -59,7 +59,7 @@ Quand l'écran fait moins de 520 px de haut en paysage, `resize()` pose la class
 
 Les tests utilisent Playwright (`npm i playwright` si besoin) et passent par `window.__sim` : startLevel, go, tap, run, counts, win, bench…
 ```
-python3 assemble.py && node tests/fixcheck.js && node tests/all_lv.js && node tests/sauvegarde.js && node tests/appli_web.js
+python3 assemble.py && node tests/fixcheck.js && node tests/all_lv.js && node tests/sauvegarde.js && node tests/appli_web.js && node tests/salle.js
 ```
 `__sim.startLevel` appelle la version non enveloppée : `#vnav` ne s'affiche pas dans les tests. C'est normal.
 

@@ -125,8 +125,10 @@ function thumb(){
 
 // ---------- la grande salle ----------
 const VIV=new Map();
-const ROOM={list:LS.get('biome_room',[])};
-function saveRoom(){LS.set('biome_room',ROOM.list)}
+// racks : nombre d'étagères de la salle (2 au départ, jusqu'à RACK_MAX) ; on en ajoute avec l'emplacement en pointillé
+const RACK_MAX=6;
+const ROOM={list:LS.get('biome_room',[]),racks:LS.get('biome_racks',2)};
+function saveRoom(){LS.set('biome_room',ROOM.list);LS.set('biome_racks',ROOM.racks)}
 let curViv=null;
 function vivMax(){return G?G.slots.length:13}
 function sandboxSpecies(){const s=new Set(['plante']);LEVELS.forEach(L=>L.sp.forEach(id=>s.add(id)));s.add('chenille');if(s.has('tenebrion'))s.add('verfarine');if(s.has('rhinoceros'))s.add('verblanc');return [...s]}
@@ -134,13 +136,14 @@ function saveCurrent(){if(!curViv)return;const S=serialize();VIV.set(curViv.id,S
   LS.set('biome_viv_'+curViv.id,S);saveRoom()}
 function loadViv(v){if(VIV.has(v.id))return VIV.get(v.id);const S=LS.get('biome_viv_'+v.id,null);if(S)VIV.set(v.id,S);return S}
 // emplacements : deux racks d'éleveur et un meuble bas, tous contre le mur
-const RW=1180;let RH=600,G=null;
+let RW=1180,RH=600,G=null;
 function roomGeom(){RH=Math.max(440,window.innerHeight-56);const fy=Math.round(RH*0.72),L=Math.round(Math.min(124,(fy-50)/3.2)),VH=L-26,VW=Math.round(VH*1.3);
-  const slots=[],racks=[];
-  for(const [ri,rx] of [[1,240],[2,600]]){const rw=VW*2+34;racks.push({x:rx,w:rw,top:fy-3*L-8,bottom:fy+10,levels:[0,1,2].map(k=>fy-6-k*L)});
+  const slots=[],racks=[],nr=clamp(ROOM.racks|0,2,RACK_MAX),rw=VW*2+34;
+  for(let ri=1;ri<=nr;ri++){const rx=240+(ri-1)*360;racks.push({x:rx,w:rw,top:fy-3*L-8,bottom:fy+10,levels:[0,1,2].map(k=>fy-6-k*L)});
     for(let k=0;k<3;k++)for(let c=0;c<2;c++)slots.push({id:`r${ri}-${k}-${c}`,x:rx+12+c*(VW+10),y:fy-6-k*L-VH,lab:`Rack ${ri}, étage ${k+1}`})}
   const mx=26,mtop=fy-58;for(let c=0;c<1;c++)slots.push({id:`m-${c}`,x:mx+20+c*(VW+12),y:mtop-VH,lab:'Meuble bas'});
-  return {fy,L,VW,VH,slots,racks,meuble:{x:mx,w:VW+40,top:mtop}}}
+  RW=Math.max(1180,240+nr*360+(nr<RACK_MAX?360:0)+260);
+  return {fy,L,VW,VH,slots,racks,meuble:{x:mx,w:VW+40,top:mtop},addRack:nr<RACK_MAX?{x:240+nr*360,w:rw,top:fy-3*L-8,bottom:fy+10}:null}}
 const slotOf=(v)=>G.slots.find(s=>s.id===v.slot);
 function freeSlot(){const used=new Set(ROOM.list.map(v=>v.slot));return G.slots.find(s=>!used.has(s.id))}
 function fixSlots(){G=roomGeom();const used=new Set();for(const v of ROOM.list){if(!v.slot||!G.slots.some(s=>s.id===v.slot)||used.has(v.slot))v.slot=null;if(v.slot)used.add(v.slot)}
@@ -154,9 +157,9 @@ function drawRoom(){const max=vivMax();
   $('rcount').textContent=`${ROOM.list.length}/${max}`;$('radd').disabled=ROOM.list.length>=max||!freeSlot();$('rmode').textContent=roomMode==='salle'?'☰ Liste':'🏛 Salle';
   $('rscroll').style.display=roomMode==='salle'?'block':'none';$('rlist').style.display=roomMode==='liste'?'block':'none';
   $('rhint').style.display=roomMode==='salle'?'block':'none';
-  $('rhint').textContent=ROOM.list.length>=max?'Toutes les places sont prises : retire un bac pour en créer un autre':ROOM.list.length?'Touche un bac pour voir sa fiche · maintiens-le pour le déplacer':'Ajoute ton premier vivarium avec ＋';
+  $('rhint').textContent=ROOM.list.length>=max?(G.addRack?'Toutes les places sont prises : ajoute une étagère (pointillés à droite)':'Toutes les places sont prises : retire un bac pour en créer un autre'):ROOM.list.length?'Touche un bac pour sa fiche · fais-le glisser pour le déplacer (au doigt : maintiens-le d\'abord) · ＋ pour en ajouter un':'Touche un ＋ sur une étagère pour créer ton premier vivarium';
   if(roomMode==='liste'){drawList();return}
-  const R=$('roomin');R.style.height=RH+'px';const {fy}=G;
+  const R=$('roomin');R.style.height=RH+'px';R.style.width=`max(${RW}px,100vw)`;const {fy}=G;
   const SM=STYLE_OPTS.mur[STYLE.mur][1],SS=STYLE_OPTS.sol[STYLE.sol][1],FC=frameCols();document.documentElement.style.setProperty('--frame',FC[1]);
   let h=`<div class="wall" style="height:${fy}px;background:${SM}"></div><div class="floorw" style="top:${fy}px"><div class="floorp" style="background:${SS}"></div></div><div class="plinth" style="top:${fy-4}px"></div>
    <div class="win" style="left:40px;top:${fy*0.08}px;height:${fy*0.34}px"></div><div class="win" style="left:${RW-230}px;top:${fy*0.08}px;height:${fy*0.34}px"></div>
@@ -164,10 +167,15 @@ function drawRoom(){const max=vivMax();
   for(const r of G.racks){h+=`<div class="rshadow" style="left:${r.x-6}px;width:${r.w+12}px;top:${r.top}px;height:${r.bottom-r.top}px"></div><div class="rpost" style="left:${r.x}px;top:${r.top}px;height:${r.bottom-r.top}px"></div><div class="rpost" style="left:${r.x+r.w-8}px;top:${r.top}px;height:${r.bottom-r.top}px"></div>`;
     for(const y of r.levels)h+=`<div class="rlvl" style="left:${r.x-4}px;width:${r.w+8}px;top:${y}px"></div>`}
   const used=new Set(ROOM.list.map(v=>v.slot));
-  for(const s of G.slots)if(!used.has(s.id))h+=`<div class="slotfree" style="left:${s.x}px;top:${s.y}px;width:${G.VW}px;height:${G.VH}px"></div>`;
+  for(const s of G.slots)if(!used.has(s.id))h+=`<button class="slotfree" data-slot="${s.id}" title="Nouveau vivarium ici" style="left:${s.x}px;top:${s.y}px;width:${G.VW}px;height:${G.VH}px">＋</button>`;
+  const A=G.addRack;if(A)h+=`<button class="raddr" title="Ajouter une étagère" style="left:${A.x}px;width:${A.w}px;top:${A.top}px;height:${A.bottom-A.top}px">＋<small>Étagère</small></button>`;
+  const lr=G.racks[G.racks.length-1],nr=G.racks.length;if(nr>2&&!G.slots.some(s=>s.id.startsWith(`r${nr}-`)&&used.has(s.id)))h+=`<button class="rdel" title="Retirer cette étagère vide" style="left:${lr.x+lr.w-14}px;top:${lr.top-14}px">✕</button>`;
   h+=`<div class="potp" style="left:${RW-140}px;top:${fy-50}px">🪴</div><div class="potp" style="left:${RW-250}px;top:${fy-46}px;font-size:44px">🪴</div>`;
   for(const v of ROOM.list){const s=slotOf(v);if(!s)continue;const B=fmtBox(v);h+=`<div class="rv" data-id="${v.id}" style="left:${s.x+B.dx}px;top:${s.y+B.dy}px;width:${B.w}px;height:${B.h}px">${vivTile(v,sheetIdx>=0&&ROOM.list[sheetIdx]===v?'sel':'')}</div>`}
-  R.innerHTML=h;R.querySelectorAll('.rv').forEach(el=>roomDrag(el))}
+  R.innerHTML=h;R.querySelectorAll('.rv').forEach(el=>roomDrag(el));
+  R.querySelectorAll('.slotfree').forEach(b=>b.onclick=()=>addViv(b.dataset.slot));
+  const ra=R.querySelector('.raddr');if(ra)ra.onclick=()=>{ROOM.racks=G.racks.length+1;saveRoom();fixSlots();drawRoom();const sc=$('rscroll');sc.scrollTo({left:Math.max(0,G.racks[G.racks.length-1].x+150-sc.clientWidth/2),behavior:'smooth'})};
+  const rd=R.querySelector('.rdel');if(rd)rd.onclick=()=>{ROOM.racks=G.racks.length-1;saveRoom();fixSlots();drawRoom()}}
 function drawList(){const max=vivMax();let h='<div class="lgrid">';
   for(const v of ROOM.list){const al=alertOf(v);h+=`<div class="lcard" data-id="${v.id}">${vivTile(v)}<div class="nm">${v.name}</div><div class="st ${al?'warn':''}">${al||popTxt(v)}</div></div>`}
   if(ROOM.list.length<max)h+=`<div class="lcard add" id="ladd"><div class="addb">＋ Nouveau</div></div>`;
@@ -175,24 +183,30 @@ function drawList(){const max=vivMax();let h='<div class="lgrid">';
   $('rlist').querySelectorAll('.lcard[data-id]').forEach(c=>c.onclick=()=>enterViv(ROOM.list.find(v=>v.id===c.dataset.id)));
   const la=$('ladd');if(la)la.onclick=addViv}
 // toucher = fiche ; maintenir = déplacer vers un autre emplacement
-function roomDrag(el){const v=ROOM.list.find(o=>o.id===el.dataset.id);let st=null,tm=null;
-  el.addEventListener('pointerdown',e=>{st={x:e.clientX,y:e.clientY,l:parseFloat(el.style.left),t:parseFloat(el.style.top),drag:false,moved:false};
-    tm=setTimeout(()=>{if(st&&!st.moved){st.drag=true;el.classList.add('drag');try{el.setPointerCapture(e.pointerId)}catch(_){}if(OPT.vib&&navigator.vibrate)navigator.vibrate(15)}},380)});
-  el.addEventListener('pointermove',e=>{if(!st)return;const dx=e.clientX-st.x,dy=e.clientY-st.y;if(!st.drag){if(Math.hypot(dx,dy)>8){st.moved=true;clearTimeout(tm)}return}
-    el.style.left=(st.l+dx)+'px';el.style.top=(st.t+dy)+'px'});
-  const up=e=>{clearTimeout(tm);if(!st)return;const S=st;st=null;el.classList.remove('drag');
-    if(S.drag){const cx=parseFloat(el.style.left)+G.VW/2,cy=parseFloat(el.style.top)+G.VH/2;let best=null,bd=1e9;
-      for(const s of G.slots){const d=Math.hypot(s.x+G.VW/2-cx,s.y+G.VH/2-cy);if(d<bd){bd=d;best=s}}
+function nearSlot(el){const cx=parseFloat(el.style.left)+G.VW/2,cy=parseFloat(el.style.top)+G.VH/2;let best=null,bd=1e9;
+  for(const s of G.slots){const d=Math.hypot(s.x+G.VW/2-cx,s.y+G.VH/2-cy);if(d<bd){bd=d;best=s}}return best}
+function roomDrag(el){const v=ROOM.list.find(o=>o.id===el.dataset.id);let st=null,tm=null,tgt=null;const sc=$('rscroll');
+  const begin=id=>{st.drag=true;el.classList.add('drag');try{el.setPointerCapture(id)}catch(_){}tgt=document.createElement('div');tgt.className='rtgt';tgt.style.width=G.VW+'px';tgt.style.height=G.VH+'px';$('roomin').appendChild(tgt);mark()};
+  const mark=()=>{const s=nearSlot(el);if(s&&tgt){tgt.style.left=s.x+'px';tgt.style.top=s.y+'px'}};
+  el.addEventListener('pointerdown',e=>{const mouse=e.pointerType==='mouse';if(mouse){if(e.button!==0)return;e.preventDefault()}
+    st={x:e.clientX,y:e.clientY,l:parseFloat(el.style.left),t:parseFloat(el.style.top),s0:sc.scrollLeft,drag:false,moved:false,mouse,id:e.pointerId};
+    if(!mouse)tm=setTimeout(()=>{if(st&&!st.moved){begin(st.id);if(OPT.vib&&navigator.vibrate)navigator.vibrate(15)}},380)});
+  el.addEventListener('pointermove',e=>{if(!st)return;const dx=e.clientX-st.x,dy=e.clientY-st.y;
+    if(!st.drag){if(Math.hypot(dx,dy)>8){if(st.mouse)begin(e.pointerId);else{st.moved=true;clearTimeout(tm);return}}else return}
+    const r=sc.getBoundingClientRect();if(e.clientX<r.left+50)sc.scrollLeft-=14;else if(e.clientX>r.right-50)sc.scrollLeft+=14;
+    el.style.left=(st.l+dx+sc.scrollLeft-st.s0)+'px';el.style.top=(st.t+dy)+'px';mark()});
+  const up=e=>{clearTimeout(tm);if(!st)return;const S=st;st=null;el.classList.remove('drag');if(tgt){tgt.remove();tgt=null}
+    if(S.drag){const best=nearSlot(el);
       if(best){const other=ROOM.list.find(o=>o.slot===best.id&&o!==v);if(other)other.slot=v.slot;v.slot=best.id;saveRoom()}drawRoom();return}
     if(!S.moved)openSheet(ROOM.list.indexOf(v))};
-  el.addEventListener('pointerup',up);el.addEventListener('pointercancel',()=>{clearTimeout(tm);st=null;el.classList.remove('drag')})}
+  el.addEventListener('pointerup',up);el.addEventListener('pointercancel',()=>{clearTimeout(tm);st=null;el.classList.remove('drag');if(tgt){tgt.remove();tgt=null}drawRoom()})}
 // vignette proportionnée au format, posée sur l'étagère (le Standard remplit l'emplacement)
 function fmtBox(v){const F=FORMATS[v.fmt]||FORMATS.std;if(F===FORMATS.std)return {w:G.VW,h:G.VH,dx:0,dy:0};
   const s=Math.min(G.VW/F.w,G.VH/F.h),w=Math.round(F.w*s),h=Math.round(F.h*s);return {w,h,dx:Math.round((G.VW-w)/2),dy:G.VH-h}}
-function addViv(){if(ROOM.list.length>=vivMax())return;fixSlots();const s=freeSlot();if(!s)return;const id='v'+Date.now().toString(36);
+function addViv(slot){if(ROOM.list.length>=vivMax())return;fixSlots();const used=new Set(ROOM.list.map(v=>v.slot));const s=(slot&&!used.has(slot)&&G.slots.find(o=>o.id===slot))||freeSlot();if(!s)return;const id='v'+Date.now().toString(36);
   ROOM.list.push({id,name:'Vivarium '+(ROOM.list.length+1),slot:s.id,fmt:'std',soil:'foret',fresh:true});saveRoom();drawRoom();openSheet(ROOM.list.length-1)}
 $('rback').onclick=()=>showTitle();
-$('radd').onclick=addViv;
+$('radd').onclick=()=>addViv();
 $('rstyle').onclick=()=>openStyle();
 $('rmode').onclick=()=>{roomMode=roomMode==='salle'?'liste':'salle';closeSheet();drawRoom()};
 // ---------- la fiche en carrousel ----------
