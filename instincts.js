@@ -85,3 +85,28 @@ function mission(c){if(!c||c.dead)return '';const st=c.state,id=c.sp.id,start=RO
 const hudMission0=hud;hud=function(){hudMission0();if(state!=='play'||!selC||selC.dead)return;const m=mission(selC);if(!m)return;
   hudEl.insertAdjacentHTML('beforeend',`<div class="row"><span style="color:#bfeaa8">${FICHES[baseOf(selC.sp.id)]?FICHES[baseOf(selC.sp.id)].ic:''} ${nm(selC)} : ${m}</span></div>`)};
 if(window.__sim)window.__sim.mission=()=>selC?mission(selC):'';
+
+// ----- jour / nuit -----
+// abeille : la nuit, elle se pose sur une plante et se repose
+const uAbeille0=UPD.abeille;
+UPD.abeille=function(c,dt){if(isDay()||c.state==='sip')return uAbeille0(c,dt);
+  let p=c.restP;if(!p||!p.alive){p=null;let bd=1e9;for(const q of plants){if(!q.alive)continue;const d=Math.abs(q.col*CS-c.x)+Math.abs(q.z-(c.z||0));if(d<bd){bd=d;p=q}}c.restP=p}
+  if(!p)return uAbeille0(c,dt);const [x,y]=flowerPos(p);
+  if(Math.hypot(c.x-x,c.y-y+2,(c.z||0)-p.z)>3){flyTo(c,x,y-2,dt,0.7);c.state='rentre';return}
+  c.v=0;c.state='repos';c.flap=0};
+// cloporte : le jour, il reste à l'abri (pierre, pot, tronc) ; il sort surtout la nuit
+const uCloporte0=UPD.cloporte;
+UPD.cloporte=function(c,dt){if(isDay()&&c.energy>45&&c.state!=='eat'&&c.state!=='go'&&shelterAt(c)&&!(c.path&&c.path.length)){c.v=0;c.state='abri';return}uCloporte0(c,dt)};
+// missions supplémentaires (états propres à certaines espèces)
+const mission0=mission;mission=function(c){if(!c||c.dead)return '';const st=c.state;
+  if(st==='repos')return '💤 Se repose pour la nuit';
+  if(st==='rentre')return '🌙 La nuit tombe : cherche où se poser';
+  if(st==='abri')return isDay()?'🪨 À l\'abri de la lumière':'🪨 À l\'abri';
+  if(st==='retire')return '🐌 Rentré dans sa coquille : il fait trop sec';
+  if(st==='nymphe')return '🐛 Nymphe : se transforme en adulte';
+  if(st==='sip')return '🌸 Butine une fleur';
+  if(st==='roll')return '🟤 Roule sa boule jusqu\'à son terrier';
+  if(st==='bury')return '🟤 Enterre sa boule (et parfois un œuf)';
+  if(st==='ponte')return '🥚 Va pondre dans le terreau';
+  if(st==='rode')return '🌙 Rôde à la recherche d\'une proie';
+  return mission0(c)};

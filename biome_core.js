@@ -343,7 +343,8 @@ function uCoccinelle(c,dt){
     if(dist3(c,pr)<3.5){die(pr,c);c.energy+=16;c.path=null;c.cd=11;takeOff(c);wave({x:c.x,y:c.y,max:16,sp:50,col:c.cLine,a:0.6})}
     else{if(!c.path||!c.path.length)goTo(c,k=>k===pr.k,1500);if(!c.path){takeOff(c);return}stepPath(c,dt)}
   }
-  if(c.energy>96&&canRepro('coccinelle',6)){c.energy-=45;const b=born('coccinelle',c.x,c.y-4,{energy:45});b.fly=true}
+  // ponte sur une plante où il y a des pucerons (la nourriture des petits)
+  if(c.energy>96&&canRepro('coccinelle',6-eggsOf('coccinelle'))){c.energy-=45;const p=plants.find(q=>q.alive&&q.aph>0)||plants.find(q=>q.alive);groundItem('oeuf',p?p.col:Math.floor(c.x/CS),{val:1,sp:c.sp.vid||'coccinelle',z:p?p.z:c.z,hatch:20,n:2});jlog('🐞','Une coccinelle pond près des pucerons')}
 }
 // ----- FOURMIS -----
 function newColony(i){jlog('🐜','Une reine fonde une colonie');ach('colonie');i=clamp(i,10,COLS-11);const col={i,entr:K(i,SURF[i]-1),food:9,eggs:[],cells:[],chamber:new Set(),queen:null,dead:false,home:null};colonies.push(col);return col}
@@ -525,7 +526,8 @@ function uAbeille(c,dt){
   if(c.energy<115&&c.cd<=0){let best=null,bd=1e9;for(const p of plants){if(!p.alive||!p.fl.open||p.fl.nectar<1)continue;const [x,y]=flowerPos(p);const d=Math.hypot(c.x-x,c.y-y,(c.z||0)-p.z);if(d<bd){bd=d;best=p}}
     if(best){c.fl=best;const [x,y]=flowerPos(best);flyTo(c,x,y-4,dt);if(Math.hypot(c.x-x,c.y-y+4,(c.z||0)-best.z)<4){c.state='sip';c.t=1.1;c.fl=best}return}}
   flyWander(c,dt);
-  if(c.energy>105&&canRepro('abeille',12)){c.energy-=48;born('abeille',c.x,c.y,{energy:45}).fly=true}
+  // ponte dans un petit nid creusé dans le sol, près des fleurs (abeille sauvage)
+  if(c.energy>105&&canRepro('abeille',12-eggsOf('abeille'))){c.energy-=48;const p=plants.find(q=>q.alive&&q.fl.open)||plants.find(q=>q.alive);groundItem('oeuf',p?p.col+Math.round(rnd(-6,6)):Math.floor(c.x/CS),{val:1,sp:c.sp.vid||'abeille',z:p?p.z:c.z,hatch:30,n:1});jlog('🐝','Une abeille pond dans son nid, au pied des fleurs')}
 }
 function flowerPos(p){return [p.col*CS+CS/2,Y0+(p.base-p.h+1)*CS-2]}
 // ----- MOUCHE -----
@@ -536,7 +538,8 @@ function uMouche(c,dt){
   if(c.energy<85&&c.cd<=0){const list=items.filter(it=>(it.type==='cadavre'||it.type==='miellat'||(it.type==='litiere'&&it.age<60))&&!it.carried);let best=null,bd=1e9;for(const it of list){const d=dist3(c,it);if(d<bd){bd=d;best=it}}
     if(best){c.goal=best;flyTo(c,best.x,best.y-3,dt);if(Math.hypot(c.x-best.x,c.y-best.y+3,(c.z||0)-best.z)<4){c.state='eat';c.t=2;c.goal=best}return}}
   flyWander(c,dt);
-  if(c.energy>70&&canRepro('mouche',14)){c.energy-=32;born('mouche',c.x,c.y,{energy:30}).fly=true}
+  // ponte sur un cadavre ou de la litière qui pourrit (les asticots s'y développent)
+  if(c.energy>70&&canRepro('mouche',14-eggsOf('mouche'))){const it=items.find(o=>!o.dead&&!o.carried&&(o.type==='cadavre'||o.type==='litiere'));if(it){c.energy-=32;groundItem('oeuf',it.i,{val:1,sp:c.sp.vid||'mouche',z:it.z,hatch:18,n:3})}}
 }
 // ----- profondeur : chaque bête glisse vers la profondeur de ce qu'elle vise -----
 function goalOf(c){const g=(c.prey&&!c.prey.dead&&c.prey)||(c.goal&&!c.goal.dead&&c.goal)||(c.fl&&c.fl.alive&&c.fl)||(c.tg&&(c.tg.p||c.tg.it))||null;return g&&g.z!=null?g:null}
