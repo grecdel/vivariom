@@ -229,7 +229,13 @@ function fillSheet(){const L=ROOM.list,v=L[sheetIdx];if(!v){closeSheet();return}
   $('sname').onchange=()=>{const nv=$('sname').value.replace(/[<>&"'`]/g,'').trim().slice(0,24);if(nv){v.name=nv;saveRoom();drawRoom()}};
   sh.querySelector('.cdel').onclick=e=>{if(!delArm){delArm=true;e.currentTarget.textContent='⚠ Confirmer';return}
     ROOM.list.splice(sheetIdx,1);VIV.delete(v.id);try{localStorage.removeItem('biome_viv_'+v.id)}catch(_){}saveRoom();closeSheet();drawRoom()};
-  const gl=sh.querySelector('.cgh.l'),gr=sh.querySelector('.cgh.r');if(gl)gl.onclick=()=>{sheetIdx--;delArm=false;fillSheet();drawRoom()};if(gr)gr.onclick=()=>{sheetIdx++;delArm=false;fillSheet();drawRoom()}}
+  const gl=sh.querySelector('.cgh.l'),gr=sh.querySelector('.cgh.r');if(gl)gl.onclick=()=>{sheetIdx--;delArm=false;fillSheet();drawRoom()};if(gr)gr.onclick=()=>{sheetIdx++;delArm=false;fillSheet();drawRoom()};
+  carFit(sh.querySelector('.cbig'),v,180,138);carFit(gl,prev,120,92);carFit(gr,next,120,92)}
+// carrousel : chaque vignette prend la forme de son format, avec la même règle que dans la salle (fmtBox) :
+// le Standard remplit la case, les autres y tiennent en gardant leurs proportions, posés en bas
+function carFit(box,v,BW,BH){if(!box||!v)return;const t=box.querySelector('.viv');if(!t)return;const F=FORMATS[v.fmt]||FORMATS.std;let w=BW,h=BH;
+  if(F!==FORMATS.std){const s=Math.min(BW/F.w,BH/F.h);w=Math.round(F.w*s);h=Math.round(F.h*s)}
+  box.style.width=BW+'px';box.style.height=BH+'px';Object.assign(t.style,{position:'absolute',width:w+'px',height:h+'px',left:Math.round((BW-w)/2)+'px',top:(BH-h)+'px'})}
 // choix du format et du sol de départ, tant que le bac n'a jamais été ouvert
 function fmtChooser(v){const bt=(k,val,on,ic,nom,txt)=>`<button data-${k}="${val}" style="flex:1 1 ${k==='soil'?'28':'45'}%;min-width:0;text-align:left;padding:6px 8px;border-radius:9px;border:1px solid ${on?'#ffe94d':'#333'};background:${on?'#2a2608':'#111'};color:${on?'#ffe94d':'#bbb'};font:600 12px -apple-system,Roboto,sans-serif"><span style="font-size:15px">${ic}</span> ${nom}<br><small style="font-weight:400;color:#999">${txt}</small></button>`;
   return `<div class="tag" style="margin-top:6px">Format du bac</div><div style="display:flex;flex-wrap:wrap;gap:5px;margin:3px 0 6px">${Object.entries(FORMATS).map(([k,F])=>bt('fmt',k,(v.fmt||'std')===k,F.ic,F.nom,F.txt.split(' · ')[0])).join('')}</div>

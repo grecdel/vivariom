@@ -231,8 +231,8 @@ button:not(:disabled):active,.lv:not(.lock):active,.cat:active,.chip:active{box-
 #rsheet{left:50%!important;right:auto!important;width:min(100%,640px);transform:translate(-50%,105%)!important;border-left:1px solid #555;border-right:1px solid #555;box-sizing:border-box}#rsheet.open{transform:translate(-50%,0)!important}
 @media (min-width:900px){body:not(.land) #pal{left:50%!important;right:auto!important;width:min(100%,860px);transform:translateX(-50%);box-sizing:border-box}body:not(.land) #drawer{left:50%!important;right:auto!important;width:min(calc(100% - 12px),860px);transform:translateX(-50%);box-sizing:border-box}}
 /* Fiche du bac : vivarium choisi centré, voisins (précédent/suivant) juste à côté, en transparence */
-#rsheet .cbig{left:calc(50% - 78px);right:auto;width:156px}#rsheet .cbig .viv{left:0;top:0}
-#rsheet .cgh.l{left:calc(50% - 250px)}#rsheet .cgh.r{right:auto;left:calc(50% + 100px)}
+#rsheet .cbig{left:calc(50% - 90px);right:auto;top:10px}
+#rsheet .cgh{top:56px}#rsheet .cgh.l{left:calc(50% - 234px)}#rsheet .cgh.r{right:auto;left:calc(50% + 114px)}
 </style>
 </head>
 <body>
