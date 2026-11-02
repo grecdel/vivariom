@@ -35,7 +35,7 @@ rep("    if(i===0){ctx.globalAlpha=alpha;ctx.fillStyle=lc;ctx.fillRect(len/2-3,-
 core=open('biome_core.js').read()+'\n'+open('variants.js').read()+'\n'+open('unlocks.js').read()+'\n'+open('decor.js').read()+'\n'+open('topview.js').read()+'\n'+open('profile.js').read()+'\n'+open('devices.js').read()+'\n'+open('links.js').read()+'\n'+open('lure.js').read()+'\n'+open('species2.js').read()+'\n'+open('species3.js').read()
 main=open('biome_main.js').read()+'\n'+open('menu.js').read()+'\n'+open('extras.js').read()+"\n"+open('tutorial.js').read()+"\n"+open('ambiance.js').read()+'\n'+open('save.js').read()+'\n'+open('bascule.js').read()+'\n'+open('tiroir.js').read()+'\n'+open('soie.js').read()+'\n'+open('instincts.js').read()+'\n'+open('decor_top.js').read()+'\n'+open('aide.js').read()+'\n'+open('ctrl.js').read()+'\n'+open('defis.js').read()+'\n'+open('fixes.js').read()+"\n"
 # fichiers ajoutés après fixes.js (modes de jeu, bêtes, milieu, salle, confort, savoir)
-for f in ['progres.js','vie.js','milieu.js']:
+for f in ['progres.js','vie.js','milieu.js','salle2.js']:
     main+=open(f).read()+'\n'
 main=main.replace("for(const id of order)for(const c of creatures)if(c.sp.id===id)drawCreature(c,1,false);",
  "for(const id of order)for(const c of creatures)if(c.sp.id===id){drawProfile(c,1,false);if(c.load){const h=c.segs[0];ctx.fillStyle=c.load.type==='grain'?(c.load.t===1?'#8a6a3a':'#d8b060'):'#ffb43a';ctx.fillRect(h.x+Math.cos(h.a)*5-1.5,h.y+Math.sin(h.a)*5-1.5,3,3)}}")
@@ -308,6 +308,17 @@ body.land #ctrlbar button{flex:1;width:auto;min-width:0;flex-direction:row;justi
 .bilan{background:#0b120b;border:1px solid #2d4a2f;border-radius:10px;padding:8px;margin:10px 0;text-align:left;font-size:12px}.bilan svg{width:100%;height:90px;display:block;margin:6px 0;border-radius:6px}
 .bilan .bleg{display:flex;flex-wrap:wrap;gap:8px;font-size:12px}.bilan p{margin:5px 0;color:#bbb}
 @media (max-width:480px){.modes{grid-template-columns:1fr}}
+/* Fiche du bac : climat, étiquette, modèle (milieu.js, salle2.js) */
+.clims{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:6px 0}.clims .dim{font-size:11px;margin-right:2px}
+.clim,.mod{background:#111;border:1px solid #333;border-radius:8px;color:#ddd;padding:5px 8px;font:600 12px -apple-system,Roboto,sans-serif}.clim.on,.mod.on{border-color:#ffe94d;color:#ffe94d;background:#2a2608}
+.etq{width:24px;height:24px;border-radius:50%;border:2px solid #333;color:#888;font-size:11px;padding:0}.etq.on{border-color:#fff;box-shadow:0 0 0 2px #ffe94d}
+#partp textarea,#partp textarea{width:100%;box-sizing:border-box;background:#0b0b0b;color:#cfe;border:1px solid #333;border-radius:8px;font:11px ui-monospace,monospace;padding:6px;margin:6px 0}
+.agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}.agrid figure{margin:0;background:#111;border:1px solid #333;border-radius:8px;overflow:hidden;cursor:pointer}
+.agrid img{width:100%;display:block;aspect-ratio:4/3;object-fit:cover}.agrid figcaption{padding:4px 6px;font-size:11px;color:#ccc}.agrid small{color:#888}
+#obsx{display:none;position:fixed;top:8px;right:8px;z-index:50;background:#0008;border:1px solid #fff4;color:#fff;border-radius:50%;width:36px;height:36px;font-size:16px;opacity:.55}
+body.obs>*:not(#c):not(#obsx):not(#toast){display:none!important}body.obs #obsx{display:block}body.obs #c{left:0!important}
+.nuitsalle{position:absolute;inset:0;background:#030818;pointer-events:none;z-index:1}.viv.allume{z-index:2;box-shadow:0 0 18px #ffe9a055}
+#rimp,#ralb{margin-left:4px}#partp,#albp,#albv,#absp{z-index:60}#albv{z-index:61}
 </style>
 </head>
 <body>
