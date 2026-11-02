@@ -2,7 +2,7 @@
 // Tiges qui ondulent doucement et s'affinent vers le haut, feuilles en amande nervurées qui ploient au vent,
 // pétales arrondis. Les bêtes grimpent toujours sur la colonne de la plante : l'ondulation reste faible (≈ 1 case).
 // VEG : 'actuel' (ancien dessin), 'ondule' (proto B), 'organique' (proto C, plus marqué)
-let VEG='actuel';
+let VEG='organique';
 const VEGA=()=>VEG==='organique'?2.2:1;// intensité
 const rh=(p,k)=>{const v=Math.sin((p.id+1)*12.9898+k*78.233)*43758.5453;return v-Math.floor(v)};// hasard stable par plante
 // point de la tige à la hauteur t (0 = pied, 1 = sommet)

@@ -52,7 +52,7 @@ const webCheck0=webCheck;
 webCheck=function(c){webCheck0(c);if(!c.fly||c.state==='caught'||(c.webCd||0)>0)return;
   for(const o of orbs){if(o.world!==T||o.prog<0.5||o.owner===c)continue;
     if(Math.abs((c.z||0)-o.z)<5&&Math.hypot(c.x-o.x,c.y-o.y)<o.r*o.prog){
-      if(Math.random()<0.18){c.state='caught';c.t=rnd(8,12);c.strand={owner:o.owner,life:1,vib:0};o.vib=2.5;jlog('🕸',`${nm(c)} pris(e) dans une toile`);ach('toile');wave({x:c.x,y:c.y,max:24,sp:60,col:'#ff7a5c',a:0.6})}
+      if(Math.random()<0.18){c.state='caught';c.t=rnd(8,12);c.strand={owner:o.owner,life:1,vib:0};o.vib=2.5;o.hx=c.x-o.x;o.hy=c.y-o.y;jlog('🕸',`${nm(c)} pris(e) dans une toile`);ach('toile');wave({x:c.x,y:c.y,max:24,sp:60,col:'#ff7a5c',a:0.6})}
       else c.webCd=1;return}}};
 
 function soieTick(dt){
@@ -72,13 +72,17 @@ const update0=update;update=function(dt){update0(dt);soieTick(dt)};
 
 // ----- dessin (coupe et 3/4) : avec les fils -----
 function drawSoie(){const lw=Math.max(0.18,0.55/camZ);
-  for(const o of orbs){if(o.world!==T)continue;ctx.save();zT(o.z);const a=Math.min(1,o.life/10),vb=o.vib>0?Math.sin(simT*40)*Math.min(1,o.vib)*0.8:0,X=o.x+vb,Y=o.y;
+  for(const o of orbs){if(o.world!==T)continue;ctx.save();zT(o.z);const a=Math.min(1,o.life/10),X=o.x,Y=o.y;
+    // la toile se déforme : onde qui part du point touché, et creux sous le poids d'une proie
+    const hx=o.hx||0,hy=o.hy||0,A=Math.min(1.2,o.vib||0)*1.1,sag=o.charge||0;
+    const D=(px,py)=>{if(!A&&!sag)return [X+px,Y+py];const dx=px-hx,dy=py-hy,d=Math.hypot(dx,dy)||1,e=Math.exp(-d/(o.r*0.55)),w=A*e*Math.sin(simT*34-d*0.9);
+      const g=sag*1.6*Math.exp(-d/(o.r*0.7));return [X+px+dx/d*w,Y+py+dy/d*w+g]};
     ctx.strokeStyle=o.vib>0?'#ffd8c4':'#e8eef6';ctx.lineWidth=lw;ctx.globalAlpha=0.55*a;ctx.beginPath();
-    const NR=14,p1=Math.min(1,o.prog*2.2);for(let q=0;q<NR;q++){const t=q/NR*TAU+0.2;ctx.moveTo(X,Y);ctx.lineTo(X+Math.cos(t)*o.r*p1,Y+Math.sin(t)*o.r*p1)}ctx.stroke();
+    const NR=14,p1=Math.min(1,o.prog*2.2);for(let q=0;q<NR;q++){const t=q/NR*TAU+0.2;for(let s2=0;s2<=4;s2++){const rr=o.r*p1*s2/4,[x,y]=D(Math.cos(t)*rr,Math.sin(t)*rr);s2?ctx.lineTo(x,y):ctx.moveTo(x,y)}}ctx.stroke();
     // spirale de capture, tissée de l'extérieur vers le centre
     const p2=clamp((o.prog-0.35)/0.65,0,1);if(p2>0){ctx.globalAlpha=0.45*a;ctx.beginPath();const turns=7,steps=Math.floor(turns*NR*p2);
-      for(let q=0;q<=steps;q++){const f=q/(turns*NR),t=q/NR*TAU+0.2,rr=o.r*(1-f*0.85);const x=X+Math.cos(t)*rr,y=Y+Math.sin(t)*rr;q?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.stroke()}
-    ctx.globalAlpha=0.7*a;ctx.fillStyle='#f4f6fa';ctx.beginPath();ctx.arc(X,Y,Math.max(0.5,o.r*0.06),0,TAU);ctx.fill();ctx.restore()}
+      for(let q=0;q<=steps;q++){const f=q/(turns*NR),t=q/NR*TAU+0.2,rr=o.r*(1-f*0.85);const [x,y]=D(Math.cos(t)*rr,Math.sin(t)*rr);q?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.stroke()}
+    const [cx0,cy0]=D(0,0);ctx.globalAlpha=0.7*a;ctx.fillStyle='#f4f6fa';ctx.beginPath();ctx.arc(cx0,cy0,Math.max(0.5,o.r*0.06),0,TAU);ctx.fill();ctx.restore()}
   for(const n of nests){if(n.world!==T)continue;
     if(n.kind==='tente'){ctx.save();zT(n.z);ctx.globalAlpha=0.55;ctx.fillStyle='#eef2f6';ctx.strokeStyle='#ffffff';ctx.lineWidth=lw;ctx.beginPath();ctx.ellipse(n.x,n.ys,4.5,3,0,Math.PI,TAU);ctx.closePath();ctx.fill();ctx.globalAlpha=0.7;ctx.beginPath();for(let q=0;q<5;q++){const a=Math.PI+q/4*Math.PI;ctx.moveTo(n.x+Math.cos(a)*4.5,n.ys+Math.sin(a)*3);ctx.lineTo(n.x+Math.cos(a)*7,n.ys+Math.sin(a)*5.5)}ctx.stroke();ctx.restore();continue}
     ctx.save();zT(n.z);ctx.strokeStyle='#e6e9ee';ctx.lineWidth=lw;ctx.globalAlpha=0.6;ctx.beginPath();
