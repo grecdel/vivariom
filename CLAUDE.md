@@ -15,7 +15,7 @@ python3 assemble.py        # produit biome.html (le jeu complet) et le dossier w
 ```
 - `web/` : à mettre en ligne tel quel (index.html, manifest.webmanifest, sw.js pour le hors-ligne, icones/). Il est versionné dans git. Les icônes se refont avec `python3 icones.py`.
 - Linux, PC et Android = la même appli web installable (« Installer » dans Chrome/Edge). Pas d'appli native pour l'instant.
-`vivariom.html` est la dernière version validée (identique à biome.html au moment de la reprise).
+`vivariom.html` est la dernière version validée par l'utilisateur (copie de biome.html, mise à jour le 2026-11-02, version en ligne à cette date).
 
 `assemble.py` :
 - extrait des fonctions de dessin de `vivarium.html` (drawCreature, drawWaves…) ;

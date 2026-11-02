@@ -181,6 +181,81 @@ canvas#c{display:block;position:fixed;inset:0}
 .card b{font:600 16px Georgia,serif;color:#eee}
 .card .badge{display:inline-block;margin-left:6px;font-size:10px;border:1px solid #555;border-radius:8px;padding:0 6px;color:#aaa;vertical-align:middle}
 .card p{margin:5px 0;color:#a5a5a5}.card u{text-decoration:none;color:#ffe94d;font-weight:600;margin-right:4px}
+/* Paysage sur téléphone (classe land posée par resize) : outils à gauche, vues et zoom à droite ; inversé en mode gaucher */
+body.land #hud{padding-left:8px}
+body.land #pal{display:grid!important;grid-template-columns:1fr 1fr;gap:5px!important;left:0!important;right:auto!important;width:170px!important;top:48px!important;bottom:auto!important;padding:4px 6px!important;background:none!important;box-sizing:border-box}
+body.land #pal .sep{display:none!important}body.land #pal .chip,body.land #pal .cat,body.land #pal .ghostc{min-height:50px}
+body.land #bar{left:6px!important;right:auto!important;bottom:8px!important;width:164px!important;gap:3px!important;justify-content:space-between!important}
+body.land #bar button{padding:7px 0!important;font-size:0!important;flex:1!important}body.land #bar button small{display:none!important}body.land #bar button::first-letter{font-size:17px}
+body.land #bar #spd{font-size:13px!important}body.land #bar #spd::first-letter{font-size:inherit}
+body.land #viewsw{top:48px!important;right:6px!important;left:auto!important;flex-direction:column!important;width:50px}body.land #viewsw button{font-size:0!important;padding:8px 0!important}body.land #viewsw button::first-letter{font-size:17px}
+body.land #zoomui{top:auto!important;left:auto!important;right:6px!important;bottom:8px!important;flex-direction:column!important}
+body.land #drawer{left:180px!important;right:62px!important;bottom:8px!important;top:48px;max-height:none!important}
+body.land #legend{left:184px;right:66px;top:52px}body.land #toast{top:52px}
+body.land #vnav{left:184px;top:52px}body.land #vstrip{left:178px;right:60px;top:92px}
+body.land.left #pal{left:auto!important;right:0!important}body.land.left #bar{left:auto!important;right:6px!important}
+body.land.left #viewsw{right:auto!important;left:6px!important}body.land.left #zoomui{right:auto!important;left:6px!important}
+body.land.left #drawer{left:62px!important;right:180px!important}body.land.left #legend{left:66px;right:184px}
+body.land.left #vnav{left:auto;right:184px}body.land.left #vstrip{left:60px;right:178px}
+/* Survol à la souris (ordinateur seulement : pas d'effet collant au doigt sur téléphone) */
+@media (hover:hover) and (pointer:fine){button,.lv,.cat,.chip,.ghostc{transition:box-shadow .12s,outline-color .12s}button:not(:disabled),.lv,.cat,.chip{cursor:pointer}button:not(:disabled):hover,.lv:hover,.cat:hover,.chip:hover{box-shadow:inset 0 0 0 100vmax #ffffff1c;outline:1px solid #ffe94dbb;outline-offset:-1px}.btn:not(:disabled):hover{box-shadow:inset 0 0 0 100vmax #ffffff40;outline:none}button:disabled:hover,.lv.lock:hover{cursor:default}.lv.lock:hover{box-shadow:none;outline:none}}
+/* Appui (souris ou doigt) : le bouton s'éclaire pendant qu'on appuie */
+button:not(:disabled):active,.lv:not(.lock):active,.cat:active,.chip:active{box-shadow:inset 0 0 0 100vmax #ffffff30!important;outline:1px solid #ffe94d!important;outline-offset:-1px}
+.btn:not(:disabled):active{box-shadow:inset 0 0 0 100vmax #00000030!important}
+/* Grande salle : ＋ sur les emplacements libres, étagère à ajouter en pointillé, cible du glisser-déposer */
+#radd{display:none!important}
+.rv{user-select:none;-webkit-user-select:none}.rv img{-webkit-user-drag:none;user-drag:none;pointer-events:none}.rv.drag{z-index:5}
+.slotfree{background:#ffffff06;border:1px dashed #ffffff40;border-radius:4px;color:#ffffff70;font:300 24px -apple-system,Roboto,sans-serif;padding:0;display:flex;align-items:center;justify-content:center}
+.raddr{position:absolute;background:#ffffff05;border:2px dashed #ffffff40;border-radius:8px;color:#ffffff80;font:300 34px -apple-system,Roboto,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:0}.raddr small{font:600 12px -apple-system,Roboto,sans-serif;letter-spacing:.5px}
+.rdel{position:absolute;width:28px;height:28px;border-radius:50%;background:#111;border:1px solid #555;color:#ccc;font-size:13px;padding:0;z-index:3}
+.rtgt{position:absolute;border:2px solid #ffe94d;border-radius:5px;box-shadow:0 0 14px #ffe94d66;pointer-events:none;z-index:4}
+/* Grands écrans : les panneaux du bas ne s'étirent plus sur toute la largeur */
+#rsheet{left:50%!important;right:auto!important;width:min(100%,640px);transform:translate(-50%,105%)!important;border-left:1px solid #555;border-right:1px solid #555;box-sizing:border-box}#rsheet.open{transform:translate(-50%,0)!important}
+@media (min-width:900px){body:not(.land) #pal{left:50%!important;right:auto!important;width:min(100%,860px);transform:translateX(-50%);box-sizing:border-box}body:not(.land) #drawer{left:50%!important;right:auto!important;width:min(calc(100% - 12px),860px);transform:translateX(-50%);box-sizing:border-box}}
+/* Fiche du bac : vivarium choisi centré, voisins (précédent/suivant) juste à côté, en transparence */
+#rsheet .cbig{left:calc(50% - 90px);right:auto;top:10px}
+#rsheet .cgh{top:56px}#rsheet .cgh.l{left:calc(50% - 234px)}#rsheet .cgh.r{right:auto;left:calc(50% + 114px)}
+/* Tiroir Bêtes : case par espèce, bouton ▾ des variantes, liste déroulante */
+.gcell{position:relative;display:flex}.gcell>.chip{flex:1;min-width:0}
+#drawer .chip .vn{display:block;font:500 9px/16px -apple-system,Roboto,sans-serif;height:16px;margin-top:2px;color:#8a9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#drawer .gcell .chip canvas{height:40px}
+/* bouton des variantes : sur la dernière ligne de la case (la ligne du nom de variante), pour ne pas cacher le dessin */
+.vbtn{position:absolute;left:4px;right:4px;bottom:3px;height:16px;background:#1c2a1c;border:1px solid #3d6b3f;color:#bfeaa8;border-radius:8px;font:600 9.5px/14px -apple-system,Roboto,sans-serif;padding:0 4px;z-index:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gcell .chip.grp .vn{visibility:hidden}@media (max-width:600px){.vlong{display:none}}
+.vmenu{position:absolute;z-index:5;background:#0d100d;border:1px solid #8bff6a88;border-radius:12px;padding:6px;box-shadow:0 10px 30px #000c;display:flex;flex-direction:column;gap:4px}
+.vmh{display:flex;justify-content:space-between;align-items:center;font:700 12px -apple-system,Roboto,sans-serif;color:#cfe;padding:2px 4px 4px}.vx{background:#111;border:1px solid #444;color:#ccc;border-radius:50%;width:24px;height:24px;padding:0;font-size:11px}
+.vrow{position:relative;display:flex;align-items:center;gap:8px;background:#070707;border:1px solid #2a2a2a;border-radius:9px;padding:4px 6px;text-align:left;color:#ddd}
+.vrow.on{border-color:#ffe94d;color:#ffe94d}.vrow canvas{width:46px;height:30px;flex:none}.vrow b{font:600 12px -apple-system,Roboto,sans-serif}.vrow i{font:500 10px -apple-system,Roboto,sans-serif;color:#8a9}
+.vrow small{display:block;font:italic 10px Georgia,serif;color:#888}.vrow .st{position:absolute;top:3px;right:6px;font:600 9px ui-monospace,monospace;color:#ffe94d}
+/* Fiche d'aide du bac à sable : nourriture, prédateurs, besoins de la bête en main */
+#aide{display:none;position:fixed;left:8px;right:8px;bottom:134px;z-index:3;background:#0b0e0bf2;border:1px solid #3d6b3f;border-radius:12px;padding:7px 9px;font:12px/1.35 -apple-system,Roboto,sans-serif;color:#ddd;box-shadow:0 6px 20px #000a}
+#aide .ahead{display:flex;align-items:center;gap:8px;margin-bottom:4px}#aide .ahead b{font-size:13px;color:#fff;white-space:nowrap}
+#aide .abilan{flex:1;min-width:0;font-size:11px;color:#8bff6a}#aide .abilan.warn{color:#ffb35c}
+#aide .ax{background:#111;border:1px solid #444;color:#ccc;border-radius:50%;width:24px;height:24px;padding:0;font-size:11px;flex:none}
+#aide .arow{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-top:3px}#aide .alab{flex:none;width:66px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#8a9}
+#aide .apill{border-radius:20px;padding:2px 8px;font-size:11px;border:1px solid #333;background:#111;white-space:nowrap}#aide .apill b{margin-left:3px}
+#aide .apill.ok{border-color:#3d6b3f;color:#bfeaa8}#aide .apill.manque{border-color:#5a3a2a;color:#d9a07a;opacity:.85}#aide .apill.danger{border-color:#7a2a2a;color:#ff9a8a;background:#1c0d0d}#aide .apill.calme{color:#999}
+#aide .atxt{flex:1;min-width:160px;font-size:11px;color:#bbb}
+@media (min-width:900px){body:not(.land) #aide{left:50%;right:auto;width:min(calc(100% - 16px),640px);transform:translateX(-50%)}}
+body.land #aide{left:184px;right:66px;bottom:auto;top:50px}body.land.left #aide{left:66px;right:184px}
+/* Panneau de contrôle du matériel (ctrl.js) */
+#ctrl{display:none;position:fixed;right:8px;top:48px;bottom:8px;width:300px;box-sizing:border-box;overflow-y:auto;overscroll-behavior:contain;z-index:3;background:#0b0e0bf4;border:1px solid #2d4a2f;border-radius:14px;padding:6px 12px 10px;font-size:12px;line-height:1.4;color:#ccc}
+#ctrl.sheet{left:6px;right:6px;top:auto;bottom:6px;width:auto;max-height:62vh;z-index:6;box-shadow:0 -10px 30px #000c}
+#ctrl .chead{position:sticky;top:-6px;background:#0b0e0b;display:flex;align-items:center;gap:8px;padding:6px 0;z-index:1}#ctrl .chead b{font-size:14px;color:#fff}#ctrl .chead .dim{flex:1;font-size:11px}
+#ctrl .cx{background:#111;border:1px solid #444;color:#ccc;border-radius:50%;width:26px;height:26px;padding:0}
+#ctrl .cs{border-top:1px solid #1f2a1f;padding:6px 0 2px}#ctrl h3{display:flex;align-items:center;gap:6px;margin:2px 0;font:600 13px -apple-system,Roboto,sans-serif;color:#e8eee4}
+#ctrl .cst{margin-left:auto;font:600 11px ui-monospace,monospace;color:#8bff6a}#ctrl p{margin:3px 0 6px;color:#8a948a;font-size:11px}#ctrl .drow{margin:5px 0}#ctrl .btn{padding:8px;font-size:13px;margin-top:4px}
+#ctrl svg{max-width:100%;height:auto}
+body.ctrlw #viewsw,body.ctrlw #zoomui{right:318px!important}body.ctrlw #aide{right:318px}
+body.ctrlw #pal,body.ctrlw #drawer{left:8px!important;right:318px!important;width:auto!important;transform:none!important}body.ctrlw #bar{right:318px!important}body.ctrlw #aide{left:8px;right:318px;width:auto;transform:none}
+@media (max-width:700px){body:not(.land) #ctrlbar{flex-direction:row;left:6px;right:6px;top:auto;bottom:132px;gap:4px}body:not(.land) #ctrlbar button{flex:1;width:auto;min-width:0}}
+@media (max-width:700px){body.ctrlb:not(.land) #aide{bottom:190px}}
+#ctrlbtn{display:none;position:fixed;right:8px;top:118px;z-index:3;background:#0b0b0bee;border:1px solid #3d6b3f;color:#cfe;border-radius:12px;padding:7px 10px;font:600 12px -apple-system,Roboto,sans-serif}
+body.land #ctrlbtn{top:166px;right:6px;width:50px;padding:7px 0;font-size:0}body.land #ctrlbtn::first-letter{font-size:17px}body.land.left #ctrlbtn{right:auto;left:6px}
+#ctrlbar{display:none;position:fixed;left:8px;top:160px;flex-direction:column;gap:5px;z-index:3}
+#ctrlbar button{width:70px;background:#0b0e0bee;border:1px solid #2d4a2f;border-radius:10px;color:#ddd;padding:4px 2px;display:flex;flex-direction:column;align-items:center;gap:1px}#ctrlbar .ci{font-size:17px;line-height:1.1}#ctrlbar .cs2{font:600 9.5px ui-monospace,monospace;color:#8bff6a;white-space:nowrap}#ctrlbar button.lock{opacity:.45}
+body.land #ctrlbar{left:184px;right:66px;top:auto;bottom:4px;flex-direction:row;gap:4px}body.land.left #ctrlbar{left:66px;right:184px}
+body.land #ctrlbar button{flex:1;width:auto;min-width:0;flex-direction:row;justify-content:center;gap:4px;padding:6px 2px}body.land #ctrlbar .ci{font-size:14px}
 </style>
 </head>
 <body>
@@ -347,12 +422,12 @@ function drawCreature(c,alpha,gray,preview){
     for(let i=0;i<c.segs.length;i++){const g=c.segs[i],d=c.dims[i];ctx.beginPath();ctx.ellipse(g.x+2,g.y+3,d[0]/2+1,d[1]/2+1,g.a,0,TAU);ctx.fill()}
     if(sp.w){const th=c.segs[1]||c.segs[0];ctx.globalAlpha=alpha*0.18;ctx.beginPath();ctx.ellipse(th.x+2,th.y+3,sp.w.wid*0.8,sp.w.len*0.9,th.a,0,TAU);ctx.fill()}}
   ctx.save();ctx.translate(ox,oy);
-  const col=gray?'#777':(c.state==='caught'&&Math.sin(simT*30)>0?'#ffffff':(c.infest>0&&Math.sin(simT*8)>0.6?'#ff6ad5':c.cLine));
+  const col=gray?'#777':(c.state==='caught'&&Math.sin(simT*30)>0?'#ffffff':(c.infest>0&&Math.sin(simT*8)>0.6?'#ff6ad5':(NAT()?natLine(c):c.cLine)));
   const en=gray?0.5:clamp(c.energy/(ROLES[c.role].start),0.2,1.3);
   let bright=0.5+0.5*Math.min(1,en);if(!gray&&!preview&&en<0.35&&Math.random()<0.18)bright*=0.25;
   const P0=gray?0:pulseAt(c,0);
   // halo pulsé
-  if(!gray){
+  if(!gray&&!NAT()){
     ctx.globalCompositeOperation='lighter';const spr=glowSprite(c.hue);const stepI=c.segs.length>8?2:1;
     for(let i=0;i<c.segs.length;i+=stepI){const g=c.segs[i],p=pulseAt(c,i);const R=(c.dims[i][1]*1.5+9)*(0.75+p*0.7);
       ctx.globalAlpha=alpha*bright*(0.07+0.35*p)*(sp.firefly?1.6:1);ctx.drawImage(spr,g.x-R,g.y-R,R*2,R*2)}
@@ -367,9 +442,9 @@ function drawCreature(c,alpha,gray,preview){
   // pattes
   if(c.legs.length){
     ctx.beginPath();for(const l of c.legs){const k=kneeOf(c,l);ctx.moveTo(l.hx,l.hy);ctx.lineTo(k[0],k[1]);ctx.lineTo(l.fx,l.fy)}
-    ctx.strokeStyle=col;ctx.globalAlpha=alpha*bright*(0.12+0.3*P0);ctx.lineWidth=3.2;ctx.stroke();
-    ctx.globalAlpha=alpha*(0.45+0.5*bright);ctx.lineWidth=1;ctx.stroke();
-    for(const l of c.legs){const k=kneeOf(c,l);const pl=gray?0:pulseAt(c,l.seg);ctx.fillStyle=gray||col!==c.cLine?col:c.segL[l.seg];ctx.globalAlpha=alpha*(0.5+0.5*bright);ctx.fillRect(k[0]-1.2,k[1]-1.2,2.4,2.4);
+    ctx.strokeStyle=col;if(!FIN()){ctx.globalAlpha=alpha*bright*(0.12+0.3*P0);ctx.lineWidth=3.2;ctx.stroke()}
+    ctx.globalAlpha=alpha*(0.45+0.5*bright);ctx.lineWidth=FIN()?0.7:1;ctx.stroke();
+    if(!FIN())for(const l of c.legs){const k=kneeOf(c,l);const pl=gray?0:pulseAt(c,l.seg);ctx.fillStyle=gray||col!==c.cLine?col:c.segL[l.seg];ctx.globalAlpha=alpha*(0.5+0.5*bright);ctx.fillRect(k[0]-1.2,k[1]-1.2,2.4,2.4);
       ctx.globalAlpha=alpha*Math.min(1,0.55+pl);ctx.beginPath();ctx.arc(l.fx,l.fy,1.4+pl*1.3,0,TAU);ctx.fill()}
     ctx.globalAlpha=alpha;
   }
@@ -381,23 +456,23 @@ function drawCreature(c,alpha,gray,preview){
     const lc=gray?'#777':(col===c.cLine?c.segL[i]:col);
     ctx.save();ctx.translate(g.x,g.y);ctx.rotate(g.a);
     ctx.globalAlpha=alpha;ctx.fillStyle='#000';shapePath(sh,len,wid,0,0,1);ctx.fill();
-    if(!gray){ctx.fillStyle=c.segT[i];ctx.globalAlpha=alpha*(0.5+0.5*p);ctx.fill()}
+    if(!gray){if(NAT()){ctx.fillStyle=natFill(c);ctx.globalAlpha=alpha}else{ctx.fillStyle=c.segT[i];ctx.globalAlpha=alpha*(0.5+0.5*p)}ctx.fill()}
     ctx.save();ctx.clip();
     const gx=clamp(Math.round(len/6),1,4),gy=clamp(Math.round(wid/6),1,3),cw=len/gx,chh=wid/gy;
-    if(!gray){ctx.fillStyle=lc;for(let a=0;a<gx;a++)for(let b=0;b<gy;b++){const lit=((a*7+b*3+i*5+c.beats)%4)===0;
-      ctx.globalAlpha=alpha*bright*(lit?0.15+0.6*p:0.03+0.12*p);ctx.fillRect(-len/2+a*cw+1,-wid/2+b*chh+1,cw-2,chh-2)}}
-    ctx.globalAlpha=alpha*0.5;ctx.strokeStyle=lc;ctx.lineWidth=0.6;ctx.beginPath();
+    if(!gray&&!NAT()){ctx.fillStyle=lc;const kf=FIN()?0.4:1;for(let a=0;a<gx;a++)for(let b=0;b<gy;b++){const lit=((a*7+b*3+i*5+c.beats)%4)===0;
+      ctx.globalAlpha=alpha*bright*kf*(lit?0.15+0.6*p:0.03+0.12*p);ctx.fillRect(-len/2+a*cw+1,-wid/2+b*chh+1,cw-2,chh-2)}}
+    ctx.globalAlpha=alpha*(FIN()?0.25:0.5);ctx.strokeStyle=lc;ctx.lineWidth=FIN()?0.35:0.6;ctx.beginPath();
     for(let a=1;a<gx;a++){const x=-len/2+len*a/gx;ctx.moveTo(x,-wid/2);ctx.lineTo(x,wid/2)}
     for(let b=1;b<gy;b++){const y=-wid/2+wid*b/gy;ctx.moveTo(-len/2,y);ctx.lineTo(len/2,y)}ctx.stroke();
     if(!gray)drawSegPattern(c,i,len,wid,sh,alpha,lc);
     ctx.restore();
-    shapePath(sh,len,wid,0,0,1);ctx.strokeStyle=lc;ctx.globalAlpha=alpha*bright*(0.15+0.45*p);ctx.lineWidth=3;ctx.stroke();
-    ctx.globalAlpha=alpha*(0.6+0.4*bright);ctx.lineWidth=1;ctx.stroke();
-    if(!gray&&len*wid>25){ctx.fillStyle=c.cCore;ctx.globalAlpha=alpha*Math.min(1,bright*(0.2+0.85*p));const r=(1+1.5*p)*Math.min(1.6,Math.sqrt(len*wid)/9);
+    shapePath(sh,len,wid,0,0,1);ctx.strokeStyle=lc;if(!NAT()){ctx.globalAlpha=alpha*bright*(0.15+0.45*p)*(FIN()?0.5:1);ctx.lineWidth=FIN()?1.6:3;ctx.stroke()}
+    ctx.globalAlpha=alpha*(0.6+0.4*bright);ctx.lineWidth=FIN()?0.6:1;ctx.stroke();
+    if(!gray&&!FIN()&&len*wid>25){ctx.fillStyle=c.cCore;ctx.globalAlpha=alpha*Math.min(1,bright*(0.2+0.85*p));const r=(1+1.5*p)*Math.min(1.6,Math.sqrt(len*wid)/9);
       if(c.role==='tisseur'){if(i===0){ctx.beginPath();ctx.moveTo(0,-r*1.6);ctx.lineTo(r*1.6,0);ctx.lineTo(0,r*1.6);ctx.lineTo(-r*1.6,0);ctx.closePath();ctx.fill()}
         else if(i===1){ctx.beginPath();ctx.moveTo(-r*2,-r*1.7);ctx.lineTo(r*2,-r*1.7);ctx.lineTo(0,0);ctx.closePath();ctx.moveTo(-r*2,r*1.7);ctx.lineTo(r*2,r*1.7);ctx.lineTo(0,0);ctx.closePath();ctx.fill()}}
       else ctx.fillRect(-r,-r,r*2,r*2)}
-    if(i===0){ctx.globalAlpha=alpha;ctx.fillStyle=lc;ctx.fillRect(len/2-3,-wid/2+1,2,2);ctx.fillRect(len/2-3,wid/2-3,2,2)}
+    if(i===0){ctx.globalAlpha=alpha;if(NAT()&&!gray){ctx.fillStyle='#0a0a0a';for(const sy of [-1,1]){ctx.beginPath();ctx.arc(len/2-2,sy*(wid/2-1.6),0.9,0,TAU);ctx.fill()}}else{ctx.fillStyle=lc;ctx.fillRect(len/2-3,-wid/2+1,2,2);ctx.fillRect(len/2-3,wid/2-3,2,2)}}
     ctx.restore();
   }
   if(c.carry&&!gray){const h=c.segs[0];drawTag(c.carry,h.x+Math.cos(h.a)*10,h.y+Math.sin(h.a)*10,h.a+Math.PI/2*0.3,'#ffe94d',alpha)}
@@ -429,7 +504,7 @@ const INS=o=>({dims:[o.hd,o.th,...(o.mid||[]),o.ab],legs:legsFrom(o.ls??1,o.n||3
 const ARA=o=>({dims:[o.ce,o.ab],legs:legsFrom(0,4,o.sp??60,o.L||[16,20])});
 const MYR=o=>({dims:[o.hd,...Array.from({length:o.n},()=>o.sg.slice()),...(o.tl?[o.tl]:[])],legs:[],chain:{n:o.n,sg:o.sg,per:o.per??1,L:o.L||[1,1],tl:o.tl}});
 const BSP=[
-{id:'fourmi',nom:'Fourmi rousse',la:'Formica rufa',role:'mangeur',h:12,s:75,l:36,spd:24,hz:2.8,ant:7,f:['mandibules'],start:45,decay:0.22,age:300,...INS({hd:[4,4,'o'],th:[5,3.5,'o'],mid:[[2,2,'o']],ab:[6,5.5,'o'],L:[5,6]})},
+{id:'fourmi',nom:'Fourmi rousse',la:'Formica rufa',role:'mangeur',h:12,s:75,l:36,spd:24,hz:2.8,ant:7,f:['mandibules'],start:45,decay:0.14,age:300,...INS({hd:[4,4,'o'],th:[5,3.5,'o'],mid:[[2,2,'o']],ab:[6,5.5,'o'],L:[5,6]})},
 {id:'reine',nom:'Reine fourmi',la:'Formica rufa ♀',role:'mangeur',h:5,s:80,l:40,spd:9,hz:1.2,ant:7,f:['mandibules'],start:110,decay:0.12,age:1400,...INS({hd:[5,5,'o'],th:[7,5,'o'],mid:[[2.5,2.5,'o']],ab:[13,9,'o'],L:[6,7]})},
 {id:'puceron',nom:'Puceron',la:'Aphis fabae',role:'mangeur',h:100,s:70,l:55,spd:4,hz:3,ant:4,start:22,decay:0.35,age:160,...INS({hd:[2.5,2.5,'o'],th:[2.5,3.5,'o'],ab:[5,5,'o'],L:[3,3.5]})},
 {id:'coccinelle',nom:'Coccinelle',la:'Coccinella septempunctata',role:'chasseur',h:2,s:85,l:45,spd:12,fspd:38,hz:1.8,ant:3,f:['points','elytres'],w:{n:2,len:10,wid:4.5,hz:22},start:65,decay:0.55,age:360,...INS({hd:[3,4,'o'],th:[2.5,6,'o'],ab:[9,9,'o'],L:[5,5.5]})},
@@ -508,12 +583,12 @@ const LEVELS=[
  {nom:'Sous terre',txt:"La scolopendre chasse dans les galeries. Les fourmis se défendent en groupe. Protège les décomposeurs !",sp:['plante','fourmi','cloporte','lombric','scolopendre'],stock:{plante:5,fourmi:5,cloporte:6,lombric:5,scolopendre:2,compost:5},start:{plante:6},goal:{alive:['plante','fourmi','cloporte','lombric','scolopendre'],t:150},evap:1},
  {nom:'Saison sèche',txt:"La lampe chauffe : le sol sèche deux fois plus vite, le programmateur du brumisateur est en panne et les brumisations manuelles sont rationnées. Les cloportes et lombrics souffrent du sec.",sp:['plante','puceron','fourmi','coccinelle','cloporte','lombric','abeille'],stock:{plante:6,puceron:8,fourmi:4,coccinelle:3,cloporte:5,lombric:4,abeille:4,compost:4,pluie:8},start:{plante:7},goal:{alive:['plante','puceron','fourmi','coccinelle','cloporte','lombric','abeille'],t:180},evap:2.2,showers:false},
  {nom:'Le grand équilibre',txt:"Toutes les espèces ensemble. Aucune ne doit disparaître pendant 4 minutes.",sp:['plante','puceron','fourmi','coccinelle','cloporte','lombric','scolopendre','araignee','abeille','mouche'],stock:{plante:8,puceron:10,fourmi:5,coccinelle:4,cloporte:6,lombric:5,scolopendre:2,araignee:2,abeille:6,mouche:6,compost:6},start:{plante:8},goal:{alive:['plante','puceron','fourmi','coccinelle','cloporte','lombric','scolopendre','araignee','abeille','mouche'],t:240},evap:1.1},
- {nom:'Brindilles vivantes',txt:"Les phasmes broutent les feuilles, surtout celles de la ronce. Les femelles pondent seules des œufs qui ressemblent à des graines : laisse-les éclore. Mais s'ils dévorent tout, les plantes meurent…",sp:['plante','phasme','cloporte'],kinds:['ronce','fleur'],stock:{plante:7,phasme:4,cloporte:4,compost:3},start:{plante:8},goal:{alive:['plante','phasme'],min:{phasme:6},t:150},evap:1},
+ {nom:'Brindilles vivantes',repro:2,txt:"Les phasmes broutent les feuilles, surtout celles de la ronce. Les femelles pondent seules des œufs qui ressemblent à des graines : laisse-les éclore. Mais s'ils dévorent tout, les plantes meurent…",sp:['plante','phasme','cloporte'],kinds:['ronce','fleur'],stock:{plante:7,phasme:4,cloporte:4,compost:3},start:{plante:8},goal:{alive:['plante','phasme'],min:{phasme:6},t:150},evap:1},
  {nom:'Le roncier',txt:"Phasmes et chenilles se disputent les mêmes ronces. Les chenilles deviennent des papillons qui pondent à leur tour. Garde assez de feuillage pour tout le monde.",sp:['plante','phasme','papillon','cloporte'],kinds:['ronce','fleur'],stock:{plante:8,phasme:3,papillon:3,cloporte:4,compost:3},start:{plante:9},goal:{alive:['plante','phasme','papillon'],t:180},evap:1},
  {nom:"À l'affût",txt:"La mante se poste en haut d'une tige et attend. Mouches et pucerons passent à portée… Garde-lui des proies sans qu'elle vide le vivarium.",sp:['plante','mante','mouche','puceron','cloporte'],stock:{plante:6,mante:2,mouche:8,puceron:8,cloporte:4,compost:4},start:{plante:8},goal:{alive:['plante','mante','mouche','puceron'],t:150},evap:1},
- {nom:"L'oothèque",txt:"Une mante bien nourrie pond une oothèque d'où sortent plusieurs petites. Attention : affamées, les mantes se mangent entre elles.",sp:['plante','mante','mouche','abeille','puceron'],stock:{plante:7,mante:2,mouche:10,abeille:6,puceron:8},start:{plante:9},goal:{alive:['plante','mante','mouche','abeille'],min:{mante:4},t:180},evap:1},
+ {nom:"L'oothèque",repro:2,txt:"Une mante bien nourrie pond une oothèque d'où sortent plusieurs petites. Attention : affamées, les mantes se mangent entre elles.",sp:['plante','mante','mouche','abeille','puceron'],stock:{plante:7,mante:2,mouche:10,abeille:6,puceron:8},start:{plante:9},goal:{alive:['plante','mante','mouche','abeille'],min:{mante:4},t:180},evap:1},
  {nom:'Après la pluie',txt:"Les escargots adorent l'humidité : au sec, ils rentrent dans leur coquille et attendent. Ils broutent les jeunes pousses et la litière.",sp:['plante','escargot','cloporte','lombric'],kinds:['fleur','trefle'],stock:{plante:7,escargot:4,cloporte:4,lombric:3,compost:5},start:{plante:8},goal:{alive:['plante','escargot','cloporte'],min:{plante:5},t:150},evap:1},
- {nom:'Métamorphose',txt:"Œuf, chenille, chrysalide, papillon. Les chenilles dévorent, les papillons pollinisent les fleurs. Obtiens au moins 4 papillons.",sp:['plante','papillon','abeille','cloporte'],kinds:['fleur','ronce'],stock:{plante:8,papillon:3,abeille:4,cloporte:4,compost:4},start:{plante:9},goal:{alive:['plante','papillon','abeille'],min:{papillon:4},t:210},evap:1},
+ {nom:'Métamorphose',repro:2,txt:"Œuf, chenille, chrysalide, papillon. Les chenilles dévorent, les papillons pollinisent les fleurs. Obtiens au moins 4 papillons.",sp:['plante','papillon','abeille','cloporte'],kinds:['fleur','ronce'],stock:{plante:8,papillon:3,abeille:4,cloporte:4,compost:4},start:{plante:9},goal:{alive:['plante','papillon','abeille'],min:{papillon:4},t:210},evap:1},
  {nom:'Le désert',txt:"Un vivarium de sable chaud : l'eau s'évapore très vite, le brumisateur automatique est coupé et la brume rationnée. Les cactus aiment le sec mais pourrissent dans un sol détrempé. Les ténébrions grignotent la litière et les graines ; leurs larves, les vers de farine, deviennent adultes après une nymphe. Une brume légère, de temps en temps, aide les graines de cactus à germer.",sp:['plante','tenebrion'],kinds:['cactus'],sable:true,stock:{plante:6,tenebrion:5,compost:5,pluie:6},start:{plante:6},goal:{alive:['plante','tenebrion'],min:{plante:9,tenebrion:10},t:150},evap:2.6,showers:false},
  {nom:'Lumière noire',txt:"La nuit, le scorpion sort chasser les ténébrions ; le jour, il se cache sous une pierre. Passe le néon en UV : sa carapace brille en bleu-vert ! Garde assez de ténébrions pour le nourrir.",sp:['plante','scorpion','tenebrion'],kinds:['cactus'],sable:true,stock:{plante:6,scorpion:2,tenebrion:8,compost:6,pluie:6},start:{plante:6},goal:{alive:['plante','scorpion','tenebrion'],min:{tenebrion:6},t:180},evap:2.6,showers:false},
  {nom:'Rouler sa boule',txt:"Le bousier façonne une boule de litière, la roule à reculons jusqu'à son terrier et l'enterre : le sol s'enrichit et les plantes poussent mieux. Donne-lui de la litière, sans oublier les cloportes qui la convoitent aussi.",sp:['plante','bousier','cloporte'],kinds:['fleur','gramin'],stock:{plante:7,bousier:6,cloporte:3,compost:9},start:{plante:8},goal:{alive:['plante','bousier','cloporte'],min:{plante:7,bousier:4},t:150},evap:1},
@@ -522,7 +597,9 @@ const LEVELS=[
 
 // ================= MONDE =================
 let CS=2.5,COLS=200,ROWS=160,Y0=0,N,T,NUT,WET,DUG,STEM,SURF,WW=500,WH=400;
-const BOT=128;
+// Paysage sur téléphone : outils en colonne d'un côté, vues et zoom de l'autre ; la zone de jeu (W) est entre les deux.
+// CVL/CVR = largeur des colonnes gauche/droite ; recalculés dans resize().
+let LAND=false,CVL=0,CVR=0,BOT=128;
 const TYPES=[null,{nom:'humus',h:28,s:45,l:16,hard:0.6,perm:0.6},{nom:'terre',h:22,s:50,l:15,hard:1.0,perm:0.4},{nom:'sable',h:42,s:60,l:25,hard:0.5,perm:1},{nom:'argile',h:10,s:55,l:18,hard:2.6,perm:0.1},{nom:'roche',h:220,s:8,l:22,hard:99,perm:0},{nom:'gravier',h:30,s:9,l:34,hard:3.2,perm:1}];
 const K=(i,j)=>j*COLS+i;
 let prevA,seenA,QA,stamp=0;
@@ -576,7 +653,7 @@ function soilBrush(kind,x){const i0=clamp(Math.floor(x/CS),0,COLS-1),add=kind!==
     // les plantes de la colonne suivent la nouvelle surface
     for(const p of plants)if(p.alive&&p.col===i&&p.base===old[i]-1){
       for(let r=0;r<p.h;r++){const k=K(i,p.base-r);if(k>=0&&STEM[k])STEM[k]--}
-      p.base=SURF[i]-1;p.h=Math.max(1,Math.min(p.h,p.base));for(let r=0;r<p.h;r++)STEM[K(i,p.base-r)]++}}
+      p.base=SURF[i]-1;p.h=Math.max(1,Math.min(p.h,p.base-4));for(let r=0;r<p.h;r++)STEM[K(i,p.base-r)]++}}
   const c0=cols.length?Math.min(...cols):i0,c1=cols.length?Math.max(...cols):i0;
   for(const it of items)if(!it.dead&&!it.carried&&!it.p&&it.i>=c0&&it.i<=c1)settleItem(it);
   for(const c of creatures){if(c.dead||c.fly||baseOf(c.sp.id)==='lombric')continue;const ii=Math.floor(c.x/CS);if(ii<c0-1||ii>c1+1)continue;
@@ -765,7 +842,8 @@ function uCoccinelle(c,dt){
     if(dist3(c,pr)<3.5){die(pr,c);c.energy+=16;c.path=null;c.cd=11;takeOff(c);wave({x:c.x,y:c.y,max:16,sp:50,col:c.cLine,a:0.6})}
     else{if(!c.path||!c.path.length)goTo(c,k=>k===pr.k,1500);if(!c.path){takeOff(c);return}stepPath(c,dt)}
   }
-  if(c.energy>96&&canRepro('coccinelle',6)){c.energy-=45;const b=born('coccinelle',c.x,c.y-4,{energy:45});b.fly=true}
+  // ponte sur une plante où il y a des pucerons (la nourriture des petits)
+  if(c.energy>96&&canRepro('coccinelle',6-eggsOf('coccinelle'))){c.energy-=45;const p=plants.find(q=>q.alive&&q.aph>0)||plants.find(q=>q.alive);groundItem('oeuf',p?p.col:Math.floor(c.x/CS),{val:1,sp:c.sp.vid||'coccinelle',z:p?p.z:c.z,hatch:20,n:2});jlog('🐞','Une coccinelle pond près des pucerons')}
 }
 // ----- FOURMIS -----
 function newColony(i){jlog('🐜','Une reine fonde une colonie');ach('colonie');i=clamp(i,10,COLS-11);const col={i,entr:K(i,SURF[i]-1),food:9,eggs:[],cells:[],chamber:new Set(),queen:null,dead:false,home:null};colonies.push(col);return col}
@@ -790,6 +868,22 @@ function uReine(c,dt){
     else if(workers<6&&col.eggs.length<2&&c.energy>45){c.energy-=12;col.eggs.push({t:0,k:c.k})}} // fondation : la reine pond sur ses réserves
   if(c.energy<90&&col.food>=1&&Math.random()<dt*0.5){col.food-=1;c.energy+=10}
 }
+// galeries : quelques « têtes » qui avancent en ligne (horizontale ou en pente), se ramifient,
+// et s'élargissent en petite chambre de temps en temps
+function antDigTarget(col){col.heads=col.heads||[];col.heads=col.heads.filter(h=>!h.dead&&h.n<60);
+  const ok=(i,j)=>i>=1&&i<COLS-1&&j<ROWS-2&&j>SURF[i]+3&&T[K(i,j)]&&T[K(i,j)]!==5&&WET[K(i,j)]<=0.9;
+  if(col.heads.length<2+Math.floor(col.cells.length/80)&&(Math.random()<0.25||!col.heads.length)){
+    const src=Math.random()<0.5&&col.chamber.size?[...col.chamber]:col.cells;const from=src[Math.floor(Math.random()*src.length)];
+    if(from!=null)col.heads.push({k:from,di:Math.random()<0.5?-1:1,dj:Math.random()<0.45?1:0,n:0,fail:0})}
+  for(let tries=0;tries<4&&col.heads.length;tries++){const h=col.heads[Math.floor(Math.random()*col.heads.length)];
+    const i=h.k%COLS,j=(h.k-i)/COLS;
+    // petite chambre tous les 9 pas : on creuse au-dessus / en dessous de la galerie
+    if(h.n>0&&h.n%9===0&&!h.room){h.room=1;for(const dj of [-1,1,2]){if(ok(i,j+dj))return {k:K(i,j+dj),from:h.k,h:null}}}
+    if(h.n%9!==0)h.room=0;
+    if(Math.random()<0.18)h.dj=h.dj?0:1;if(Math.random()<0.05)h.di=-h.di;
+    let ti=i+h.di,tj=j+h.dj;if(!ok(ti,tj)){tj=j;if(!ok(ti,tj)){h.di=-h.di;ti=i+h.di;if(!ok(ti,tj)){h.dead=true;continue}}}
+    return {k:K(ti,tj),from:h.k,h}}
+  return null}
 function updColony(col,dt){
   if(col.dead)return;
   for(const e of col.eggs){e.t+=dt;if(WET[e.k]>0.85)e.dead=true;else if(e.t>10){e.dead=true;const [x,y]=cxy(e.k);const b=born(col.wsp||'fourmi',x,y,{energy:40});b.col=col;b.k=e.k}}
@@ -812,12 +906,15 @@ function uFourmi(c,dt){
       c.t-=dt;if(c.t>0)return;c.t=rnd(0.3,1);
       const workers=pop.fourmi||1;
       if(c.energy<22&&col.food>=1){c.state='eat';if(!goTo(c,k=>col.chamber.has(k),20000))c.state='idle';break}
-      const r=Math.random();
-      if(col.food<10+workers*1.2||r<0.5){ // récolte
+      // répartition du travail : creuser même quand la colonie a faim (sinon les galeries ne s'étendent jamais)
+      const r=Math.random(),hungry=col.food<10+workers*1.2,canDig=col.cells.length<150+workers*30,pDig=canDig?(!foodMap.size?0.65:hungry?0.3:0.45):0; // rien à ramasser : autant creuser
+      if(r<pDig){c.state='dig';const tgt=antDigTarget(col);if(!tgt){c.state='idle';break}
+        c.dig=tgt.k;c.digFrom=tgt.from;c.head=tgt.h;if(!goTo(c,k=>k===tgt.from,20000)){if(tgt.h&&++tgt.h.fail>3)tgt.h.dead=true;c.state='idle'}else c.state='dig2';break}
+      if(hungry||r<pDig+0.35){ // récolte
         let best=null,bd=1e9;for(const it of foodMap.values()){if(it.carried)continue;const d=dist3(c,it);if(d<bd){bd=d;best=it}}
         if(best&&goTo(c,k=>foodMap.get(k)===best,22000)){c.goal=best;c.state='go'}
         else{c.state='explore';const ti=clamp(col.i+Math.round(rnd(-70,70)),0,COLS-1);goTo(c,k=>k===K(ti,SURF[ti]-1),20000)||randomWalk(c)}
-      }else if(r<0.82&&col.cells.length<150+workers*30){c.state='dig';
+      }else if(false){c.state='dig';
         const from=Math.random()<0.3&&col.chamber.size?[...col.chamber][Math.floor(Math.random()*col.chamber.size)]:col.cells[Math.floor(Math.random()*col.cells.length)];
         if(from==null){c.state='idle';break}
         const i=from%COLS,j=(from-i)/COLS;const dirs=[[0,1],[1,0],[-1,0],[1,1],[-1,1]];const [di,dj]=dirs[Math.floor(Math.random()*dirs.length)];
@@ -833,7 +930,7 @@ function uFourmi(c,dt){
     case 'explore':c.state='idle';break;
     case 'dig2':{const tk=c.dig;if(!T[tk]||T[tk]===5){c.state='idle';break}
       const [tx,ty]=cxy(tk);c.ang+=angDiff(c.ang,Math.atan2(ty-c.y,tx-c.x))*0.2;c.v=0;
-      c.t+=dt;if(c.t>=TYPES[T[tk]].hard*0.35*(1+WET[tk]*1.5)){c.t=0;const typ=digCell(tk,col);
+      c.t+=dt;if(c.t>=TYPES[T[tk]].hard*0.22*(1+WET[tk]*1.5)){c.t=0;const typ=digCell(tk,col);if(c.head){c.head.k=tk;c.head.n++;c.head=null}
         if(col.chamber.has(c.digFrom)&&col.chamber.size<36+(pop.fourmi||0)*1.5)col.chamber.add(tk);
         c.load={type:'grain',t:typ};c.state='haul';if(!goTo(c,k=>{const i=k%COLS,j=(k-i)/COLS;return Math.abs(i-col.i)<=1&&j<=SURF[i]-1&&j>=SURF[i]-2},24000)){c.load=null;c.state='idle'}}
       break}
@@ -901,7 +998,7 @@ function uScolo(c,dt){
     else{c.state='idle';randomWalk(c,25)}}
   if(c.state==='hunt'&&c.beatT===0)antTips(c).forEach(t=>wave({x:t[0],y:t[1],arc:c.ang,spr:0.4,max:40,sp:90,col:c.cLine,dash:true,a:0.5,w:0.4}));
   stepPath(c,dt,c.state==='hunt'?0.95:0.6);
-  if(c.energy>118&&c.age>90&&canRepro(c.sp.id,3)&&Math.random()<dt*0.02){c.energy-=60;const b=born('scolopendre',c.x,c.y,{energy:80});b.k=c.k}
+  if(c.energy>118&&c.age>90&&canRepro(c.sp.id,3)&&Math.random()<dt*0.02){if(c.sp.id==='araignee'){if(!sacOf(c)){c.energy-=60;spiderLay(c)}}else{c.energy-=60;const b=born('scolopendre',c.x,c.y,{energy:80});b.k=c.k}}
 }
 // ----- ARAIGNÉE -----
 function anchorOn(p){const r=Math.floor(rnd(2,Math.max(3,p.h)));const k=K(p.col,p.base-r+1);const [x,y]=cxy(k);return {x,y,z:p.z,p,r}}
@@ -917,7 +1014,7 @@ function uAraignee(c,dt){
   else{c.v=0;c.t+=dt;if(c.t>0.6){c.t=0;
     if(c.anchor&&c.anchor.p.alive&&c.anchor.p!==c.tg.p&&dist3(c.anchor,c.tg)<110){strands.push({a:c.anchor,b:c.tg,owner:c,life:rnd(60,90),hits:0,glow:0,vib:0});const mine=strands.filter(q=>q.owner===c&&q.life>0);if(mine.length>6)mine[0].life=0}
     c.anchor=c.tg;c.tg=null}}
-  if(c.energy>175&&canRepro('araignee',4)){c.energy-=95;const b=born('araignee',c.x,c.y,{energy:70});b.home=clamp(c.x+rnd(-140,140),20,WW-20)}
+  if(c.energy>175&&canRepro('araignee',4)&&!sacOf(c)){c.energy-=95;spiderLay(c)}
 }
 function spiderMove(c,tx,ty,dt,mul){const a=Math.atan2(ty-c.y,tx-c.x);c.ang+=clamp(angDiff(c.ang,a),-6*dt,6*dt);const sp=c.sp.spd*mul;c.x+=Math.cos(c.ang)*sp*dt;c.y+=Math.sin(c.ang)*sp*dt;c.v=sp;airClamp(c)}
 // ----- ABEILLE -----
@@ -928,7 +1025,8 @@ function uAbeille(c,dt){
   if(c.energy<115&&c.cd<=0){let best=null,bd=1e9;for(const p of plants){if(!p.alive||!p.fl.open||p.fl.nectar<1)continue;const [x,y]=flowerPos(p);const d=Math.hypot(c.x-x,c.y-y,(c.z||0)-p.z);if(d<bd){bd=d;best=p}}
     if(best){c.fl=best;const [x,y]=flowerPos(best);flyTo(c,x,y-4,dt);if(Math.hypot(c.x-x,c.y-y+4,(c.z||0)-best.z)<4){c.state='sip';c.t=1.1;c.fl=best}return}}
   flyWander(c,dt);
-  if(c.energy>105&&canRepro('abeille',12)){c.energy-=48;born('abeille',c.x,c.y,{energy:45}).fly=true}
+  // ponte dans un petit nid creusé dans le sol, près des fleurs (abeille sauvage)
+  if(c.energy>105&&canRepro('abeille',12-eggsOf('abeille'))){c.energy-=48;const p=plants.find(q=>q.alive&&q.fl.open)||plants.find(q=>q.alive);groundItem('oeuf',p?p.col+Math.round(rnd(-6,6)):Math.floor(c.x/CS),{val:1,sp:c.sp.vid||'abeille',z:p?p.z:c.z,hatch:30,n:1});jlog('🐝','Une abeille pond dans son nid, au pied des fleurs')}
 }
 function flowerPos(p){return [p.col*CS+CS/2,Y0+(p.base-p.h+1)*CS-2]}
 // ----- MOUCHE -----
@@ -939,7 +1037,8 @@ function uMouche(c,dt){
   if(c.energy<85&&c.cd<=0){const list=items.filter(it=>(it.type==='cadavre'||it.type==='miellat'||(it.type==='litiere'&&it.age<60))&&!it.carried);let best=null,bd=1e9;for(const it of list){const d=dist3(c,it);if(d<bd){bd=d;best=it}}
     if(best){c.goal=best;flyTo(c,best.x,best.y-3,dt);if(Math.hypot(c.x-best.x,c.y-best.y+3,(c.z||0)-best.z)<4){c.state='eat';c.t=2;c.goal=best}return}}
   flyWander(c,dt);
-  if(c.energy>70&&canRepro('mouche',14)){c.energy-=32;born('mouche',c.x,c.y,{energy:30}).fly=true}
+  // ponte sur un cadavre ou de la litière qui pourrit (les asticots s'y développent)
+  if(c.energy>70&&canRepro('mouche',14-eggsOf('mouche'))){const it=items.find(o=>!o.dead&&!o.carried&&(o.type==='cadavre'||o.type==='litiere'));if(it){c.energy-=32;groundItem('oeuf',it.i,{val:1,sp:c.sp.vid||'mouche',z:it.z,hatch:18,n:3})}}
 }
 // ----- profondeur : chaque bête glisse vers la profondeur de ce qu'elle vise -----
 function goalOf(c){const g=(c.prey&&!c.prey.dead&&c.prey)||(c.goal&&!c.goal.dead&&c.goal)||(c.fl&&c.fl.alive&&c.fl)||(c.tg&&(c.tg.p||c.tg.it))||null;return g&&g.z!=null?g:null}
@@ -1506,6 +1605,11 @@ function renderTransition(e){
   g.strokeStyle='rgba(255,233,77,'+(0.6*Math.sin(e*Math.PI))+')';g.lineWidth=R;g.beginPath();g.moveTo(0,hy*R);g.lineTo(W*R,hy*R);g.stroke();
 }
 
+// style de dessin des bêtes : 'actuel' (néon, articulations en points), 'fin' (sans points, pattes effilées), 'nature' (corps pleins, couleurs naturelles)
+let DESSIN='nature';
+const FIN=()=>DESSIN!=='actuel',NAT=()=>DESSIN==='nature';
+// couleurs naturelles : plus sourdes que le néon, mais assez claires pour se voir sur fond sombre
+const natFill=c=>hsl(c.sp.h,c.sp.s*0.5,24+c.sp.l*0.28),natLine=c=>hsl(c.sp.h,c.sp.s*0.55,Math.min(82,48+c.sp.l*0.38));
 // ================= VUE DE PROFIL (coupe) =================
 function ik2(hx,hy,fx,fy,L1,L2,up){let d=Math.hypot(fx-hx,fy-hy);d=clamp(d,0.01,L1+L2-0.01);
   const a=Math.acos(clamp((L1*L1+d*d-L2*L2)/(2*L1*d),-1,1)),b=Math.atan2(fy-hy,fx-hx);
@@ -1542,7 +1646,7 @@ function drawOnStem(c,alpha){
     else{const sp1=1.3+(far?0:0.3);kx=hx0+ax*dirA*L1*0.8+px*s*sp1+ax*grip;ky=hy0+ay*dirA*L1*0.8+py*s*sp1+ay*grip;fx=kx+ax*dirA*L2*0.85-px*s*(sp1-0.35)+ax*grip;fy=ky+ay*dirA*L2*0.85-py*s*(sp1-0.35)+ay*grip}
     ctx.globalAlpha=alpha*(far?0.35:0.9)*(0.5+0.5*bright);ctx.strokeStyle=col;ctx.lineWidth=far?0.6:0.9;
     ctx.beginPath();ctx.moveTo(hx0,hy0);ctx.lineTo(kx,ky);ctx.lineTo(fx,fy);ctx.stroke();
-    if(!far){ctx.fillStyle=c.segL[seg];ctx.fillRect(kx-0.8,ky-0.8,1.6,1.6)}};
+    if(!far&&!FIN()){ctx.fillStyle=c.segL[seg];ctx.fillRect(kx-0.8,ky-0.8,1.6,1.6)}};
   // la tige, derrière la bête, côté opposé
   for(const l of legs)if(l[1]<0)drawLeg(l,true);
   for(let i=n-1;i>=0;i--){const g=c.segs[i],len=c.dims[i][0],hh=c.dims[i][1]*0.72,p=pulseAt(c,i);
@@ -1597,9 +1701,11 @@ function drawProfile0(c,alpha,gray){
       else{const stride=(l.L1+l.L2)*0.32,u=(((ph+l.phase)/TAU)%1+1)%1;
         if(u<0.62){fx=hx+l.baseX+stride*(0.5-u/0.62);fy=ground}else{const s=(u-0.62)/0.38;fx=hx+l.baseX+stride*(-0.5+s);fy=ground-Math.sin(s*Math.PI)*Math.min(4,l.L2*0.4)}}
       const k=ik2(hx,hy,fx,fy,l.L1,l.L2,true);
-      ctx.globalAlpha=alpha*(far?0.3:0.9)*(0.5+0.5*bright);ctx.lineWidth=far?0.7:1;
+      ctx.globalAlpha=alpha*(far?0.3:0.9)*(0.5+0.5*bright);
+      if(FIN()){if(NAT()&&!gray)ctx.strokeStyle=natLine(c);ctx.lineWidth=far?0.5:0.8;ctx.beginPath();ctx.moveTo(hx,hy);ctx.lineTo(k[0],k[1]);ctx.stroke();ctx.lineWidth=far?0.35:0.5;ctx.beginPath();ctx.moveTo(k[0],k[1]);ctx.lineTo(fx,fy);ctx.stroke()}
+      else{ctx.lineWidth=far?0.7:1;
       ctx.beginPath();ctx.moveTo(hx,hy);ctx.lineTo(k[0],k[1]);ctx.lineTo(fx,fy);ctx.stroke();
-      if(!far){ctx.fillStyle=gray?col:c.segL[l.seg];ctx.fillRect(k[0]-1,k[1]-1,2,2);ctx.beginPath();ctx.arc(fx,fy,1.1,0,TAU);ctx.fill()}
+      if(!far){ctx.fillStyle=gray?col:c.segL[l.seg];ctx.fillRect(k[0]-1,k[1]-1,2,2);ctx.beginPath();ctx.arc(fx,fy,1.1,0,TAU);ctx.fill()}}
       ctx.restore()}
   };
   drawLegs(true);
@@ -1628,24 +1734,24 @@ function drawProfile0(c,alpha,gray){
     if(id==='cloporte'||(id==='coccinelle'&&i===2)){ctx.ellipse(0,by+hh*0.5,len/2+0.6,hh*1.1,0,Math.PI,TAU);ctx.closePath()}
     else ctx.ellipse(0,by,len/2+0.4,hh/2,0,0,TAU);
     ctx.globalAlpha=alpha;ctx.fillStyle='#000';ctx.fill();
-    if(!gray){ctx.fillStyle=c.segT[i];ctx.globalAlpha=alpha*(0.5+0.5*p);ctx.fill()}
+    if(!gray){if(NAT()){ctx.fillStyle=natFill(c);ctx.globalAlpha=alpha;ctx.fill()}else{ctx.fillStyle=c.segT[i];ctx.globalAlpha=alpha*(0.5+0.5*p);ctx.fill()}}
     ctx.save();ctx.clip();
     const gx=clamp(Math.round(len/5),1,4),cw=len/gx;
-    if(!gray){ctx.fillStyle=lc;for(let a=0;a<gx;a++){const lit=((a*7+i*5+c.beats)%3)===0;ctx.globalAlpha=alpha*bright*(lit?0.15+0.6*p:0.03+0.12*p);ctx.fillRect(-len/2+a*cw+0.6,by-hh,cw-1.2,hh*2)}}
-    ctx.globalAlpha=alpha*0.45;ctx.strokeStyle=lc;ctx.lineWidth=0.5;ctx.beginPath();for(let a=1;a<gx;a++){const x=-len/2+a*cw;ctx.moveTo(x,by-hh);ctx.lineTo(x,by+hh)}ctx.stroke();
+    if(!gray&&!NAT()){ctx.fillStyle=lc;const kf=FIN()?0.4:1;for(let a=0;a<gx;a++){const lit=((a*7+i*5+c.beats)%3)===0;ctx.globalAlpha=alpha*bright*kf*(lit?0.15+0.6*p:0.03+0.12*p);ctx.fillRect(-len/2+a*cw+0.6,by-hh,cw-1.2,hh*2)}}
+    ctx.globalAlpha=alpha*(FIN()?0.25:0.45);ctx.strokeStyle=NAT()&&!gray?natLine(c):lc;ctx.lineWidth=FIN()?0.3:0.5;ctx.beginPath();for(let a=1;a<gx;a++){const x=-len/2+a*cw;ctx.moveTo(x,by-hh);ctx.lineTo(x,by+hh)}ctx.stroke();
     // motifs
     if(!gray){const big=i>0&&c.dims[i][0]*c.dims[i][1]>=Math.max(...c.dims.slice(1).map(d=>d[0]*d[1]))*0.99;
       if(big&&sp.f.includes('rayures')){ctx.strokeStyle=lc;ctx.globalAlpha=alpha*0.9;ctx.lineWidth=0.9;ctx.beginPath();for(let k=0;k<(sp.ray||2);k++){const x=-len/2+len*(k+0.7)/((sp.ray||2)+0.6);ctx.moveTo(x,by-hh);ctx.lineTo(x,by+hh)}ctx.stroke()}
       if(big&&sp.f.includes('points')){ctx.fillStyle='#000';ctx.strokeStyle=c.cCore;ctx.globalAlpha=alpha;for(const q of [-0.25,0.05,0.3]){const r=hh*0.16;ctx.fillRect(q*len-r,by-r,r*2,r*2);ctx.strokeRect(q*len-r,by-r,r*2,r*2)}}
       if(big&&sp.f.includes('croix')){ctx.fillStyle='#fff';ctx.globalAlpha=alpha*0.9;for(const q of [-0.2,0,0.2])ctx.fillRect(q*len-0.8,by-hh*0.25-0.8,1.6,1.6)}}
     ctx.restore();
-    ctx.strokeStyle=lc;ctx.globalAlpha=alpha*bright*(0.15+0.45*p);ctx.lineWidth=2.6;ctx.stroke();
-    ctx.globalAlpha=alpha*(0.6+0.4*bright);ctx.lineWidth=0.9;ctx.stroke();
+    ctx.strokeStyle=NAT()&&!gray?natLine(c):lc;if(!NAT()){ctx.globalAlpha=alpha*bright*(0.15+0.45*p)*(FIN()?0.5:1);ctx.lineWidth=FIN()?1.4:2.6;ctx.stroke()}
+    ctx.globalAlpha=alpha*(0.6+0.4*bright);ctx.lineWidth=FIN()?0.55:0.9;ctx.stroke();
     // coeur
-    if(!gray&&len*hh>14){ctx.fillStyle=c.cCore;ctx.globalAlpha=alpha*Math.min(1,bright*(0.2+0.85*p));const r=(0.8+1.2*p)*Math.min(1.5,Math.sqrt(len*hh)/7);ctx.fillRect(-r,by-r,r*2,r*2)}
+    if(!gray&&!FIN()&&len*hh>14){ctx.fillStyle=c.cCore;ctx.globalAlpha=alpha*Math.min(1,bright*(0.2+0.85*p));const r=(0.8+1.2*p)*Math.min(1.5,Math.sqrt(len*hh)/7);ctx.fillRect(-r,by-r,r*2,r*2)}
     // tête : œil, antennes, mandibules
     if(i===0&&id!=='lombric'){ctx.globalAlpha=alpha;ctx.fillStyle=gray?col:c.cCore;
-      const ex=len*0.18,ey=by-hh*0.15,er=sp.f.includes('yeux')?Math.max(1.3,hh*0.3):0.9;ctx.beginPath();ctx.arc(ex,ey,er,0,TAU);ctx.fill();
+      const ex=len*0.18,ey=by-hh*0.15,er=(sp.f.includes('yeux')?Math.max(1.3,hh*0.3):0.9)*(FIN()?0.55:1);if(NAT()&&!gray)ctx.fillStyle='#0a0a0a';ctx.beginPath();ctx.arc(ex,ey,er,0,TAU);ctx.fill();if(NAT()&&!gray){ctx.fillStyle='#fff';ctx.globalAlpha=alpha*0.7;ctx.beginPath();ctx.arc(ex+er*0.3,ey-er*0.3,er*0.3,0,TAU);ctx.fill();ctx.globalAlpha=alpha}
       if(sp.ant>0){const wig=Math.sin(simT*6+c.x*0.1)*0.15,A=sp.ant;ctx.strokeStyle=lc;ctx.lineWidth=0.8;
         for(const k of [0,1]){ctx.globalAlpha=alpha*(k?0.35:0.9);const a1=-0.5-k*0.25+wig,a2=-0.2-k*0.3+wig;const sx=len*0.4,sy=by-hh*0.3;
           ctx.beginPath();ctx.moveTo(sx,sy);ctx.quadraticCurveTo(sx+Math.cos(a1)*A*0.6,sy+Math.sin(a1)*A*0.6,sx+Math.cos(a2)*A,sy+Math.sin(a2)*A);ctx.stroke()}}
@@ -1661,7 +1767,7 @@ function drawProfile0(c,alpha,gray){
     const by=bodyY(c.segs.length-1);ctx.beginPath();ctx.moveTo(-c.dims[c.segs.length-1][0]/2,by);ctx.lineTo(-c.dims[c.segs.length-1][0]/2-7,by+3);ctx.stroke();ctx.restore()}
   ctx.globalAlpha=1;ctx.lineCap='butt';
 }
-function mainCtxGlow(c,alpha,bright){
+function mainCtxGlow(c,alpha,bright){if(NAT())return;if(FIN())alpha*=0.45;
   ctx.globalCompositeOperation='lighter';const spr=glowSprite(c.hue);const stepI=c.segs.length>8?2:1;
   for(let i=0;i<c.segs.length;i+=stepI){const g=c.segs[i],p=pulseAt(c,i);const R=(c.dims[i][1]*1.1+7)*(0.75+p*0.7);
     ctx.globalAlpha=alpha*bright*(0.06+0.32*p);ctx.drawImage(spr,g.x-R,g.y-R-2,R*2,R*2)}
@@ -1692,7 +1798,7 @@ function deepWet(){let w=0,n=0;for(let i=0;i<COLS;i+=4)for(let d=10;d<40;d+=6){c
 
 // ================= CAMÉRA =================
 let camZ=1,camX=250,camY=200,fitZ=1;
-const BAND_T=92;const bandB=()=>H-BOT;
+let BAND_T=92;const bandB=()=>H-BOT;
 function fitZoom(){return Math.min((W-16)/(WW+12),(bandB()-BAND_T-10)/(WH+26))}
 function camClamp(){camZ=clamp(camZ,fitZ*0.999,18);const wl=-8,wr=WW+8,wt=-16,wb=WH+12,bT=BAND_T,bB=bandB();
   let lo=wl+(W/2)/camZ,hi=wr-(W/2)/camZ;camX=lo>hi?(lo+hi)/2:clamp(camX,lo,hi);
@@ -1700,11 +1806,15 @@ function camClamp(){camZ=clamp(camZ,fitZ*0.999,18);const wl=-8,wr=WW+8,wt=-16,wb
 function camFit(){fitZ=fitZoom();camZ=fitZ;camX=WW/2;camY=WH/2;camClamp()}
 const s2w=(sx,sy)=>[camX+(sx-W/2)/camZ,camY+(sy-H/2)/camZ];
 const w2s=(wx,wy)=>[(wx-camX)*camZ+W/2,(wy-camY)*camZ+H/2];
-function zoomAt(sx,sy,f){
-  if(view==='top'){topZoom(sx,sy,f);return}
-  if(view==='ens'){if(f>1)exitEns();return}
+// changement de vue à la molette / au pincement : coupe <-> 3/4 <-> dessus.
+// Pause après chaque bascule, et pour la molette il faut un nouveau geste (l'élan d'un pavé tactile ne compte pas).
+let vsT=0,wheelLast=0,wheelStart=0;
+function viewSwitchOK(src){const now=performance.now();return now-vsT>650&&(src!=='wheel'||wheelStart>vsT)}
+function zoomAt(sx,sy,f,src){
+  if(view==='top'){if(f<1&&ZM<=topFit()*1.001){if(viewSwitchOK(src)){vsT=performance.now()+1e4;snapTop();exitTopToEns()}return}topZoom(sx,sy,f);return}
+  if(view==='ens'){if(ensDir||!viewSwitchOK(src))return;vsT=performance.now()+1e4;if(f>1)exitEns();else enterTopFromEns(WW/2);return}
   if(view!=='side')return;
-  if(camZ<=fitZ*1.001&&f<1){enterEns();return}
+  if(camZ<=fitZ*1.001&&f<1){if(viewSwitchOK(src)){vsT=performance.now()+1e4;enterEns()}return}
   const [wx,wy]=s2w(sx,sy);camZ=clamp(camZ*f,fitZ,18);camX=wx-(sx-W/2)/camZ;camY=wy-(sy-H/2)/camZ;camClamp();
 }
 
@@ -1769,7 +1879,7 @@ function exitEns(){if(view!=='ens')return;ensDir=-1;openDev(null)}
 function ensRect(e){
   const fz=fitZoom(),fw0=WW*fz,fh0=WH*fz,fx0=W/2-fw0/2,fy0=(BAND_T+bandB())/2-fh0/2;
   // profondeur proportionnelle au format du bac (Standard : 30 cm pour 50 cm de large)
-  const kd=FMT==='std'?1:(ZD/WW)/0.6,fw1=Math.min(W*0.64,(bandB()-BAND_T-96)/(WH/WW+0.23*kd)),fh1=fw1*WH/WW,dx1=fw1*0.13*kd,dy1=-fw1*0.23*kd,top=BAND_T+Math.max(46,(bandB()-BAND_T-(fh1-dy1+40))/2),fx1=Math.max(W*0.05,(W-(fw1+dx1+100))/2),fy1=top-dy1;
+  const kd=FMT==='std'?1:(ZD/WW)/0.6,fw1=Math.min(W*0.64,(bandB()-BAND_T-(LAND?22:96))/(WH/WW+0.23*kd)),fh1=fw1*WH/WW,dx1=fw1*0.13*kd,dy1=-fw1*0.23*kd,top=BAND_T+Math.max(LAND?10:46,(bandB()-BAND_T-(fh1-dy1+40))/2),fx1=Math.max(W*0.05,(W-(fw1+dx1+100))/2),fy1=top-dy1;
   const L=(a,b)=>a+(b-a)*e;return {x:L(fx0,fx1),y:L(fy0,fy1),w:L(fw0,fw1),h:L(fh0,fh1),dx:dx1*e,dy:dy1*e};
 }
 function ensCam(R){const z=R.w/WW;return {z,x:WW/2+(W/2-(R.x+R.w/2))/z,y:WH/2+(H/2-(R.y+R.h/2))/z}}
@@ -1953,10 +2063,14 @@ function row(label,inner){return `<div class="drow"><span>${label}</span>${inner
 function dayRow(){return row(`Durée du jour <b>${DEV.time.day}%</b>`,`<input type="range" min="20" max="100" value="${DEV.time.day}" data-k="time.day">`)+`<p class="dim">${isDay()?'☀ Il fait jour':'☾ Il fait nuit'} · cycle de ${DAYLEN} s, partagé par les deux lampes</p>`}
 function openDev(id){
   if(!id){devp.style.display='none';return}
-  let h='';
   if(devLocked(id)){const T={neon:'▬ Néon T5',vent:'🌀 Ventilation',heat:'🔥 Tapis chauffant',thermo:'🌡 Thermo-hygromètre'}[id];
     devp.innerHTML=`<div class="dbox"><h2>${T}</h2><p>${lockTxt(DEV_KEY[id])}</p><button class="btn2" data-act="close">Fermer</button></div>`;devp.style.display='flex';
     devp.querySelector('[data-act]').onclick=()=>openDev(null);return}
+  const h=devHTML(id);
+  devp.innerHTML=`<div class="dbox">${h}<button class="btn2" data-act="close">Fermer</button></div>`;devp.style.display='flex';
+  wireDev(devp,id,()=>openDev(id),()=>openDev(null))}
+// contenu des réglages d'un appareil (fenêtre de l'appareil, panneau de contrôle)
+function devHTML(id){let h='';
   if(id==='spot')h=`<h2>💡 Spot LED</h2><p>Lumière chaude et concentrée. Elle fait pousser les plantes, mais elle <b>chauffe</b> (jusqu'à +3,5 °C) et assèche le sol.</p>`+row('Allumé',`<input type="checkbox" data-k="spot.on" ${DEV.spot.on?'checked':''}>`)+row(`Intensité <b>${DEV.spot.int}%</b>`,`<input type="range" min="10" max="100" value="${DEV.spot.int}" data-k="spot.int">`)+dayRow();
   if(id==='neon')h=`<h2>▬ Néon T5</h2><p>Lumière diffuse sur toute la largeur, qui chauffe peu. Le type de tube change la croissance et l'ambiance du vivarium.</p>`+row('Allumé',`<input type="checkbox" data-k="neon.on" ${DEV.neon.on?'checked':''}>`)+row(`Intensité <b>${DEV.neon.int}%</b>`,`<input type="range" min="10" max="100" value="${DEV.neon.int}" data-k="neon.int">`)
     +`<div class="drow"><span>Tube</span><span class="seg">${Object.entries(NEON).map(([k,v])=>`<button data-neon="${k}" class="${DEV.neon.type===k?'on':''}" style="--c:rgb(${v.rgb})" ${k!=='blanc'&&!has('tubes')?'disabled':''}>${k!=='blanc'&&!has('tubes')?'🔒 ':''}${v.nom}</button>`).join('')}</span></div>`
@@ -1966,37 +2080,39 @@ function openDev(id){
   if(id==='heat')h=`<h2>🔥 Tapis chauffant</h2><p>La chaleur accélère tout le monde : les bêtes mangent plus et se reproduisent plus vite… et le sol sèche plus vite.</p>`+row('Allumé',`<input type="checkbox" data-k="heat.on" ${DEV.heat.on?'checked':''}>`)+row(`Température visée <b>${DEV.heat.target}°C</b>`,`<input type="range" min="18" max="32" value="${DEV.heat.target}" data-k="heat.target">`);
   if(id==='vent')h=`<h2>🌀 Ventilation</h2><p>Ouverte : l'air se renouvelle et le sol sèche plus vite. Fermée : l'humidité reste.</p>`+row('Grille ouverte',`<input type="checkbox" data-k="vent.open" ${DEV.vent.open?'checked':''}>`);
   if(id==='thermo')h=`<h2>🌡 Thermo-hygromètre</h2>`+gaugeSVG()+histSVG()+row('Température',`<b>${temp().toFixed(1).replace('.',',')} °C</b>`)+row('Humidité de surface',`<b>${Math.round(surfWet()*100)} %</b>`)+row('Humidité en profondeur',`<b>${Math.round(deepWet()*100)} %</b>`)+row('Lumière',`<b>${isDay()?'jour':'nuit'} · ×${lightF().toFixed(2).replace('.',',')}</b>`)+row('Métabolisme des bêtes',`<b>×${metabF().toFixed(2).replace('.',',')}</b>`)+`<p class="dim">Plantes : 20–90 % d'humidité. Cloportes et lombrics : plus de 25–30 %.</p>`;
-  devp.innerHTML=`<div class="dbox">${h}<button class="btn2" data-act="close">Fermer</button></div>`;devp.style.display='flex';
-  devp.querySelectorAll('[data-k]').forEach(inp=>inp.oninput=inp.onchange=()=>{const [a,b]=inp.dataset.k.split('.');DEV[a][b]=inp.type==='checkbox'?inp.checked:+inp.value;openDev(id)});
-  devp.querySelectorAll('[data-neon]').forEach(bt=>bt.onclick=()=>{DEV.neon.type=bt.dataset.neon;openDev(id)});
-  devp.querySelectorAll('[data-act]').forEach(bt=>bt.onclick=()=>{const a=bt.dataset.act;if(a==='close')openDev(null);
-    if(a==='refill'){DEV.pump.level=100;openDev(id)}
-    if(a==='mistnow'){if(lvl.stock.pluie!=null){if(stock.pluie<=0){say('Plus de brumisation en réserve');return}stock.pluie--;refreshPalette()}for(const x of nozzles())rainAt(x,DEV.mist.dur);openDev(null)}});
+  return h}
+// réglages : curseurs, cases, boutons (re = redessiner, done = après « brumiser maintenant »)
+function wireDev(root,id,re,done){
+  root.querySelectorAll('[data-k]').forEach(inp=>inp.oninput=inp.onchange=()=>{const [a,b]=inp.dataset.k.split('.');DEV[a][b]=inp.type==='checkbox'?inp.checked:+inp.value;re()});
+  root.querySelectorAll('[data-neon]').forEach(bt=>bt.onclick=()=>{DEV.neon.type=bt.dataset.neon;re()});
+  root.querySelectorAll('[data-act]').forEach(bt=>bt.onclick=()=>{const a=bt.dataset.act;if(a==='close'){openDev(null);return}
+    if(a==='refill'){DEV.pump.level=100;re()}
+    if(a==='mistnow'){if(lvl.stock.pluie!=null){if(stock.pluie<=0){say('Plus de brumisation en réserve');return}stock.pluie--;refreshPalette()}for(const x of nozzles())rainAt(x,DEV.mist.dur);done()}});
 }
 devp.addEventListener('click',e=>{if(e.target===devp)openDev(null)});
 // ================= GESTES =================
 const pts=new Map();let gest=null;
 cv.addEventListener('pointerdown',e=>{try{cv.setPointerCapture(e.pointerId)}catch(_){}
-  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  pts.set(e.pointerId,{x:(e.clientX-CVL),y:e.clientY});
   if(pts.size===2){const [a,b]=[...pts.values()];const mx=(a.x+b.x)/2,my=(a.y+b.y)/2;gest={pinch:true,d0:Math.max(10,dist(a.x,a.y,b.x,b.y)),z0:camZ,w:s2w(mx,my),done:false,tm:ZM,tw:[zx0+mx/ZM,(TYB-my)/ZM+zz0]}}
-  else gest={pinch:false,moved:false,x0:e.clientX,y0:e.clientY,cx:camX,cy:camY,zx:zx0,zz:zz0};
+  else gest={pinch:false,moved:false,x0:(e.clientX-CVL),y0:e.clientY,cx:camX,cy:camY,zx:zx0,zz:zz0};
 });
-cv.addEventListener('pointermove',e=>{const p=pts.get(e.pointerId);if(!p||!gest)return;p.x=e.clientX;p.y=e.clientY;
+cv.addEventListener('pointermove',e=>{const p=pts.get(e.pointerId);if(!p||!gest)return;p.x=(e.clientX-CVL);p.y=e.clientY;
   if(gest.pinch&&pts.size>=2){const [a,b]=[...pts.values()];const d=dist(a.x,a.y,b.x,b.y),mx=(a.x+b.x)/2,my=(a.y+b.y)/2,f=d/gest.d0;
     if(view==='ens'){if(f>1.25&&!gest.done){gest.done=true;exitEns()}return}
     if(view==='top'){ZM=clamp(gest.tm*f,topFit(),8);zx0=gest.tw[0]-mx/ZM;zz0=gest.tw[1]-(TYB-my)/ZM;topClamp();return}
     if(view!=='side')return;
     if(gest.z0*f<fitZ*0.85&&!gest.done){gest.done=true;enterEns();return}
     camZ=clamp(gest.z0*f,fitZ,18);camX=gest.w[0]-(mx-W/2)/camZ;camY=gest.w[1]-(my-H/2)/camZ;camClamp();return}
-  if(!gest.pinch){const dx=e.clientX-gest.x0,dy=e.clientY-gest.y0;if(!gest.moved&&Math.hypot(dx,dy)>9)gest.moved=true;
+  if(!gest.pinch){const dx=(e.clientX-CVL)-gest.x0,dy=e.clientY-gest.y0;if(!gest.moved&&Math.hypot(dx,dy)>9)gest.moved=true;
     if(gest.moved&&view==='side'){camX=gest.cx-dx/camZ;camY=gest.cy-dy/camZ;camClamp()}
     if(gest.moved&&view==='top'){zx0=gest.zx-dx/ZM;zz0=gest.zz+dy/ZM;topClamp()}}
 });
 const endPtr=e=>{const had=pts.has(e.pointerId);pts.delete(e.pointerId);if(!had||!gest)return;
-  if(!gest.pinch&&!gest.moved&&pts.size===0)tapScreen(e.clientX,e.clientY);
+  if(!gest.pinch&&!gest.moved&&pts.size===0)tapScreen((e.clientX-CVL),e.clientY);
   if(pts.size===0)gest=null};
 cv.addEventListener('pointerup',endPtr);cv.addEventListener('pointercancel',e=>{pts.delete(e.pointerId);if(!pts.size)gest=null});
-cv.addEventListener('wheel',e=>{e.preventDefault();zoomAt(e.clientX,e.clientY,e.deltaY<0?1.18:1/1.18)},{passive:false});
+cv.addEventListener('wheel',e=>{e.preventDefault();const now=performance.now();if(now-wheelLast>250)wheelStart=now;wheelLast=now;zoomAt((e.clientX-CVL),e.clientY,e.deltaY<0?1.18:1/1.18,'wheel')},{passive:false});
 // point du sol visé en vue 3/4 : abscisse (mm) et profondeur depuis la vitre (mm)
 function pickVolume(sx,sy){const R=ensRect(ensE),z=R.w/WW;let best=null,bd=1e9;
   for(let i=0;i<COLS;i++){const fy=R.y+surfY(i)*z;let f=R.dy?(sy-fy)/R.dy:0;if(f<-0.03||f>1.02)continue;f=clamp(f,0,0.96);
@@ -2150,6 +2266,8 @@ function onPlant(c){const p=c.k!=null?plantAtK(c.k,c.z):null;return p&&c.y<surfY
 function seekPlant(c,pred,maxN=5000){return goTo(c,k=>{const q=plantAtK(k);return q&&((k/COLS)|0)<q.base-3&&pred(q,k)},maxN)}
 // petits à naître (œufs non éclos) : comptent dans les plafonds de population
 function eggsOf(id){let n=0;for(const it of items)if(it.type==='oeuf'&&!it.dead&&baseOf(it.sp)===id)n+=it.n||1;return n}
+// RF : accélère la reproduction dans certains niveaux de campagne (champ repro du niveau) ; vaut 1 ailleurs.
+function RF(){return (typeof lvl!=='undefined'&&lvl&&lvl.repro)||1}
 function layEggs(c,sp,o){groundItem('oeuf',clamp(Math.floor(c.x/CS),1,COLS-2),Object.assign({val:1,sp,z:(c.z||0)+rnd(-3,3)},o))}
 function uPhasme(c,dt){
   if(gravity(c,dt))return;const p=onPlant(c);
@@ -2157,7 +2275,7 @@ function uPhasme(c,dt){
     if(!c.path||!c.path.length){if(Math.random()<dt*0.05)goTo(c,k=>plantAtK(k,c.z)===p&&Math.random()<0.1,600)}}
   else if(!c.path||!c.path.length){c.t-=dt;if(c.t<=0){c.t=2;if(!seekPlant(c,q=>q.h>8&&(q.kind==='ronce'||Math.random()<0.6)))randomWalk(c)}}
   stepPath(c,dt,0.8);
-  if(c.energy>62&&canRepro('phasme',12-eggsOf('phasme'))&&Math.random()<dt*0.05){c.energy-=24;layEggs(c,c.sp.vid||'phasme',{hatch:30,n:1})}
+  if(c.energy>62&&canRepro('phasme',12-eggsOf('phasme'))&&Math.random()<dt*0.05*RF()){c.energy-=24;layEggs(c,c.sp.vid||'phasme',{hatch:30/RF(),n:1})}
 }
 const MANTE_PREY=['mouche','abeille','puceron','fourmi','papillon','coccinelle','chenille'];
 function uMante(c,dt){
@@ -2169,7 +2287,7 @@ function uMante(c,dt){
     if(prey){die(prey,c);c.energy+=prey.sp.id==='puceron'?8:prey.sp.id==='fourmi'?12:26;c.cd=5;wave({x:c.x,y:c.y,max:20,sp:70,col:c.cLine,a:0.7})}}
   if(c.energy<15){const o=creatures.find(o=>!o.dead&&o!==c&&o.sp.id==='mante'&&dist3(o,c)<18);if(o){die(o,c);c.energy+=45;wave({x:c.x,y:c.y,max:24,sp:60,col:'#ff4d5a',a:0.7})}}
   if(Math.random()<dt*0.02)goTo(c,k=>plantAtK(k,c.z)===p&&Math.random()<0.1,800);
-  if(c.energy>100&&c.age>40&&canRepro('mante',8-eggsOf('mante'))&&Math.random()<dt*0.04){c.energy-=50;layEggs(c,c.sp.vid||'mante',{hatch:40,n:4,ooth:true})}
+  if(c.energy>100&&c.age>40/RF()&&canRepro('mante',8-eggsOf('mante'))&&Math.random()<dt*0.04*RF()){c.energy-=50;layEggs(c,c.sp.vid||'mante',{hatch:40/RF(),n:4,ooth:true})}
 }
 function uEscargot(c,dt){
   if(gravity(c,dt))return;const k=c.k??cellOf(c.x,c.y),i=k%COLS,j=(k-i)/COLS,wb=WET[K(i,Math.min(ROWS-1,Math.max(j+1,SURF[i])))]; // sur une tige : humidité du sol au pied
@@ -2192,7 +2310,7 @@ function uChenille(c,dt){
   if(p){p.e-=0.06*dt;c.energy+=1.8*dt;if(!c.path||!c.path.length){if(Math.random()<dt*0.1)goTo(c,k=>plantAtK(k,c.z)===p&&Math.random()<0.1,600)}}
   else if(!c.path||!c.path.length){c.t-=dt;if(c.t<=0){c.t=2;if(!seekPlant(c,q=>q.h>6))randomWalk(c)}}
   stepPath(c,dt);
-  if(c.energy>85&&c.age>45){c.state='chrysalide';c.t=22;c.path=null;jlog('🐛','Une chenille se fige en chrysalide');say('Une chenille se transforme en chrysalide…')}
+  if(c.energy>85&&c.age>45/RF()){c.state='chrysalide';c.t=22/RF();c.path=null;jlog('🐛','Une chenille se fige en chrysalide');say('Une chenille se transforme en chrysalide…')}
 }
 function uPapillon(c,dt){
   c.fly=true;
@@ -2201,7 +2319,7 @@ function uPapillon(c,dt){
   if(c.energy<110&&c.cd<=0){let best=null,bd=1e9;for(const p of plants){if(!p.alive||!p.fl.open||p.fl.nectar<1)continue;const [x,y]=flowerPos(p);const d=Math.hypot(c.x-x,c.y-y,(c.z||0)-p.z);if(d<bd){bd=d;best=p}}
     if(best){c.fl=best;const [x,y]=flowerPos(best);flyTo(c,x,y-4,dt,0.8);if(Math.hypot(c.x-x,c.y-y+4,(c.z||0)-best.z)<5){c.state='sip';c.t=2;c.fl=best}return}}
   flyWander(c,dt);
-  if(c.energy>82&&canRepro('chenille',10-eggsOf('chenille'))&&(pop.papillon||0)<10&&Math.random()<dt*0.05){const Lp=plants.filter(q=>q.alive&&q.h>10),p=Lp[Math.floor(Math.random()*Lp.length)];if(p){c.energy-=40;groundItem('oeuf',p.col,{val:1,sp:'chenille',z:p.z,hatch:25,n:2})}}
+  if(c.energy>82&&canRepro('chenille',10-eggsOf('chenille'))&&(pop.papillon||0)<10&&Math.random()<dt*0.05*RF()){const Lp=plants.filter(q=>q.alive&&q.h>10),p=Lp[Math.floor(Math.random()*Lp.length)];if(p){c.energy-=40;groundItem('oeuf',p.col,{val:1,sp:'chenille',z:p.z,hatch:25/RF(),n:2})}}
 }
 Object.assign(UPD,{phasme:uPhasme,mante:uMante,escargot:uEscargot,chenille:uChenille,papillon:uPapillon});
 // œufs : éclosion
@@ -2556,7 +2674,7 @@ function drawPlantKind(p){const i=p.col,x=i*CS+CS/2,yb=Y0+(p.base+1)*CS,H=p.h*CS
   const hue=dry?45:k==='fougere'?120:k==='gramin'?75:k==='trefle'?110:105;
   if(!(OXY[0]||OXY[1])||p.z<12){ctx.strokeStyle=hsl(35,40,45);ctx.lineWidth=0.5;ctx.globalAlpha=0.45;ctx.beginPath();for(let r=-2;r<=2;r++){ctx.moveTo(x,yb);ctx.quadraticCurveTo(x+r*5,yb+10,x+r*7,yb+18+Math.abs(r)*6)}ctx.stroke();ctx.globalAlpha=1}
   const line=hsl(hue+8,65,36+vig*22),fill=hsl(hue,55,13+vig*10,0.85);ctx.lineWidth=0.6;
-  if(k==='fougere'){const n=5;for(let f=0;f<n;f++){const a=-Math.PI/2+(f-(n-1)/2)*0.38,L=H*(0.7+0.3*((f*7+p.id)%3)/2),tx=x+Math.cos(a)*L*0.55+sw*(f%2?1:-1),ty=yb-Math.abs(Math.sin(a))*L*0.75,cx=x+Math.cos(a)*L*0.15,cy=yb-L*0.6;
+  if(k==='fougere'){const n=5;for(let f=0;f<n;f++){const a=-Math.PI/2+(f-(n-1)/2)*0.38,L=H*(0.7+0.3*((f*7+p.id)%3)/2),tx=clamp(x+Math.cos(a)*L*0.55+sw*(f%2?1:-1),8,WW-8),ty=yb-Math.abs(Math.sin(a))*L*0.75,cx=x+Math.cos(a)*L*0.15,cy=yb-L*0.6;
       ctx.strokeStyle=line;ctx.beginPath();ctx.moveTo(x,yb);ctx.quadraticCurveTo(cx,cy,tx,ty);ctx.stroke();
       for(let q=1;q<11;q++){const t=q/11,u=1-t,px=u*u*x+2*u*t*cx+t*t*tx,py=u*u*yb+2*u*t*cy+t*t*ty,dx=2*u*(cx-x)+2*t*(tx-cx),dy=2*u*(cy-yb)+2*t*(ty-cy),l=Math.hypot(dx,dy)||1,nx=-dy/l,ny=dx/l,s=(1-t)*4+1;
         ctx.fillStyle=fill;ctx.strokeStyle=line;for(const sd of[-1,1]){ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(px+nx*s*sd+dx/l*s*0.4,py+ny*s*sd+dy/l*s*0.4);ctx.lineTo(px+dx/l*s*0.5,py+dy/l*s*0.5);ctx.closePath();ctx.fill();ctx.stroke()}}}}
@@ -2568,7 +2686,7 @@ function drawPlantKind(p){const i=p.col,x=i*CS+CS/2,yb=Y0+(p.base+1)*CS,H=p.h*CS
       ctx.fillStyle=fill;for(let q=0;q<3;q++){const a=-Math.PI/2+(q-1)*1.2;ctx.beginPath();ctx.arc(tx+Math.cos(a)*1.6,ty+Math.sin(a)*1.6,1.5,0,TAU);ctx.fill();ctx.stroke()}
       if(f===2&&p.h>=p.maxH&&p.fl.open){ctx.fillStyle=hsl(320,60,80);ctx.beginPath();ctx.arc(tx,ty-3.5,1.8,0,TAU);ctx.fill()}}}
   else if(k==='cactus')drawCactusSide(p,x,yb,H,vig,sw);
-  else if(k==='ronce'){for(let f=0;f<3;f++){const dir=f-1,L=H,tx=x+dir*L*0.45+sw,ty=yb-L*(f===1?1:0.65),cx=x+dir*L*0.1,cy=yb-L*1.05;
+  else if(k==='ronce'){for(let f=0;f<3;f++){const dir=f-1,L=H,tx=clamp(x+dir*L*0.45+sw,8,WW-8),ty=yb-L*(f===1?1:0.65),cx=x+dir*L*0.1,cy=yb-L*1.05;
       ctx.strokeStyle=hsl(340,35,32);ctx.lineWidth=1.1;ctx.beginPath();ctx.moveTo(x,yb);ctx.quadraticCurveTo(cx,cy,tx,ty);ctx.stroke();ctx.lineWidth=0.6;
       for(let q=1;q<7;q++){const t=q/7,u=1-t,px=u*u*x+2*u*t*cx+t*t*tx,py=u*u*yb+2*u*t*cy+t*t*ty;
         ctx.strokeStyle=hsl(340,30,45);ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(px+1.2,py-1);ctx.stroke();
@@ -2646,7 +2764,7 @@ function draw(){
   drawStrands();drawItems();
   ctx.save();const ws=waves;waves=[];for(const w of ws){waves=[w];ctx.save();zT(w.z);drawWaves();ctx.restore()}waves=ws;ctx.restore();
   const order={lombric:0,cloporte:1,fourmi:2,reine:3,scolopendre:4,puceron:5,coccinelle:6,araignee:7,abeille:8,mouche:9};
-  for(const c of creatures.slice().sort((a,b)=>back(a,b)||order[a.sp.id]-order[b.sp.id])){if(drawChrysalis(c))continue;ctx.save();zT(c.z);if(realLen(c)*camZ<4.5)drawTiny(c);else drawProfile(c,1,false);if(c.load){const F=c.sp.sf,h=c.segs[0];ctx.fillStyle=c.load.type==='grain'?(c.load.t===1?'#8a6a3a':'#d8b060'):'#ffb43a';ctx.fillRect(h.x*F+Math.cos(h.a)*5-1.5,h.y*F+Math.sin(h.a)*5-1.5,3,3)}ctx.restore()}
+  for(const c of creatures.slice().sort((a,b)=>back(a,b)||order[a.sp.id]-order[b.sp.id])){if(drawChrysalis(c))continue;ctx.save();zT(c.z);if(c.sp.id==='reine'){/* halo doré : la reine se repère parmi les ouvrières */const R=(9+2*Math.sin(simT*2.2))*Math.max(1,3/camZ);ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=0.6;ctx.drawImage(glowSprite(48),c.x-R,c.y-R,R*2,R*2);ctx.restore()}if(realLen(c)*camZ<4.5)drawTiny(c);else drawProfile(c,1,false);if(c.load){const F=c.sp.sf,h=c.segs[0];ctx.fillStyle=c.load.type==='grain'?(c.load.t===1?'#8a6a3a':'#d8b060'):'#ffb43a';ctx.fillRect(h.x*F+Math.cos(h.a)*5-1.5,h.y*F+Math.sin(h.a)*5-1.5,3,3)}ctx.restore()}
   if(showLinks)drawLinks();
   drawSel();
   for(const r of rings){const a=1-r.t/0.6;ctx.save();zT(r.z);ctx.globalAlpha=a;ctx.strokeStyle=r.col;ctx.lineWidth=1/camZ;ctx.beginPath();ctx.arc(r.x,r.y,r.r*(0.6+0.4*r.t/0.6),0,TAU);ctx.stroke();ctx.restore()}
@@ -2717,10 +2835,13 @@ function previewSp(sp,cvs){
   const w=cvs.clientWidth||52,h=cvs.clientHeight||34,d=2;cvs.width=w*d;cvs.height=h*d;
   const pc=cvs.getContext('2d');const c=mk(sp,0,0,{ang:-Math.PI/2+0.0001});c.beatT=0.05;
   for(const l of c.legs){const r=restPos(c,l);l.hx=r[0];l.hy=r[1];l.fx=r[2];l.fy=r[3]}
-  let minx=1e9,maxx=-1e9,miny=1e9,maxy=-1e9;const pts=[...c.segs.map(g=>[g.x,g.y]),...c.legs.map(l=>[l.fx,l.fy])];
+  // cadre : centre des segments ± leur demi-taille, bouts de pattes, antennes (sinon la bête déborde de sa case)
+  let minx=1e9,maxx=-1e9,miny=1e9,maxy=-1e9;const pts=[...c.legs.map(l=>[l.fx,l.fy])];
+  c.segs.forEach((g,i)=>{const r=Math.max(c.dims[i][0],c.dims[i][1])/2;pts.push([g.x-r,g.y-r],[g.x+r,g.y+r])});
+  if(sp.ant>0){const g=c.segs[0],r=c.dims[0][0]/2+sp.ant*0.8;pts.push([g.x-r*0.6,g.y-r],[g.x+r*0.6,g.y-r])}
   if(sp.w){const th=c.segs[1]||c.segs[0];pts.push([th.x+sp.w.len,th.y],[th.x-sp.w.len,th.y])}
   for(const [x,y] of pts){minx=Math.min(minx,x);maxx=Math.max(maxx,x);miny=Math.min(miny,y);maxy=Math.max(maxy,y)}
-  const pad=Math.min(10,h*0.12),s=Math.min(3,(w-pad*2)/((maxx-minx)||1),(h-pad*2)/((maxy-miny)||1));
+  const pad=Math.min(6,h*0.1),s=Math.min(6,(w-pad*2)/((maxx-minx)||1),(h-pad*2)/((maxy-miny)||1));
   pc.setTransform(d*s,0,0,d*s,d*(w/2-(minx+maxx)/2*s),d*(h/2-(miny+maxy)/2*s));
   const keep=ctx;ctx=pc;drawCreature(c,1,false,true);ctx=keep;
 }
@@ -2750,7 +2871,7 @@ function startLevel(i){
   lvlIdx=i;lvl=LEVELS[i];stock=Object.assign({},lvl.stock);lvlMissed=false;stock0=Object.values(lvl.stock).reduce((a,b)=>a+b,0);JOURNAL=[];prevCounts={};for(const k in DECOS)if(stock[k]==null)stock[k]=has(k)?3:0;goalT=0;everSeen={};
   creatures=[];items=[];plants=[];colonies=[];strands=[];waves=[];phero=[];drops=[];clouds=[];newborns=[];
   genWorld();camFit();ensE=0;ensDir=0;openDev(null);resetDev();applyLocks();dayClock=0;
-  const n=lvl.start.plante||0;for(let q=0;q<n;q++){const i2=Math.round((q+0.5)/n*COLS+rnd(-4,4));const p=newPlant(i2,true,null,lvl.kinds?lvl.kinds[q%lvl.kinds.length]:'fleur');if(p){p.h=Math.floor(rnd(12,p.maxH));for(let r=1;r<p.h;r++)STEM[K(p.col,p.base-r)]++;p.age=rnd(0,80)}}
+  const n=lvl.start.plante||0;for(let q=0;q<n;q++){const i2=Math.round((q+0.5)/n*COLS+rnd(-4,4));const p=newPlant(i2,true,null,lvl.kinds?lvl.kinds[q%lvl.kinds.length]:'fleur');if(p){p.h=Math.max(1,Math.min(Math.floor(rnd(12,p.maxH)),p.base-4));for(let r=1;r<p.h;r++)STEM[K(p.col,p.base-r)]++;p.age=rnd(0,80)}}
   for(const id of lvl.goal.alive)if(id==='plante')everSeen.plante=n>0;
   tool=lvl.sp.find(id=>id!=='plante')||'plante';syncViewSw();view='side';
   buildPalette();menuEl.style.display='none';endEl.style.display='none';
@@ -2795,7 +2916,8 @@ function tapAction(x,y){const Z0=PLACE_DZ>=0?PLACE_DZ:rnd(5,ZD*0.75),base=baseOf
   if(c.sp.id!=='reine'&&c.sp.id!=='lombric'&&!(c.sp.id==='fourmi'&&c.col)&&c.y<surfY(i)+1){c.z=c.tz=Z0}
   creatures.push(c);stock[tool]--;refreshPalette();rings.push({x:c.x,y:c.y,z:c.z,r:10,t:0,col:c.cLine});
 }
-function resize(){DPR=Math.min(OPT.hq?2:1,window.devicePixelRatio||1);W=window.innerWidth;H=window.innerHeight;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';soilDirty=true;if(COLS)camFit()}
+function resize(){DPR=Math.min(OPT.hq?2:1,window.devicePixelRatio||1);LAND=window.innerHeight<520&&window.innerWidth>window.innerHeight;const lf=!!OPT.left;CVL=LAND?(lf?60:178):0;CVR=LAND?(lf?178:60):0;BOT=LAND?6:128;BAND_T=LAND?48:92;document.body.classList.toggle('land',LAND);
+  W=window.innerWidth-CVL-CVR;H=window.innerHeight;cv.style.left=CVL+'px';cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';soilDirty=true;if(COLS)camFit()}
 window.addEventListener('resize',()=>{resize();if(view==='top'){TYB=H-BOT;TY0=BAND_T;topClamp()}});
 resize();genWorld();
 let last=performance.now(),hudT=0,pendingView=null;
@@ -2804,9 +2926,9 @@ function frame(now){
   if(!paused){let sim=real*speed;while(sim>0){const d=Math.min(1/30,sim);update(d);sim-=d}
     for(const r of rings)r.t+=real;rings=rings.filter(r=>r.t<0.6);flashT-=real;
     for(const k in bucket)bucket[k]=Math.min(2,bucket[k]+6*real);gBucket=Math.min(10,gBucket+30*real)}
-  if(view==='anim'){anim.t+=real/1.3;const t=Math.min(1,anim.t),e=t*t*(3-2*t);renderTransition(anim.dir>0?e:1-e);if(anim.t>=1){view=anim.dir>0?'top':(anim.back||'side');if(view==='ens'){ensE=1;ensDir=0}anim=null;if(view==='side'&&pendingView==='ens'){pendingView=null;enterEns()}}}
+  if(view==='anim'){anim.t+=real/1.3;const t=Math.min(1,anim.t),e=t*t*(3-2*t);renderTransition(anim.dir>0?e:1-e);if(anim.t>=1){view=anim.dir>0?'top':(anim.back||'side');if(view==='ens'){ensE=1;ensDir=0}anim=null;vsT=performance.now();if(view==='side'&&pendingView==='ens'){pendingView=null;enterEns()}}}
   else if(view==='top'){if(!paused)updProxies(Math.min(real*speed,0.1));drawTop(mainCtx)}
-  else{if(ensDir){ensE=clamp(ensE+ensDir*real/0.6,0,1);if(ensE<=0&&ensDir<0){ensDir=0;view='side';camFit();if(pendingView==='top'){pendingView=null;enterTop(WW/2);say('Vue du dessus : glisse le doigt pour te déplacer')}}if(ensE>=1&&ensDir>0)ensDir=0}draw()}
+  else{if(ensDir){ensE=clamp(ensE+ensDir*real/0.6,0,1);if(ensE<=0&&ensDir<0){ensDir=0;vsT=performance.now();view='side';camFit();if(pendingView==='top'){pendingView=null;enterTop(WW/2);say('Vue du dessus : glisse le doigt pour te déplacer')}}if(ensE>=1&&ensDir>0){ensDir=0;vsT=performance.now()}}draw()}
   hudT-=real;if(hudT<=0){hud();hudT=0.25}
   requestAnimationFrame(frame);
 }
@@ -2818,7 +2940,7 @@ window.__sim={DBG,dbgk(id){return creatures.filter(c=>!c.dead&&c.sp.id===id).map
 const vsw=document.getElementById('viewsw');let vswLast='';
 function curView(){return view==='top'||view==='anim'&&anim&&anim.dir>0?'top':view==='ens'?'ens':'side'}
 function syncViewSw(){const v=curView();if(v===vswLast)return;vswLast=v;vsw.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===v))}
-function bareSide(){if(view==='top'||view==='anim'){anim=null;view='side'}if(view==='ens'){view='side';ensE=0;ensDir=0}document.getElementById('bback').style.display='none';camFit()}
+function bareSide(){vsT=0;if(view==='top'||view==='anim'){anim=null;view='side'}if(view==='ens'){view='side';ensE=0;ensDir=0}document.getElementById('bback').style.display='none';camFit()}
 vsw.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(state!=='play')return;initAudio();const v=b.dataset.v,cur=curView();if(v===cur||view==='anim')return;
   if(v==='side'){if(cur==='top'){topFromEns=false;exitTop()}else exitEns()}
   if(v==='ens'){if(cur==='top'){if(topFromEns)exitTop();else{pendingView='ens';exitTop()}}else enterEns()}
@@ -2953,8 +3075,10 @@ function thumb(){
 
 // ---------- la grande salle ----------
 const VIV=new Map();
-const ROOM={list:LS.get('biome_room',[])};
-function saveRoom(){LS.set('biome_room',ROOM.list)}
+// racks : nombre d'étagères de la salle (2 au départ, jusqu'à RACK_MAX) ; on en ajoute avec l'emplacement en pointillé
+const RACK_MAX=6;
+const ROOM={list:LS.get('biome_room',[]),racks:LS.get('biome_racks',2)};
+function saveRoom(){LS.set('biome_room',ROOM.list);LS.set('biome_racks',ROOM.racks)}
 let curViv=null;
 function vivMax(){return G?G.slots.length:13}
 function sandboxSpecies(){const s=new Set(['plante']);LEVELS.forEach(L=>L.sp.forEach(id=>s.add(id)));s.add('chenille');if(s.has('tenebrion'))s.add('verfarine');if(s.has('rhinoceros'))s.add('verblanc');return [...s]}
@@ -2962,13 +3086,14 @@ function saveCurrent(){if(!curViv)return;const S=serialize();VIV.set(curViv.id,S
   LS.set('biome_viv_'+curViv.id,S);saveRoom()}
 function loadViv(v){if(VIV.has(v.id))return VIV.get(v.id);const S=LS.get('biome_viv_'+v.id,null);if(S)VIV.set(v.id,S);return S}
 // emplacements : deux racks d'éleveur et un meuble bas, tous contre le mur
-const RW=1180;let RH=600,G=null;
+let RW=1180,RH=600,G=null;
 function roomGeom(){RH=Math.max(440,window.innerHeight-56);const fy=Math.round(RH*0.72),L=Math.round(Math.min(124,(fy-50)/3.2)),VH=L-26,VW=Math.round(VH*1.3);
-  const slots=[],racks=[];
-  for(const [ri,rx] of [[1,240],[2,600]]){const rw=VW*2+34;racks.push({x:rx,w:rw,top:fy-3*L-8,bottom:fy+10,levels:[0,1,2].map(k=>fy-6-k*L)});
+  const slots=[],racks=[],nr=clamp(ROOM.racks|0,2,RACK_MAX),rw=VW*2+34;
+  for(let ri=1;ri<=nr;ri++){const rx=240+(ri-1)*360;racks.push({x:rx,w:rw,top:fy-3*L-8,bottom:fy+10,levels:[0,1,2].map(k=>fy-6-k*L)});
     for(let k=0;k<3;k++)for(let c=0;c<2;c++)slots.push({id:`r${ri}-${k}-${c}`,x:rx+12+c*(VW+10),y:fy-6-k*L-VH,lab:`Rack ${ri}, étage ${k+1}`})}
   const mx=26,mtop=fy-58;for(let c=0;c<1;c++)slots.push({id:`m-${c}`,x:mx+20+c*(VW+12),y:mtop-VH,lab:'Meuble bas'});
-  return {fy,L,VW,VH,slots,racks,meuble:{x:mx,w:VW+40,top:mtop}}}
+  RW=Math.max(1180,240+nr*360+(nr<RACK_MAX?360:0)+260);
+  return {fy,L,VW,VH,slots,racks,meuble:{x:mx,w:VW+40,top:mtop},addRack:nr<RACK_MAX?{x:240+nr*360,w:rw,top:fy-3*L-8,bottom:fy+10}:null}}
 const slotOf=(v)=>G.slots.find(s=>s.id===v.slot);
 function freeSlot(){const used=new Set(ROOM.list.map(v=>v.slot));return G.slots.find(s=>!used.has(s.id))}
 function fixSlots(){G=roomGeom();const used=new Set();for(const v of ROOM.list){if(!v.slot||!G.slots.some(s=>s.id===v.slot)||used.has(v.slot))v.slot=null;if(v.slot)used.add(v.slot)}
@@ -2982,9 +3107,9 @@ function drawRoom(){const max=vivMax();
   $('rcount').textContent=`${ROOM.list.length}/${max}`;$('radd').disabled=ROOM.list.length>=max||!freeSlot();$('rmode').textContent=roomMode==='salle'?'☰ Liste':'🏛 Salle';
   $('rscroll').style.display=roomMode==='salle'?'block':'none';$('rlist').style.display=roomMode==='liste'?'block':'none';
   $('rhint').style.display=roomMode==='salle'?'block':'none';
-  $('rhint').textContent=ROOM.list.length>=max?'Toutes les places sont prises : retire un bac pour en créer un autre':ROOM.list.length?'Touche un bac pour voir sa fiche · maintiens-le pour le déplacer':'Ajoute ton premier vivarium avec ＋';
+  $('rhint').textContent=ROOM.list.length>=max?(G.addRack?'Toutes les places sont prises : ajoute une étagère (pointillés à droite)':'Toutes les places sont prises : retire un bac pour en créer un autre'):ROOM.list.length?'Touche un bac pour sa fiche · fais-le glisser pour le déplacer (au doigt : maintiens-le d\'abord) · ＋ pour en ajouter un':'Touche un ＋ sur une étagère pour créer ton premier vivarium';
   if(roomMode==='liste'){drawList();return}
-  const R=$('roomin');R.style.height=RH+'px';const {fy}=G;
+  const R=$('roomin');R.style.height=RH+'px';R.style.width=`max(${RW}px,100vw)`;const {fy}=G;
   const SM=STYLE_OPTS.mur[STYLE.mur][1],SS=STYLE_OPTS.sol[STYLE.sol][1],FC=frameCols();document.documentElement.style.setProperty('--frame',FC[1]);
   let h=`<div class="wall" style="height:${fy}px;background:${SM}"></div><div class="floorw" style="top:${fy}px"><div class="floorp" style="background:${SS}"></div></div><div class="plinth" style="top:${fy-4}px"></div>
    <div class="win" style="left:40px;top:${fy*0.08}px;height:${fy*0.34}px"></div><div class="win" style="left:${RW-230}px;top:${fy*0.08}px;height:${fy*0.34}px"></div>
@@ -2992,10 +3117,15 @@ function drawRoom(){const max=vivMax();
   for(const r of G.racks){h+=`<div class="rshadow" style="left:${r.x-6}px;width:${r.w+12}px;top:${r.top}px;height:${r.bottom-r.top}px"></div><div class="rpost" style="left:${r.x}px;top:${r.top}px;height:${r.bottom-r.top}px"></div><div class="rpost" style="left:${r.x+r.w-8}px;top:${r.top}px;height:${r.bottom-r.top}px"></div>`;
     for(const y of r.levels)h+=`<div class="rlvl" style="left:${r.x-4}px;width:${r.w+8}px;top:${y}px"></div>`}
   const used=new Set(ROOM.list.map(v=>v.slot));
-  for(const s of G.slots)if(!used.has(s.id))h+=`<div class="slotfree" style="left:${s.x}px;top:${s.y}px;width:${G.VW}px;height:${G.VH}px"></div>`;
+  for(const s of G.slots)if(!used.has(s.id))h+=`<button class="slotfree" data-slot="${s.id}" title="Nouveau vivarium ici" style="left:${s.x}px;top:${s.y}px;width:${G.VW}px;height:${G.VH}px">＋</button>`;
+  const A=G.addRack;if(A)h+=`<button class="raddr" title="Ajouter une étagère" style="left:${A.x}px;width:${A.w}px;top:${A.top}px;height:${A.bottom-A.top}px">＋<small>Étagère</small></button>`;
+  const lr=G.racks[G.racks.length-1],nr=G.racks.length;if(nr>2&&!G.slots.some(s=>s.id.startsWith(`r${nr}-`)&&used.has(s.id)))h+=`<button class="rdel" title="Retirer cette étagère vide" style="left:${lr.x+lr.w-14}px;top:${lr.top-14}px">✕</button>`;
   h+=`<div class="potp" style="left:${RW-140}px;top:${fy-50}px">🪴</div><div class="potp" style="left:${RW-250}px;top:${fy-46}px;font-size:44px">🪴</div>`;
   for(const v of ROOM.list){const s=slotOf(v);if(!s)continue;const B=fmtBox(v);h+=`<div class="rv" data-id="${v.id}" style="left:${s.x+B.dx}px;top:${s.y+B.dy}px;width:${B.w}px;height:${B.h}px">${vivTile(v,sheetIdx>=0&&ROOM.list[sheetIdx]===v?'sel':'')}</div>`}
-  R.innerHTML=h;R.querySelectorAll('.rv').forEach(el=>roomDrag(el))}
+  R.innerHTML=h;R.querySelectorAll('.rv').forEach(el=>roomDrag(el));
+  R.querySelectorAll('.slotfree').forEach(b=>b.onclick=()=>addViv(b.dataset.slot));
+  const ra=R.querySelector('.raddr');if(ra)ra.onclick=()=>{ROOM.racks=G.racks.length+1;saveRoom();fixSlots();drawRoom();const sc=$('rscroll');sc.scrollTo({left:Math.max(0,G.racks[G.racks.length-1].x+150-sc.clientWidth/2),behavior:'smooth'})};
+  const rd=R.querySelector('.rdel');if(rd)rd.onclick=()=>{ROOM.racks=G.racks.length-1;saveRoom();fixSlots();drawRoom()}}
 function drawList(){const max=vivMax();let h='<div class="lgrid">';
   for(const v of ROOM.list){const al=alertOf(v);h+=`<div class="lcard" data-id="${v.id}">${vivTile(v)}<div class="nm">${v.name}</div><div class="st ${al?'warn':''}">${al||popTxt(v)}</div></div>`}
   if(ROOM.list.length<max)h+=`<div class="lcard add" id="ladd"><div class="addb">＋ Nouveau</div></div>`;
@@ -3003,24 +3133,30 @@ function drawList(){const max=vivMax();let h='<div class="lgrid">';
   $('rlist').querySelectorAll('.lcard[data-id]').forEach(c=>c.onclick=()=>enterViv(ROOM.list.find(v=>v.id===c.dataset.id)));
   const la=$('ladd');if(la)la.onclick=addViv}
 // toucher = fiche ; maintenir = déplacer vers un autre emplacement
-function roomDrag(el){const v=ROOM.list.find(o=>o.id===el.dataset.id);let st=null,tm=null;
-  el.addEventListener('pointerdown',e=>{st={x:e.clientX,y:e.clientY,l:parseFloat(el.style.left),t:parseFloat(el.style.top),drag:false,moved:false};
-    tm=setTimeout(()=>{if(st&&!st.moved){st.drag=true;el.classList.add('drag');try{el.setPointerCapture(e.pointerId)}catch(_){}if(OPT.vib&&navigator.vibrate)navigator.vibrate(15)}},380)});
-  el.addEventListener('pointermove',e=>{if(!st)return;const dx=e.clientX-st.x,dy=e.clientY-st.y;if(!st.drag){if(Math.hypot(dx,dy)>8){st.moved=true;clearTimeout(tm)}return}
-    el.style.left=(st.l+dx)+'px';el.style.top=(st.t+dy)+'px'});
-  const up=e=>{clearTimeout(tm);if(!st)return;const S=st;st=null;el.classList.remove('drag');
-    if(S.drag){const cx=parseFloat(el.style.left)+G.VW/2,cy=parseFloat(el.style.top)+G.VH/2;let best=null,bd=1e9;
-      for(const s of G.slots){const d=Math.hypot(s.x+G.VW/2-cx,s.y+G.VH/2-cy);if(d<bd){bd=d;best=s}}
+function nearSlot(el){const cx=parseFloat(el.style.left)+G.VW/2,cy=parseFloat(el.style.top)+G.VH/2;let best=null,bd=1e9;
+  for(const s of G.slots){const d=Math.hypot(s.x+G.VW/2-cx,s.y+G.VH/2-cy);if(d<bd){bd=d;best=s}}return best}
+function roomDrag(el){const v=ROOM.list.find(o=>o.id===el.dataset.id);let st=null,tm=null,tgt=null;const sc=$('rscroll');
+  const begin=id=>{st.drag=true;el.classList.add('drag');try{el.setPointerCapture(id)}catch(_){}tgt=document.createElement('div');tgt.className='rtgt';tgt.style.width=G.VW+'px';tgt.style.height=G.VH+'px';$('roomin').appendChild(tgt);mark()};
+  const mark=()=>{const s=nearSlot(el);if(s&&tgt){tgt.style.left=s.x+'px';tgt.style.top=s.y+'px'}};
+  el.addEventListener('pointerdown',e=>{const mouse=e.pointerType==='mouse';if(mouse){if(e.button!==0)return;e.preventDefault()}
+    st={x:e.clientX,y:e.clientY,l:parseFloat(el.style.left),t:parseFloat(el.style.top),s0:sc.scrollLeft,drag:false,moved:false,mouse,id:e.pointerId};
+    if(!mouse)tm=setTimeout(()=>{if(st&&!st.moved){begin(st.id);if(OPT.vib&&navigator.vibrate)navigator.vibrate(15)}},380)});
+  el.addEventListener('pointermove',e=>{if(!st)return;const dx=e.clientX-st.x,dy=e.clientY-st.y;
+    if(!st.drag){if(Math.hypot(dx,dy)>8){if(st.mouse)begin(e.pointerId);else{st.moved=true;clearTimeout(tm);return}}else return}
+    const r=sc.getBoundingClientRect();if(e.clientX<r.left+50)sc.scrollLeft-=14;else if(e.clientX>r.right-50)sc.scrollLeft+=14;
+    el.style.left=(st.l+dx+sc.scrollLeft-st.s0)+'px';el.style.top=(st.t+dy)+'px';mark()});
+  const up=e=>{clearTimeout(tm);if(!st)return;const S=st;st=null;el.classList.remove('drag');if(tgt){tgt.remove();tgt=null}
+    if(S.drag){const best=nearSlot(el);
       if(best){const other=ROOM.list.find(o=>o.slot===best.id&&o!==v);if(other)other.slot=v.slot;v.slot=best.id;saveRoom()}drawRoom();return}
     if(!S.moved)openSheet(ROOM.list.indexOf(v))};
-  el.addEventListener('pointerup',up);el.addEventListener('pointercancel',()=>{clearTimeout(tm);st=null;el.classList.remove('drag')})}
+  el.addEventListener('pointerup',up);el.addEventListener('pointercancel',()=>{clearTimeout(tm);st=null;el.classList.remove('drag');if(tgt){tgt.remove();tgt=null}drawRoom()})}
 // vignette proportionnée au format, posée sur l'étagère (le Standard remplit l'emplacement)
 function fmtBox(v){const F=FORMATS[v.fmt]||FORMATS.std;if(F===FORMATS.std)return {w:G.VW,h:G.VH,dx:0,dy:0};
   const s=Math.min(G.VW/F.w,G.VH/F.h),w=Math.round(F.w*s),h=Math.round(F.h*s);return {w,h,dx:Math.round((G.VW-w)/2),dy:G.VH-h}}
-function addViv(){if(ROOM.list.length>=vivMax())return;fixSlots();const s=freeSlot();if(!s)return;const id='v'+Date.now().toString(36);
+function addViv(slot){if(ROOM.list.length>=vivMax())return;fixSlots();const used=new Set(ROOM.list.map(v=>v.slot));const s=(slot&&!used.has(slot)&&G.slots.find(o=>o.id===slot))||freeSlot();if(!s)return;const id='v'+Date.now().toString(36);
   ROOM.list.push({id,name:'Vivarium '+(ROOM.list.length+1),slot:s.id,fmt:'std',soil:'foret',fresh:true});saveRoom();drawRoom();openSheet(ROOM.list.length-1)}
 $('rback').onclick=()=>showTitle();
-$('radd').onclick=addViv;
+$('radd').onclick=()=>addViv();
 $('rstyle').onclick=()=>openStyle();
 $('rmode').onclick=()=>{roomMode=roomMode==='salle'?'liste':'salle';closeSheet();drawRoom()};
 // ---------- la fiche en carrousel ----------
@@ -3043,7 +3179,13 @@ function fillSheet(){const L=ROOM.list,v=L[sheetIdx];if(!v){closeSheet();return}
   $('sname').onchange=()=>{const nv=$('sname').value.replace(/[<>&"'`]/g,'').trim().slice(0,24);if(nv){v.name=nv;saveRoom();drawRoom()}};
   sh.querySelector('.cdel').onclick=e=>{if(!delArm){delArm=true;e.currentTarget.textContent='⚠ Confirmer';return}
     ROOM.list.splice(sheetIdx,1);VIV.delete(v.id);try{localStorage.removeItem('biome_viv_'+v.id)}catch(_){}saveRoom();closeSheet();drawRoom()};
-  const gl=sh.querySelector('.cgh.l'),gr=sh.querySelector('.cgh.r');if(gl)gl.onclick=()=>{sheetIdx--;delArm=false;fillSheet();drawRoom()};if(gr)gr.onclick=()=>{sheetIdx++;delArm=false;fillSheet();drawRoom()}}
+  const gl=sh.querySelector('.cgh.l'),gr=sh.querySelector('.cgh.r');if(gl)gl.onclick=()=>{sheetIdx--;delArm=false;fillSheet();drawRoom()};if(gr)gr.onclick=()=>{sheetIdx++;delArm=false;fillSheet();drawRoom()};
+  carFit(sh.querySelector('.cbig'),v,180,138);carFit(gl,prev,120,92);carFit(gr,next,120,92)}
+// carrousel : chaque vignette prend la forme de son format, avec la même règle que dans la salle (fmtBox) :
+// le Standard remplit la case, les autres y tiennent en gardant leurs proportions, posés en bas
+function carFit(box,v,BW,BH){if(!box||!v)return;const t=box.querySelector('.viv');if(!t)return;const F=FORMATS[v.fmt]||FORMATS.std;let w=BW,h=BH;
+  if(F!==FORMATS.std){const s=Math.min(BW/F.w,BH/F.h);w=Math.round(F.w*s);h=Math.round(F.h*s)}
+  box.style.width=BW+'px';box.style.height=BH+'px';Object.assign(t.style,{position:'absolute',width:w+'px',height:h+'px',left:Math.round((BW-w)/2)+'px',top:(BH-h)+'px'})}
 // choix du format et du sol de départ, tant que le bac n'a jamais été ouvert
 function fmtChooser(v){const bt=(k,val,on,ic,nom,txt)=>`<button data-${k}="${val}" style="flex:1 1 ${k==='soil'?'28':'45'}%;min-width:0;text-align:left;padding:6px 8px;border-radius:9px;border:1px solid ${on?'#ffe94d':'#333'};background:${on?'#2a2608':'#111'};color:${on?'#ffe94d':'#bbb'};font:600 12px -apple-system,Roboto,sans-serif"><span style="font-size:15px">${ic}</span> ${nom}<br><small style="font-weight:400;color:#999">${txt}</small></button>`;
   return `<div class="tag" style="margin-top:6px">Format du bac</div><div style="display:flex;flex-wrap:wrap;gap:5px;margin:3px 0 6px">${Object.entries(FORMATS).map(([k,F])=>bt('fmt',k,(v.fmt||'std')===k,F.ic,F.nom,F.txt.split(' · ')[0])).join('')}</div>
@@ -3064,7 +3206,7 @@ function enterViv(v){
   creatures=[];items=[];plants=[];colonies=[];strands=[];waves=[];phero=[];drops=[];clouds=[];newborns=[];
   resetDev();dayClock=0;
   const S=loadViv(v);
-  if(S)restore(S);else{genWorld(v.fmt,v.soil);const np=Math.max(2,Math.round(4*COLS/200));for(let q=0;q<np;q++){const p=newPlant(Math.round((q+0.5)/np*COLS),true);if(p){p.h=Math.floor(rnd(14,p.maxH*0.7));for(let r=1;r<p.h;r++)STEM[K(p.col,p.base-r)]++}}}
+  if(S)restore(S);else{genWorld(v.fmt,v.soil);const np=Math.max(2,Math.round(4*COLS/200));for(let q=0;q<np;q++){const p=newPlant(Math.round((q+0.5)/np*COLS),true);if(p){p.h=Math.max(1,Math.min(Math.floor(rnd(14,p.maxH*0.7)),p.base-4));for(let r=1;r<p.h;r++)STEM[K(p.col,p.base-r)]++}}}
   if(v.fresh){delete v.fresh;saveRoom()}
   camFit();ensE=0;ensDir=0;openDev(null);
   tool=null;buildPalette();syncViewSw();
@@ -3229,7 +3371,7 @@ function tuPlace(r,free){const bh=tuBub.offsetHeight||150;
   const cx=r.x+r.w/2,below=r.y+r.h/2<H*0.45;let top;
   tuArrow.style.display='block';tuArrow.className='tarrow '+(below?'up':'dn');
   if(below){tuArrow.style.top=(r.y+r.h+pad+4)+'px';top=r.y+r.h+pad+24}else{tuArrow.style.top=(r.y-pad-20)+'px';top=r.y-pad-24-bh}
-  tuArrow.style.left=(clamp(cx,16,W-16)-12)+'px';
+  tuArrow.style.left=(CVL+clamp(cx,16,W-16)-12)+'px';
   tuBub.style.top=Math.round(clamp(top,8,H-bh-8))+'px'}
 function tuRender(S,alt){const txt=alt?alt.t:(typeof S.p==='function'?S.p():S.p),todo=alt?'':S.todo?S.todo():'';
   const key=TU.i+'|'+txt+'|'+todo;if(key===TU.key)return;TU.key=key;
@@ -3263,7 +3405,7 @@ if(OPT.amb===undefined)OPT.amb=true;if(OPT.left===undefined)OPT.left=false;if(OP
 body.left #zoomui{right:auto;left:8px}body.left #vnav{left:auto;right:8px;flex-direction:row-reverse}
 #photop{z-index:9}#photop img{width:100%;display:block;border-radius:6px;border:1px solid #333;margin:8px 0}#photop a.btn{display:block;text-align:center;text-decoration:none;box-sizing:border-box}
 .sais{color:#cfe8a8}`;document.head.appendChild(st)})();
-function applyOpt(){document.body.classList.toggle('left',!!OPT.left)}
+function applyOpt(){const ch=document.body.classList.contains('left')!==!!OPT.left;document.body.classList.toggle('left',!!OPT.left);if(ch&&LAND)window.dispatchEvent(new Event('resize'))}
 applyOpt();
 const saveOpt1=saveOpt;saveOpt=function(){saveOpt1();applyOpt()};
 
@@ -3397,11 +3539,563 @@ const hud1=hud;hud=function(){hud1();if(!seasonOn())return;const r=hudEl.querySe
   r.insertAdjacentHTML('beforeend',`<span class="sais">${S.ic} ${S.nom} <span class="dim">· encore ${Math.ceil(left/60)} min</span></span>`)};
 window.__amb=()=>({ac:AC?AC.state:null,bus:!!AMB.bus,step:AMB.step,day:AMB.day,cri:AMB.nextCri>0,buzz:AMB.buzzG?AMB.buzzG.gain.value:0,mus:AMB.mus?AMB.mus.gain.value:0,amb:AMB.bus?AMB.bus.gain.value:0});
 
+// ---------- sauvegarde : exporter / importer toute la progression (clés biome_*) ----------
+// Format du code : « VIVA1: » + base64 du JSON compressé en gzip (ou « VIVA0: » + base64 du JSON brut
+// si le navigateur ne sait pas compresser). Le fichier .vivariom contient le même code.
+const SAVE_PREFIX='biome_';
+function saveCollect(){const data={};try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(SAVE_PREFIX))data[k]=localStorage.getItem(k)}}catch(e){}
+  return {app:'vivariom',v:1,date:new Date().toISOString(),data}}
+const b64enc=u8=>{let s='';for(let i=0;i<u8.length;i+=0x8000)s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));return btoa(s)};
+const b64dec=s=>{const b=atob(s);const u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u};
+async function saveEncode(obj){const raw=new TextEncoder().encode(JSON.stringify(obj));
+  if(typeof CompressionStream==='function'){const buf=await new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer();return 'VIVA1:'+b64enc(new Uint8Array(buf))}
+  return 'VIVA0:'+b64enc(raw)}
+async function saveDecode(code){code=String(code||'').replace(/\s+/g,'');const m=code.match(/^VIVA([01]):([A-Za-z0-9+/=]+)$/);
+  if(!m)throw new Error("Ce n'est pas un code de sauvegarde Vivariom (il doit commencer par VIVA).");
+  let bytes;try{bytes=b64dec(m[2])}catch(e){throw new Error('Le code est abîmé : il manque peut-être un morceau.')}
+  if(m[1]==='1'){if(typeof DecompressionStream!=='function')throw new Error("Ce navigateur ne sait pas lire ce code : mets-le à jour.");
+    try{bytes=new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer())}catch(e){throw new Error('Le code est abîmé : il manque peut-être un morceau.')}}
+  let obj;try{obj=JSON.parse(new TextDecoder().decode(bytes))}catch(e){throw new Error('Le code est abîmé : il manque peut-être un morceau.')}
+  if(!obj||obj.app!=='vivariom'||!obj.data||typeof obj.data!=='object')throw new Error("Ce n'est pas une sauvegarde Vivariom.");
+  return obj}
+function saveSummary(obj){const d=obj.data,g=k=>{try{return JSON.parse(d[k])}catch(e){return null}};
+  const done=g('biome_done'),stars=g('biome_stars'),room=g('biome_room');
+  const nDone=Array.isArray(done)?done.length:0,nStars=stars?Object.values(stars).reduce((a,b)=>a+(+b||0),0):0,nViv=Array.isArray(room)?room.length:Object.keys(d).filter(k=>k.startsWith('biome_viv_')).length;
+  const dt=obj.date?new Date(obj.date):null;
+  return `${nDone} niveau${nDone>1?'x':''} réussi${nDone>1?'s':''} · ${nStars} ★ · ${nViv} vivarium${nViv>1?'s':''} en bac à sable${dt&&!isNaN(dt)?' · enregistrée le '+dt.toLocaleDateString('fr-FR')+' à '+dt.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}):''}`}
+function saveApply(obj){
+  // bloque les enregistrements automatiques (partie en cours, bac à sable) déclenchés par le rechargement
+  const set0=Storage.prototype.setItem,rm0=Storage.prototype.removeItem;
+  try{const old=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(SAVE_PREFIX))old.push(k)}
+    for(const k of old)localStorage.removeItem(k);for(const k in obj.data)if(k.startsWith(SAVE_PREFIX))localStorage.setItem(k,obj.data[k])}
+  catch(e){throw new Error("Pas assez de place sur cet appareil pour cette sauvegarde.")}
+  Storage.prototype.setItem=function(k,v){if(this===localStorage&&String(k).startsWith(SAVE_PREFIX))return;return set0.call(this,k,v)};
+  Storage.prototype.removeItem=function(k){if(this===localStorage&&String(k).startsWith(SAVE_PREFIX))return;return rm0.call(this,k)};
+  location.reload()}
+async function saveDownload(code){const d=new Date(),p=n=>String(n).padStart(2,'0'),file=`vivariom-${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}.vivariom`;
+  const blob=new Blob([code+'\n'],{type:'text/plain'});
+  const dl=window.claude&&window.claude.use?await window.claude.use('downloads').catch(()=>null):null;
+  if(dl){const r=await dl.save({filename:file,data:blob});return r&&r.status==='saved'?'✔ Fichier enregistré : '+file:'✔ Fichier envoyé : '+file}
+  const url=URL.createObjectURL(blob),A=document.createElement('a');A.href=url;A.download=file;document.body.appendChild(A);A.click();A.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);
+  return '✔ Fichier téléchargé : '+file}
+
+function openSave(){const O=$('opts');let pending=null;
+  O.innerHTML=`<div class="box"><div class="mhead"><h1>💾 Sauvegarde</h1><button class="back" id="svback">Retour</button></div>
+   <p class="dim">Pour retrouver ta partie sur un autre appareil (téléphone, PC…), exporte-la ici puis importe-la là-bas. Tout est compris : campagne, étoiles, succès, vivariums du bac à sable et options.</p>
+   <h3>Exporter</h3>
+   <p class="dim" id="svsum">…</p>
+   <button class="btn" id="svfile">⬇ Enregistrer un fichier de sauvegarde</button>
+   <button class="btn2" id="svcopy">📋 Copier le code</button>
+   <textarea id="svcode" readonly rows="3" style="display:none;width:100%;box-sizing:border-box;margin-top:8px;background:#0a0a0a;color:#cfe;border:1px solid #333;border-radius:8px;font:11px ui-monospace,monospace"></textarea>
+   <p class="dim" id="svmsg1"></p>
+   <h3>Importer</h3>
+   <p class="dim">Choisis un fichier <b>.vivariom</b> ou colle un code. ⚠ La progression de cet appareil sera remplacée.</p>
+   <input type="file" id="svpick" accept=".vivariom,.txt,text/plain" style="display:none">
+   <button class="btn2" id="svopen">📂 Choisir un fichier</button>
+   <textarea id="svin" rows="3" placeholder="…ou colle le code ici (VIVA1:…)" style="width:100%;box-sizing:border-box;margin-top:8px;background:#0a0a0a;color:#fff;border:1px solid #333;border-radius:8px;font:11px ui-monospace,monospace"></textarea>
+   <p class="dim" id="svmsg2"></p>
+   <button class="btn" id="svgo" style="display:none">Remplacer ma progression</button></div>`;
+  O.style.display='flex';
+  const cur=saveCollect();$('svsum').textContent='Sur cet appareil : '+saveSummary(cur);
+  let codeP=null;const code=()=>codeP||(codeP=saveEncode(saveCollect()));
+  $('svback').onclick=()=>openOpts();
+  $('svfile').onclick=async()=>{const m=$('svmsg1');try{m.textContent=await saveDownload(await code())}catch(e){m.textContent=e&&e.code==='declined'?'Enregistrement annulé.':"Le fichier n'a pas pu être enregistré : utilise « Copier le code »."}};
+  $('svcopy').onclick=async()=>{const m=$('svmsg1'),c=await code(),t=$('svcode');t.value=c;t.style.display='block';
+    try{await navigator.clipboard.writeText(c);m.textContent=`✔ Code copié (${Math.round(c.length/1024)} ko). Colle-le dans un message ou une note pour le retrouver sur l'autre appareil.`}
+    catch(e){t.focus();t.select();m.textContent='Le code est sélectionné ci-dessus : copie-le à la main.'}};
+  const check=async txt=>{const m=$('svmsg2'),go=$('svgo');pending=null;go.style.display='none';if(!txt.trim()){m.textContent='';return}
+    try{pending=await saveDecode(txt);m.textContent='Sauvegarde trouvée : '+saveSummary(pending);go.style.display='block';go.textContent='Remplacer ma progression';go.dataset.arm=''}
+    catch(e){m.textContent='⚠ '+e.message}};
+  $('svopen').onclick=()=>$('svpick').click();
+  $('svpick').onchange=async e=>{const f=e.target.files&&e.target.files[0];if(!f)return;const txt=await f.text();$('svin').value=txt.trim().slice(0,60)+(txt.length>60?'…':'');check(txt)};
+  $('svin').oninput=e=>check(e.target.value);
+  $('svgo').onclick=e=>{if(!pending)return;const b=e.currentTarget;if(!b.dataset.arm){b.dataset.arm='1';b.textContent='⚠ Toucher encore pour confirmer';return}
+    try{saveApply(pending)}catch(err){$('svmsg2').textContent='⚠ '+err.message}}}
+
+const openOpts2=openOpts;openOpts=function(){openOpts2();const h=[...$('opts').querySelectorAll('h3')].find(e=>e.textContent==='Données');
+  if(h&&!$('osave')){h.insertAdjacentHTML('afterend','<button class="btn2" id="osave">💾 Sauvegarde : exporter / importer</button>');$('osave').onclick=openSave}};
+if(window.__sim)Object.assign(window.__sim,{saveCollect,saveEncode,saveDecode,saveSummary});
+
+// ---------- bascule 3/4 <-> dessus : un vrai bac en volume qui se redresse ----------
+// Le bac est un pavé : face avant = la coupe (vue de côté du bac entier), dessus = la vue du dessus,
+// côté droit = une paroi sombre. Projection « cavalière » de la vue 3/4 (profondeur décalée en haut à droite)
+// qui tourne jusqu'à la vue de dessus ; légère perspective au milieu du mouvement ; fondu avec les vraies vues
+// au début et à la fin.
+function texSide(){const sv=[view,ensE,ensDir,camZ,camX,camY];view='side';ensE=0;ensDir=0;camFit();draw();
+  const [x0,y0]=w2s(0,0),[x1,y1]=w2s(WW,WH),c=document.createElement('canvas');
+  c.width=Math.max(2,Math.round((x1-x0)*DPR));c.height=Math.max(2,Math.round((y1-y0)*DPR));
+  c.getContext('2d').drawImage(cv,Math.round(x0*DPR),Math.round(y0*DPR),c.width,c.height,0,0,c.width,c.height);
+  [view,ensE,ensDir,camZ,camX,camY]=sv;return c}
+function texTop(){const sv=[ZM,zx0,zz0,zCol];ZM=topFit();zx0=0;zz0=0;topClamp();
+  const fit={ZM,zx0,zz0},big=document.createElement('canvas');big.width=cv.width;big.height=cv.height;drawTop(big.getContext('2d'));
+  const x0=(0-zx0)*ZM,y0=TYB-(ZD-zz0)*ZM,c=document.createElement('canvas');
+  c.width=Math.max(2,Math.round(WW*ZM*DPR));c.height=Math.max(2,Math.round(ZD*ZM*DPR));
+  c.getContext('2d').drawImage(big,Math.round(x0*DPR),Math.round(y0*DPR),c.width,c.height,0,0,c.width,c.height);
+  [ZM,zx0,zz0,zCol]=sv;topClamp();return {c,fit}}
+function buildTex(){const R=ensRect(1),T=texTop();return {front:texSide(),top:T.c,fit:T.fit,R,k0:R.w/WW}}
+const enterTopFromEns0=enterTopFromEns;enterTopFromEns=function(x){enterTopFromEns0(x);if(anim)anim.tex=buildTex()};
+const exitTopToEns0=exitTopToEns;exitTopToEns=function(){exitTopToEns0();if(anim)anim.tex=buildTex()};
+
+const renderTransition0=renderTransition;
+renderTransition=function(u){if(!anim||anim.back!=='ens'||!anim.tex)return renderTransition0(u);bac3D(u)};
+function bac3D(u){const g=mainCtx,T=anim.tex,R=T.R,k0=T.k0,F=T.fit,P=DPR;
+  g.setTransform(1,0,0,1,0,0);g.fillStyle='#000';g.fillRect(0,0,cv.width,cv.height);
+  // paramètres de projection : X = x + a·z ; Y = c·y + b·z (profondeur z vers le haut quand b<0)
+  const a0=R.dx/(k0*ZD),b0=R.dy/(k0*ZD),ph0=Math.asin(clamp(-b0,0.05,0.95)),ph=ph0+(Math.PI/2-ph0)*u;
+  const a=a0*(1-u),c=Math.max(0,Math.cos(ph)/Math.cos(ph0)),b=-Math.sin(ph);
+  // échelle et position : de la vue 3/4 (k0, coin R) à la vue de dessus cadrée (ZM, zx0, zz0)
+  const k=k0*Math.pow(F.ZM/k0,u),Ox=R.x+(-F.zx0*F.ZM-R.x)*u,Oy=R.y+((TYB+F.zz0*F.ZM)-R.y)*u;
+  // perspective : nulle aux deux bouts, la plus forte au milieu ; les points proches de la caméra grossissent
+  const pr=0.45*Math.sin(Math.PI*u),L=Math.max(WW,WH,ZD),dv=(y,z)=>(z*Math.cos(ph)-(WH-y)*Math.sin(ph))/L,dvc=dv(WH/2,ZD/2);
+  const cx=Ox+k*(WW/2+a*ZD/2),cy=Oy+k*(c*WH/2+b*ZD/2);
+  const pt=(x,y,z)=>{const X=Ox+k*(x+a*z),Y=Oy+k*(c*y+b*z),s=1/(1+pr*(dv(y,z)-dvc));return [cx+(X-cx)*s,cy+(Y-cy)*s]};
+  // une bande de texture -> trapèze projeté (exact : la perspective ne varie pas le long d'une bande)
+  const strip=(img,j0,j1,A,B,C)=>{const tw=img.width,h=j1-j0;
+    g.setTransform((B[0]-A[0])*P/tw,(B[1]-A[1])*P/tw,(C[0]-A[0])*P/h,(C[1]-A[1])*P/h,A[0]*P-(C[0]-A[0])*P/h*j0,A[1]*P-(C[1]-A[1])*P/h*j0);
+    g.drawImage(img,0,j0,tw,Math.min(img.height-j0,h+1),0,j0,tw,Math.min(img.height-j0,h+1))};
+  const poly=(pts,fill)=>{g.setTransform(P,0,0,P,0,0);g.beginPath();pts.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.closePath();g.fillStyle=fill;g.fill()};
+  g.globalAlpha=1;
+  // côté droit (paroi sombre), visible tant que la profondeur part vers la droite
+  if(a>0.01){const q=[pt(WW,0,0),pt(WW,0,ZD),pt(WW,WH,ZD),pt(WW,WH,0)];g.setTransform(P,0,0,P,0,0);const gr=g.createLinearGradient(q[0][0],q[0][1],q[1][0],q[1][1]);gr.addColorStop(0,'#3a4350');gr.addColorStop(1,'#1c2229');poly(q,gr)}
+  // dessus : bandes de la vue de dessus, de l'arrière (haut de l'image) vers l'avant
+  const TT=T.top,ST=6;if(-b>0.02)for(let j=0;j<TT.height;j+=ST){const z0=ZD*(1-j/TT.height),z1=ZD*(1-Math.min(TT.height,j+ST)/TT.height);strip(TT,j,Math.min(TT.height,j+ST),pt(0,0,z0),pt(WW,0,z0),pt(0,0,z1))}
+  poly([pt(0,0,0),pt(WW,0,0),pt(WW,0,ZD),pt(0,0,ZD)],`rgba(0,0,0,${(0.55*(1-Math.sin(ph))).toFixed(3)})`);
+  // face avant : bandes de la coupe, de haut en bas
+  const TF=T.front;if(c>0.01){for(let j=0;j<TF.height;j+=ST){const y0=WH*j/TF.height,y1=WH*Math.min(TF.height,j+ST)/TF.height;strip(TF,j,Math.min(TF.height,j+ST),pt(0,y0,0),pt(WW,y0,0),pt(0,y1,0))}
+    poly([pt(0,0,0),pt(WW,0,0),pt(WW,WH,0),pt(0,WH,0)],`rgba(0,0,0,${(0.6*(1-c)).toFixed(3)})`)}
+  // arêtes de verre
+  g.setTransform(P,0,0,P,0,0);g.strokeStyle='rgba(200,220,235,0.55)';g.lineWidth=1;g.beginPath();
+  const E=[[[0,0,0],[WW,0,0]],[[WW,0,0],[WW,0,ZD]],[[WW,0,ZD],[0,0,ZD]],[[0,0,ZD],[0,0,0]]];
+  if(c>0.01)E.push([[0,0,0],[0,WH,0]],[[WW,0,0],[WW,WH,0]],[[0,WH,0],[WW,WH,0]]);if(a>0.01)E.push([[WW,0,ZD],[WW,WH,ZD]],[[WW,WH,0],[WW,WH,ZD]]);
+  for(const [p,q] of E){const A=pt(...p),B=pt(...q);g.moveTo(A[0],A[1]);g.lineTo(B[0],B[1])}g.stroke();
+  // fondu avec les vraies vues (3/4 au début, dessus à la fin)
+  g.setTransform(1,0,0,1,0,0);
+  if(u<0.18){g.globalAlpha=1-u/0.18;g.drawImage(sideSnap,0,0)}
+  else if(u>0.82){g.globalAlpha=(u-0.82)/0.18;g.drawImage(topSnap,0,0)}
+  g.globalAlpha=1}
+
+// ---------- tiroir « Bêtes » : une case par espèce, en ordre alphabétique, variantes dans une liste déroulante ----------
+// Groupes : l'espèce de base, ses variantes (VARS) et ses larves (chenille -> papillon, vers -> adultes).
+const LARVE_DE={chenille:'papillon',verfarine:'tenebrion',verblanc:'rhinoceros'};
+// nom court de l'espèce (la case regroupe plusieurs variantes : « Fourmi » plutôt que « Fourmi rousse »)
+const GROUPE_NOM={araignee:'Araignée',rhinoceros:'Rhinocéros'};
+const grpOf=id=>{const b=baseOf(id);return LARVE_DE[b]||b};
+const grpNom=g=>GROUPE_NOM[g]||(FICHES[g]?FICHES[g].nom.split(' ')[0]:g);
+const VSEL=LS.get('biome_vsel',{});
+function beastGroups(ids){const G=new Map();for(const id of ids){const g=grpOf(id);if(!G.has(g))G.set(g,[]);G.get(g).push(id)}
+  for(const [g,L] of G){const rang=id=>id===g?0:LARVE_DE[baseOf(id)]?2:1;L.sort((a,b)=>rang(a)-rang(b)||spName(a).localeCompare(spName(b),'fr',{sensitivity:'base'}))}
+  return [...G.entries()].sort((a,b)=>grpNom(a[0]).localeCompare(grpNom(b[0]),'fr',{sensitivity:'base'}))}
+function grpCur(g,L){const s=VSEL[g];return L.includes(s)?s:L[0]}
+function varLabel(id,g){if(id===g)return '';return LARVE_DE[baseOf(id)]?nameOf(id)+' (larve)':nameOf(id)}
+function openDrawerBetes(){drawer='betes';const d=document.getElementById('drawer');
+  const groups=beastGroups(catItems('betes'));
+  d.innerHTML=`<div class="dhead"><b>${CATS.betes.ic} ${CATS.betes.nom}</b><span class="dim">touche pour prendre · ▾ pour les variantes</span><button class="dx">✕</button></div><div class="dgrid">${groups.map(([g,L])=>{const c=grpCur(g,L),vl=varLabel(c,g);
+    return `<div class="gcell"><button class="chip ${L.length>1?'grp':''}" data-id="${c}"><canvas></canvas><span class="nm">${grpNom(g)}</span><span class="vn">${vl||'&nbsp;'}</span><span class="st"></span></button>${L.length>1?`<button class="vbtn" data-grp="${g}" title="Choisir une variante">▾ ${vl||L.length+'<span class="vlong"> variantes</span>'}</button>`:''}</div>`}).join('')}</div>`;
+  d.style.display='block';wireChips(d);d.querySelector('.dx').onclick=()=>{closeDrawer();renderBar()};
+  d.querySelectorAll('.vbtn').forEach(b=>b.onclick=e=>{e.stopPropagation();const g=b.dataset.grp,L=groups.find(x=>x[0]===g)[1];openVarMenu(b.closest('.gcell'),g,L)});
+  refreshPalette()}
+function openVarMenu(cell,g,L){const d=document.getElementById('drawer');let m=d.querySelector('.vmenu');if(m){const same=m.dataset.grp===g;m.remove();if(same)return}
+  const cur=grpCur(g,L);m=document.createElement('div');m.className='vmenu';m.dataset.grp=g;
+  m.innerHTML=`<div class="vmh">${grpNom(g)}<button class="vx" title="Fermer">✕</button></div>`+L.map(id=>{const sp=spOf(id);
+    return `<button class="vrow ${id===cur?'on':''}" data-id="${id}"><canvas></canvas><span><b>${spName(id)}</b>${LARVE_DE[baseOf(id)]?' <i>larve</i>':''}<small>${sp&&sp.vla?sp.vla:(SPI[baseOf(id)]&&SPI[baseOf(id)].la)||''}</small></span></button>`}).join('');
+  d.appendChild(m);
+  // sous la case, sans sortir du tiroir
+  const dr=d.getBoundingClientRect(),cr=cell.getBoundingClientRect(),mw=Math.min(280,dr.width-16);m.style.width=mw+'px';
+  m.style.left=Math.max(8,Math.min(cr.left-dr.left,dr.width-mw-8))+'px';m.style.top=(cr.bottom-dr.top+d.scrollTop+4)+'px';
+  m.querySelectorAll('.vrow').forEach(r=>{previewSp(spOf(r.dataset.id),r.querySelector('canvas'));r.onclick=()=>{VSEL[g]=r.dataset.id;LS.set('biome_vsel',VSEL);pickTool(r.dataset.id,false)}});
+  m.querySelector('.vx').onclick=()=>m.remove();
+  const mb=m.getBoundingClientRect();if(mb.bottom>dr.bottom)d.scrollTop+=mb.bottom-dr.bottom+8}
+const openDrawer0=openDrawer;openDrawer=function(c){if(c==='betes')openDrawerBetes();else openDrawer0(c)};
+// choisir directement une case garde aussi la variante en mémoire
+const pickTool0=pickTool;pickTool=function(id,fromDrawer){if(id&&(SPI[baseOf(id)]||VSP[id])){VSEL[grpOf(id)]=id;LS.set('biome_vsel',VSEL)}return pickTool0(id,fromDrawer)};
+if(window.__sim)window.__sim.beastGroups=()=>beastGroups(catItems('betes')).map(([g,L])=>grpNom(g)+':'+L.length);
+
+// ---------- araignées : toile ronde (épeire), terrier de soie (mygales), cocons d'œufs ----------
+// orbs : toiles rondes tissées au milieu du cadre de fils de l'épeire ; elles attrapent les volants.
+// sacs : cocons d'œufs (dans la toile, au fond du terrier, ou portés par l'araignée-loup / sauteuse) ; les petits en sortent.
+// nests : terriers des mygales, tapissés de soie.
+let orbs=[],sacs=[],nests=[];
+const isWebSpider=c=>c.sp.id==='araignee'&&!c.sp.beh;
+const isMygale=c=>c.sp.id==='araignee'&&/mygale/.test(c.sp.vid||'');
+const orbOf=c=>orbs.find(o=>o.owner===c&&o.world===T);
+function sacOf(c){return sacs.find(s=>s.owner===c&&s.world===T&&!s.done)}
+function nestOf(c){return nests.find(n=>n.owner===c&&n.world===T)}
+// pondre : un cocon de 3 à 5 œufs, là où l'araignée garde ses petits
+function spiderLay(c){const o=orbOf(c),n=nestOf(c);
+  const s={owner:c,sp:c.sp,world:T,t:0,hatch:rnd(40,55),n:3+Math.floor(Math.random()*3),z:c.z||0,x:c.x,y:c.y,kind:'carry'};
+  if(isWebSpider(c)){s.kind='web';if(o){s.x=o.x+o.r*0.35;s.y=o.y-o.r*0.25;s.z=o.z}}
+  else if(isMygale(c)&&n){s.kind='nest';s.x=n.x;s.y=n.yb-1.5;s.z=n.z}
+  sacs.push(s);jlog('🕷',`${c.sp.vnom||FICHES.araignee.nom} : un cocon d'œufs`);say(`${c.sp.vnom||'L\'araignée'} a tissé un cocon d'œufs`)}
+// mygale : creuse un court terrier vertical sous elle et le tapisse de soie
+function digNest(c){const i=clamp(Math.floor(c.x/CS),2,COLS-3),j0=SURF[i];let d=0;
+  for(;d<4;d++){const k=K(i,j0+d);if(!T[k]||T[k]===5)break;T[k]=0;DUG[k]=1}
+  if(d<2)return null;surfCol(i);soilDirty=true;
+  const n={owner:c,world:T,i,x:i*CS+CS/2,ys:Y0+j0*CS,yb:Y0+(j0+d)*CS,z:c.z||0};nests.push(n);jlog('🕳',`${c.sp.vnom} creuse son terrier`);return n}
+
+const uAraignee0=UPD.araignee;
+UPD.araignee=function(c,dt){
+  let prey=false;for(const o of creatures)if(!o.dead&&o.state==='caught'&&o.strand&&o.strand.owner===c){prey=true;break}
+  const o=orbOf(c);
+  if(!prey&&!o){const mine=strands.filter(s=>s.owner===c&&s.life>0);
+    // assez de fils de cadre : la toile ronde se tisse au centre
+    if(mine.length>=2){let x=0,y=0,z=0,n=0;for(const s of mine)for(const a of [s.a,s.b]){x+=a.x;y+=a.y;z+=a.z||0;n++}x/=n;y/=n;z/=n;
+      let r=1e9;for(const s of mine)for(const a of [s.a,s.b])r=Math.min(r,Math.hypot(a.x-x,a.y-y));r=clamp(r*0.85,8,30);
+      if(y<surfY(Math.floor(x/CS))-r-4)orbs.push({owner:c,world:T,x,y,z,r,prog:0,life:rnd(150,220),vib:0})}}
+  if(!prey&&o){const d=dist(c.x,c.y,o.x,o.y);
+    if(d>3){spiderMove(c,o.x,o.y,dt,1);return}
+    c.v=0;if(o.prog<1){o.prog=Math.min(1,o.prog+dt/16);c.ang+=dt*4;return}
+    // toile finie : elle attend au centre ; elle pond quand elle est bien nourrie
+    if(c.energy>175&&canRepro('araignee',4)&&!sacOf(c)){c.energy-=95;spiderLay(c)}
+    return}
+  uAraignee0(c,dt)};
+
+// araignées chasseuses : les mygales gardent un terrier ; toutes restent près de leur cocon
+const uScolo0=UPD.scolopendre;
+UPD.scolopendre=function(c,dt){if(c.sp.id!=='araignee')return uScolo0(c,dt);
+  let n=nestOf(c);if(isMygale(c)&&!n&&c.age>45&&c.y>=surfY(Math.floor(c.x/CS))-3){c.path=null;n=digNest(c);if(n){c.x=n.x;c.y=n.ys-1}}
+  const s=sacOf(c);
+  if(n&&(s||c.energy>110)){// rentrer au terrier (pour pondre ou garder le cocon)
+    const d=Math.hypot(c.x-n.x,c.y-(n.ys-1));if(d>4){if(!c.path||!c.path.length){if(!goTo(c,k=>Math.abs((k%COLS)-n.i)<=1&&Math.abs(((k/COLS)|0)-(n.ys-Y0)/CS)<=2,20000))return uScolo0(c,dt)}stepPath(c,dt);return}
+    c.v=0;c.path=null;if(!s&&c.energy>118&&canRepro('araignee',3)){c.energy-=60;spiderLay(c)}return}
+  uScolo0(c,dt)};
+
+// toiles rondes : capture des volants
+const webCheck0=webCheck;
+webCheck=function(c){webCheck0(c);if(!c.fly||c.state==='caught'||(c.webCd||0)>0)return;
+  for(const o of orbs){if(o.world!==T||o.prog<0.5||o.owner===c)continue;
+    if(Math.abs((c.z||0)-o.z)<5&&Math.hypot(c.x-o.x,c.y-o.y)<o.r*o.prog){
+      if(Math.random()<0.18){c.state='caught';c.t=rnd(8,12);c.strand={owner:o.owner,life:1,vib:0};o.vib=2.5;jlog('🕸',`${nm(c)} pris(e) dans une toile`);ach('toile');wave({x:c.x,y:c.y,max:24,sp:60,col:'#ff7a5c',a:0.6})}
+      else c.webCd=1;return}}};
+
+function soieTick(dt){
+  orbs=orbs.filter(o=>o.world===T&&(o.life-=dt*(o.owner.dead?4:1))>0);for(const o of orbs)o.vib=Math.max(0,o.vib-dt);
+  nests=nests.filter(n=>n.world===T&&!(n.owner.dead&&!sacs.some(s=>s.kind==='nest'&&s.x===n.x&&!s.done)));
+  for(const s of sacs){if(s.world!==T||s.done)continue;
+    if(s.kind==='carry'){if(s.owner.dead)s.kind='sol';else{const L=realLen(s.owner)*0.45;s.x=s.owner.x-Math.cos(s.owner.ang||0)*L;s.y=s.owner.y-Math.sin(s.owner.ang||0)*L+1;s.z=s.owner.z||0}}
+    s.t+=dt;if(s.t>=s.hatch){s.done=true;
+      // pas plus de petits que de place (même limite que la reproduction)
+      const place=Math.max(1,6-creatures.filter(o=>!o.dead&&o.sp.id==='araignee').length);s.n=Math.min(s.n,place);
+      for(let q=0;q<s.n;q++){const b=born(s.sp,s.x+rnd(-3,3),s.y,{energy:55,z:s.z});
+        if(isWebSpider(b)){b.home=clamp(s.x+rnd(-140,140),20,WW-20);b.y=Math.min(b.y,surfY(Math.floor(b.x/CS))-8)}
+        else{b.k=findWalk(b.x,Math.min(b.y,surfY(Math.floor(b.x/CS))-2));const [x2,y2]=cxy(b.k);b.x=x2;b.y=y2}}
+      jlog('🕷',`Éclosion : ${s.n} petites araignées`)}}
+  sacs=sacs.filter(s=>s.world===T&&!s.done)}
+const update0=update;update=function(dt){update0(dt);soieTick(dt)};
+
+// ----- dessin (coupe et 3/4) : avec les fils -----
+function drawSoie(){const lw=Math.max(0.18,0.55/camZ);
+  for(const o of orbs){if(o.world!==T)continue;ctx.save();zT(o.z);const a=Math.min(1,o.life/10),vb=o.vib>0?Math.sin(simT*40)*Math.min(1,o.vib)*0.8:0,X=o.x+vb,Y=o.y;
+    ctx.strokeStyle=o.vib>0?'#ffd8c4':'#e8eef6';ctx.lineWidth=lw;ctx.globalAlpha=0.55*a;ctx.beginPath();
+    const NR=14,p1=Math.min(1,o.prog*2.2);for(let q=0;q<NR;q++){const t=q/NR*TAU+0.2;ctx.moveTo(X,Y);ctx.lineTo(X+Math.cos(t)*o.r*p1,Y+Math.sin(t)*o.r*p1)}ctx.stroke();
+    // spirale de capture, tissée de l'extérieur vers le centre
+    const p2=clamp((o.prog-0.35)/0.65,0,1);if(p2>0){ctx.globalAlpha=0.45*a;ctx.beginPath();const turns=7,steps=Math.floor(turns*NR*p2);
+      for(let q=0;q<=steps;q++){const f=q/(turns*NR),t=q/NR*TAU+0.2,rr=o.r*(1-f*0.85);const x=X+Math.cos(t)*rr,y=Y+Math.sin(t)*rr;q?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.stroke()}
+    ctx.globalAlpha=0.7*a;ctx.fillStyle='#f4f6fa';ctx.beginPath();ctx.arc(X,Y,Math.max(0.5,o.r*0.06),0,TAU);ctx.fill();ctx.restore()}
+  for(const n of nests){if(n.world!==T)continue;
+    if(n.kind==='tente'){ctx.save();zT(n.z);ctx.globalAlpha=0.55;ctx.fillStyle='#eef2f6';ctx.strokeStyle='#ffffff';ctx.lineWidth=lw;ctx.beginPath();ctx.ellipse(n.x,n.ys,4.5,3,0,Math.PI,TAU);ctx.closePath();ctx.fill();ctx.globalAlpha=0.7;ctx.beginPath();for(let q=0;q<5;q++){const a=Math.PI+q/4*Math.PI;ctx.moveTo(n.x+Math.cos(a)*4.5,n.ys+Math.sin(a)*3);ctx.lineTo(n.x+Math.cos(a)*7,n.ys+Math.sin(a)*5.5)}ctx.stroke();ctx.restore();continue}
+    ctx.save();zT(n.z);ctx.strokeStyle='#e6e9ee';ctx.lineWidth=lw;ctx.globalAlpha=0.6;ctx.beginPath();
+    // collerette de soie autour de l'entrée, et soie le long des parois
+    for(let q=0;q<9;q++){const a=Math.PI+q/8*Math.PI;ctx.moveTo(n.x,n.ys);ctx.lineTo(n.x+Math.cos(a)*7,n.ys+Math.sin(a)*2.2)}
+    for(const sd of [-1,1]){ctx.moveTo(n.x+sd*CS*0.45,n.ys);ctx.lineTo(n.x+sd*CS*0.45,n.yb)}ctx.stroke();ctx.restore()}
+  for(const s of sacs){if(s.world!==T||s.done)continue;ctx.save();zT(s.z);const R=s.kind==='carry'?1.6:2.3,w=0.5+0.5*Math.sin(s.t*0.8);
+    if(s.kind==='web'){const o=orbOf(s.owner);if(o){ctx.strokeStyle='#e8eef6';ctx.lineWidth=lw;ctx.globalAlpha=0.5;ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(o.x,o.y);ctx.stroke()}}
+    ctx.globalAlpha=0.95;ctx.fillStyle='#efe6cf';ctx.strokeStyle='#fffaf0';ctx.lineWidth=lw;ctx.beginPath();ctx.ellipse(s.x,s.y,R,R*1.15,0,0,TAU);ctx.fill();ctx.stroke();
+    // œufs devinés à travers la soie quand l'éclosion approche
+    if(s.t>s.hatch*0.5){ctx.fillStyle=`rgba(190,150,90,${(0.25+0.35*w*(s.t/s.hatch)).toFixed(2)})`;for(let q=0;q<4;q++){ctx.beginPath();ctx.arc(s.x+Math.cos(q*1.7)*R*0.45,s.y+Math.sin(q*1.7)*R*0.45,R*0.28,0,TAU);ctx.fill()}}
+    ctx.restore()}
+  ctx.globalAlpha=1}
+const drawStrands0=drawStrands;drawStrands=function(){drawStrands0();drawSoie()};
+if(window.__sim)window.__sim.soie=()=>({toiles:orbs.filter(o=>o.world===T).map(o=>Math.round(o.prog*100)+'%'),cocons:sacs.filter(s=>s.world===T).map(s=>s.kind+':'+Math.round(s.t)+'/'+Math.round(s.hatch)),terriers:nests.filter(n=>n.world===T).length,fils:strands.filter(s=>s.life>0).length});
+
+// ---------- instincts : comportements propres à certaines espèces, et « mission » visible de la bête sélectionnée ----------
+// Araignée sauteuse : guette, s'approche, puis bondit sur sa proie (même un insecte qui vole bas) ;
+//   tente de soie au pied d'une plante pour la nuit et pour son cocon.
+// Mygale : affût à l'entrée du terrier, bondit sur ce qui passe ; ne s'éloigne que si elle a très faim.
+// Araignée-loup : court au sol ; bondit aussi sur les insectes posés près d'elle.
+const PROIES_SAUT={mouche:22,papillon:28,puceron:8,abeille:24,chenille:20,coccinelle:16,cloporte:22,fourmi:12,tenebrion:20};
+const PROIES_MYGALE={cloporte:30,fourmi:14,chenille:20,escargot:34,tenebrion:26,bousier:26,phasme:30,lombric:38,coccinelle:18};
+const isSauteuse=c=>c.sp.beh==='sauteuse';
+// bond : arc de cercle jusqu'à la proie ; réussite si la proie est encore là à l'arrivée
+function spiderLeap(c,o,dur){c.leap={x0:c.x,y0:c.y,z0:c.z||0,x1:o.x,y1:o.y,z1:o.z||0,t:0,dur,h:4+dist(c.x,c.y,o.x,o.y)*0.35,prey:o};c.path=null;c.state='leap';
+  c.ang=Math.atan2(o.y-c.y,o.x-c.x)}
+function leapStep(c,dt,table){const L=c.leap;L.t+=dt/L.dur;const u=Math.min(1,L.t);
+  c.x=L.x0+(L.x1-L.x0)*u;c.y=L.y0+(L.y1-L.y0)*u-Math.sin(u*Math.PI)*L.h;c.z=c.tz=L.z0+(L.z1-L.z0)*u;c.v=0;
+  if(u<1)return;c.leap=null;c.state='idle';const o=L.prey;
+  if(o&&!o.dead&&dist3(o,c)<7&&Math.random()<0.8){die(o,c);c.energy+=table[baseOf(o.sp.id)]||18;c.digT=10+16*Math.max(0,(c.sp.vsize||1)-1);c.state='eat';c.t=2;
+    wave({x:c.x,y:c.y,max:22,sp:60,col:c.cLine,a:0.7});jlog('🕷',`${nm(c)} bondit sur ${nm(o).toLowerCase()}`)}
+  c.k=null}
+// chute après un bond dans le vide (la gravité du jeu ignore les araignées, pour l'épeire suspendue à ses fils)
+function spiderFall(c,dt){const k=cellOf(c.x,c.y),i=k%COLS,j=(k-i)/COLS;if(walk(i,j))return false;if(T[k]){c.y-=CS;c.k=null;return true}c.y+=80*dt;c.k=null;c.path=null;return true}
+function preyNear(c,table,R,maxUp){let best=null,bd=R;const sy=surfY(Math.floor(c.x/CS));
+  for(const o of creatures){if(o.dead||o===c||!table[baseOf(o.sp.id)]||(pop[o.sp.id]||0)<=1||o.state==='caught')continue;
+    if(maxUp!=null&&o.y<sy-maxUp)continue;const d=dist3(o,c);if(d<bd){bd=d;best=o}}return best}
+
+UPD.sauteuse=function(c,dt){
+  c.digT=(c.digT||0)-dt;
+  if(c.leap){leapStep(c,dt,PROIES_SAUT);return}
+  if(spiderFall(c,dt))return;
+  if(c.state==='eat'){c.v=0;c.t-=dt;if(c.t<=0)c.state='idle';return}
+  let n=nestOf(c);const sy=surfY(Math.floor(c.x/CS));
+  // tente de soie : au pied d'une plante, à la première occasion
+  if(!n&&c.age>15&&c.y>=sy-3){const p=plants.find(q=>q.alive&&Math.abs(q.col*CS-c.x)<20);if(p){n={owner:c,world:T,kind:'tente',i:p.col,x:p.col*CS+CS/2+3,ys:surfY(p.col),yb:surfY(p.col),z:p.z||0};nests.push(n);jlog('🕸',`${nm(c)} tisse sa tente de soie`)}}
+  const nuit=!isDay(),sac=sacOf(c);
+  // chasse : guetter, s'approcher, bondir
+  if(c.energy<125&&c.digT<=0&&!(nuit&&n)){const o=preyNear(c,PROIES_SAUT,150,45);
+    if(o){const d=dist3(o,c);
+      if(d<24){c.v=0;c.path=null;c.state='stalk';c.ang+=angDiff(c.ang,Math.atan2(o.y-c.y,o.x-c.x))*0.3;c.stalk=(c.stalk||0)+dt;if(c.stalk>0.6){c.stalk=0;spiderLeap(c,o,0.32)}return}
+      c.stalk=0;c.state='hunt';c.t=(c.t||0)-dt;
+      if(c.t<=0||!c.path||!c.path.length){c.t=1;const ti=clamp(Math.floor(o.x/CS),1,COLS-2),tk=findWalk(o.x,Math.min(o.y,surfY(ti)-2));if(tk==null||!goTo(c,k=>Math.abs((k%COLS)-(tk%COLS))<=3&&Math.abs(((k/COLS)|0)-((tk/COLS)|0))<=4,12000))randomWalk(c,15)}
+      stepPath(c,dt,1.2);return}}
+  // repos à la tente (la nuit, ou pour garder le cocon) ; sinon balade
+  if(n&&(nuit||sac||c.energy>=125)){const d=Math.hypot(c.x-n.x,c.y-(n.ys-1));
+    if(d>4){c.state='home';c.t=(c.t||0)-dt;if(c.t<=0||!c.path||!c.path.length){c.t=1.5;if(!goTo(c,k=>Math.abs((k%COLS)-n.i)<=1&&Math.abs(((k/COLS)|0)-(n.ys-Y0)/CS)<=2,12000))randomWalk(c,10)}stepPath(c,dt,0.8);return}
+    c.v=0;c.path=null;c.state='rest';
+    if(!sac&&c.energy>120&&c.age>60&&canRepro('araignee',4)&&Math.random()<dt*0.05){c.energy-=55;spiderLay(c)}return}
+  c.state='idle';c.t=(c.t||0)-dt;if(c.t<=0||!c.path||!c.path.length){c.t=2;randomWalk(c,30)}stepPath(c,dt,0.6)};
+
+// mygale et araignée-loup : bond sur une proie toute proche (affût) avant leur chasse habituelle
+const uScoloSp=UPD.scolopendre;
+UPD.scolopendre=function(c,dt){if(c.sp.id!=='araignee')return uScoloSp(c,dt);
+  c.digT=(c.digT||0)-dt;
+  if(c.leap){leapStep(c,dt,isMygale(c)?PROIES_MYGALE:PROIES_SAUT);return}
+  if(spiderFall(c,dt))return;
+  if(c.state==='eat'){c.v=0;c.t-=dt;if(c.t<=0)c.state='idle';return}
+  if(c.digT<=0&&c.energy<115){const o=preyNear(c,isMygale(c)?PROIES_MYGALE:PROIES_SAUT,isMygale(c)?20:16,isMygale(c)?6:12);if(o){spiderLeap(c,o,isMygale(c)?0.28:0.3);return}}
+  // mygale : à l'affût à l'entrée du terrier tant qu'elle n'a pas très faim
+  const n=nestOf(c);if(isMygale(c)&&n&&c.energy>55&&!sacOf(c)){const d=Math.hypot(c.x-n.x,c.y-(n.ys-1));
+    if(d<=4){c.v=0;c.path=null;c.state='affut';return}}
+  uScoloSp(c,dt)};
+// la sauteuse a son propre comportement (avant : celui de la scolopendre)
+for(const k in VSP)if(k==='araignee:sauteuse')VSP[k].beh='sauteuse';
+// cocon de la sauteuse : dans sa tente
+const spiderLay0=spiderLay;spiderLay=function(c){spiderLay0(c);const n=nestOf(c),s=sacOf(c);if(s&&n&&n.kind==='tente'){s.kind='nest';s.x=n.x;s.y=n.ys-1.5;s.z=n.z}};
+
+// ----- mission de la bête sélectionnée (affichée sous le HUD) -----
+function mission(c){if(!c||c.dead)return '';const st=c.state,id=c.sp.id,start=ROLES[c.role]?ROLES[c.role].start:100,faim=c.energy<start*0.35;
+  if(st==='caught')return '🕸 Prise dans une toile : elle se débat';
+  if(c.leap||st==='leap')return '🦘 Bondit sur sa proie';
+  if(st==='stalk')return '👀 Guette sa proie, prête à bondir';
+  if(st==='affut')return '🕳 À l\'affût à l\'entrée de son terrier';
+  if(st==='eat')return '🍽 Mange';
+  if(st==='chrysalide')return '🦋 Se transforme en papillon';
+  if(id==='reine')return st==='found'?'👑 Creuse sa chambre pour fonder la colonie':'👑 Pond et nourrit la colonie';
+  if(st==='dig'||st==='dig2')return '⛏ Creuse une galerie';
+  if(st==='haul')return '⛏ Sort la terre de la fourmilière';
+  if(st==='return')return '🏠 Rapporte de la nourriture au nid';
+  if(st==='guard'||st==='guarding')return '🛡 Garde les pucerons (miellat)';
+  if(id==='araignee'&&typeof orbOf==='function'){const o=orbOf(c);if(o&&o.prog<1)return '🕸 Tisse sa toile';if(o)return '🕸 Attend au centre de sa toile'}
+  if(typeof sacOf==='function'&&sacOf(c))return '🥚 Garde son cocon d\'œufs';
+  if(st==='rest')return '💤 Se repose dans sa tente de soie';
+  if(st==='home')return '🏠 Rentre à son abri';
+  if(st==='hunt'||st==='go')return faim?'🍽 Affamée : cherche à manger':'🍽 Part chercher à manger';
+  if(faim)return '⚠ Affamée : il lui faut à manger';
+  if(c.energy>start*1.1)return '💞 Bien nourrie : prête à se reproduire';
+  return '🚶 Explore les environs'}
+const hudMission0=hud;hud=function(){hudMission0();if(state!=='play'||!selC||selC.dead)return;const m=mission(selC);if(!m)return;
+  hudEl.insertAdjacentHTML('beforeend',`<div class="row"><span style="color:#bfeaa8">${FICHES[baseOf(selC.sp.id)]?FICHES[baseOf(selC.sp.id)].ic:''} ${nm(selC)} : ${m}</span></div>`)};
+if(window.__sim)window.__sim.mission=()=>selC?mission(selC):'';
+
+// ----- jour / nuit -----
+// abeille : la nuit, elle se pose sur une plante et se repose
+const uAbeille0=UPD.abeille;
+UPD.abeille=function(c,dt){if(isDay()||c.state==='sip')return uAbeille0(c,dt);
+  let p=c.restP;if(!p||!p.alive){p=null;let bd=1e9;for(const q of plants){if(!q.alive)continue;const d=Math.abs(q.col*CS-c.x)+Math.abs(q.z-(c.z||0));if(d<bd){bd=d;p=q}}c.restP=p}
+  if(!p)return uAbeille0(c,dt);const [x,y]=flowerPos(p);
+  if(Math.hypot(c.x-x,c.y-y+2,(c.z||0)-p.z)>3){flyTo(c,x,y-2,dt,0.7);c.state='rentre';return}
+  c.v=0;c.state='repos';c.flap=0};
+// cloporte : le jour, il reste à l'abri (pierre, pot, tronc) ; il sort surtout la nuit
+const uCloporte0=UPD.cloporte;
+UPD.cloporte=function(c,dt){if(isDay()&&c.energy>45&&c.state!=='eat'&&c.state!=='go'&&shelterAt(c)&&!(c.path&&c.path.length)){c.v=0;c.state='abri';return}uCloporte0(c,dt)};
+// missions supplémentaires (états propres à certaines espèces)
+const mission0=mission;mission=function(c){if(!c||c.dead)return '';const st=c.state;
+  if(st==='repos')return '💤 Se repose pour la nuit';
+  if(st==='rentre')return '🌙 La nuit tombe : cherche où se poser';
+  if(st==='abri')return isDay()?'🪨 À l\'abri de la lumière':'🪨 À l\'abri';
+  if(st==='retire')return '🐌 Rentré dans sa coquille : il fait trop sec';
+  if(st==='nymphe')return '🐛 Nymphe : se transforme en adulte';
+  if(st==='sip')return '🌸 Butine une fleur';
+  if(st==='roll')return '🟤 Roule sa boule jusqu\'à son terrier';
+  if(st==='bury')return '🟤 Enterre sa boule (et parfois un œuf)';
+  if(st==='ponte')return '🥚 Va pondre dans le terreau';
+  if(st==='rode')return '🌙 Rôde à la recherche d\'une proie';
+  return mission0(c)};
+
+// ---------- décors vus de dessus : objets dessinés en volume (lumière en haut à gauche, ombre portée) ----------
+// Remplace drawDecosTop (decor.js). Chaque décor a sa forme propre, stable grâce à un tirage au sort lié à sa graine.
+function decoRng(d){let s=Math.floor(((d.seed||0.37)*1e6+d.i*977))%2147483646+1;return ()=>(s=(s*16807)%2147483647)/2147483647}
+function blobPath(g,x,y,rx,ry,rot,R,n=11,irr=0.18){const pts=[];for(let q=0;q<n;q++){const a=q/n*TAU,k=1-irr+R()*irr*2;pts.push([Math.cos(a)*rx*k,Math.sin(a)*ry*k])}
+  const c=Math.cos(rot),s=Math.sin(rot),P=([u,v])=>[x+u*c-v*s,y+u*s+v*c];g.beginPath();
+  for(let q=0;q<=n;q++){const a=P(pts[q%n]),b=P(pts[(q+1)%n]),m=[(a[0]+b[0])/2,(a[1]+b[1])/2];q?g.quadraticCurveTo(a[0],a[1],m[0],m[1]):g.moveTo(m[0],m[1])}g.closePath()}
+function decoShadow(g,x,y,rx,ry,rot,a=0.35){g.save();g.fillStyle=`rgba(0,0,0,${a})`;g.beginPath();g.ellipse(x+rx*0.12+0.8,y+ry*0.18+1.2,rx*1.02,ry*1.05,rot,0,TAU);g.fill();g.restore()}
+const radial=(g,x,y,r,stops)=>{const gr=g.createRadialGradient(x-r*0.35,y-r*0.4,r*0.05,x,y,r*1.1);stops.forEach(([o,c])=>gr.addColorStop(o,c));return gr};
+
+drawDecosTop=function(g){for(const d of decos){const D=DECOS[d.type];if(!D)continue;const x=d.i*CS+CS/2,w=D.w*CS,y=-((d.dz||0)+d.w*CS*0.4),R=decoRng(d),rot=(d.seed||0)*TAU;g.save();
+  if(d.type==='pierre'){const rx=w/2,ry=w*0.38;decoShadow(g,x,y,rx,ry,rot);blobPath(g,x,y,rx,ry,rot,R);g.fillStyle=radial(g,x,y,rx,[[0,'#b4b9be'],[0.55,'#7b8086'],[1,'#4c5055']]);g.fill();
+    g.save();g.clip();for(let q=0;q<26;q++){g.fillStyle=`rgba(${R()<0.5?'40,42,46':'210,214,218'},${(0.15+R()*0.25).toFixed(2)})`;g.beginPath();g.arc(x+(R()-0.5)*rx*1.8,y+(R()-0.5)*ry*1.8,0.25+R()*0.5,0,TAU);g.fill()}
+    g.strokeStyle='rgba(30,32,35,0.55)';g.lineWidth=0.25;g.beginPath();let cx=x-rx*0.4,cy=y-ry*0.2;g.moveTo(cx,cy);for(let q=0;q<4;q++){cx+=rx*0.22;cy+=(R()-0.4)*ry*0.3;g.lineTo(cx,cy)}g.stroke();g.restore();
+    blobPath(g,x,y,rx,ry,rot,decoRng(d));g.strokeStyle='rgba(255,255,255,0.18)';g.lineWidth=0.35;g.stroke()}
+  else if(d.type==='volcan'){const rx=w/2,ry=w*0.4;decoShadow(g,x,y,rx,ry,rot,0.45);blobPath(g,x,y,rx,ry,rot,R,13,0.22);g.fillStyle=radial(g,x,y,rx,[[0,'#5a5350'],[0.6,'#2e2927'],[1,'#151211']]);g.fill();
+    g.save();g.clip();for(let q=0;q<38;q++){const px=x+(R()-0.5)*rx*1.9,py=y+(R()-0.5)*ry*1.9,r=0.25+R()*0.7;g.fillStyle='#080606';g.beginPath();g.arc(px,py,r,0,TAU);g.fill();g.strokeStyle='rgba(150,110,90,0.35)';g.lineWidth=0.15;g.beginPath();g.arc(px-0.1,py-0.1,r,Math.PI,Math.PI*1.6);g.stroke()}g.restore()}
+  else if(d.type==='tronc'){const r=w/2;decoShadow(g,x,y,r,r,0,0.45);blobPath(g,x,y,r,r,rot,R,16,0.08);g.fillStyle='#3e2c1d';g.fill();
+    g.save();g.clip();g.strokeStyle='rgba(20,12,6,0.6)';g.lineWidth=0.35;for(let q=0;q<30;q++){const a=q/30*TAU+R()*0.1;g.beginPath();g.moveTo(x+Math.cos(a)*r*0.82,y+Math.sin(a)*r*0.82);g.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r);g.stroke()}g.restore();
+    g.fillStyle=radial(g,x,y,r*0.8,[[0,'#b08a5c'],[1,'#7a5a38']]);g.beginPath();g.arc(x,y,r*0.8,0,TAU);g.fill();
+    g.strokeStyle='rgba(70,45,22,0.55)';g.lineWidth=0.2;for(let q=1;q<5;q++){g.beginPath();g.arc(x,y,r*(0.42+q*0.09),0,TAU);g.stroke()}
+    g.fillStyle=radial(g,x,y,r*0.42,[[0,'#2a1b10'],[0.7,'#120b06'],[1,'#050302']]);g.beginPath();g.arc(x+r*0.04,y+r*0.05,r*0.42,0,TAU);g.fill();
+    for(let q=0;q<10;q++){const a=2.2+R()*1.6,rr=r*(0.85+R()*0.18);g.fillStyle=hsl(95+R()*25,50,22+R()*14);g.beginPath();g.arc(x+Math.cos(a)*rr,y+Math.sin(a)*rr,0.5+R()*0.7,0,TAU);g.fill()}}
+  else if(d.type==='branche'){const L=w/2,dir=d.dir||1,pts=[];for(let q=0;q<=8;q++){const t=q/8;pts.push([x-L+t*2*L,y+(0.1*dir*(1-2*t)+Math.sin(t*Math.PI*1.3+rot)*0.06)*w])}
+    g.lineCap='round';g.lineJoin='round';
+    const stroke=(col,wm)=>{for(let q=0;q<8;q++){g.strokeStyle=col;g.lineWidth=(3.6-q*0.22)*wm;g.beginPath();g.moveTo(pts[q][0],pts[q][1]);g.lineTo(pts[q+1][0],pts[q+1][1]);g.stroke()}};
+    g.save();g.translate(1,1.4);stroke('rgba(0,0,0,0.35)',1.1);g.restore();
+    stroke('#6a5c4c',1.05);stroke('#a4977f',0.8);stroke('#cfc3ab',0.25);
+    const k=pts[3];g.strokeStyle='#8f826c';g.lineWidth=1.2;g.beginPath();g.moveTo(k[0],k[1]);g.lineTo(k[0]+w*0.12,k[1]-w*0.16*dir);g.stroke();
+    for(const q of [2,5,6]){g.fillStyle='#5a4c3c';g.beginPath();g.ellipse(pts[q][0],pts[q][1],0.7,0.45,0,0,TAU);g.fill()}}
+  else if(d.type==='pot'){const r1=w*0.3,r2=w*0.42,a0=rot*3,a1=a0+Math.PI*1.25;decoShadow(g,x,y,r2,r2*0.9,0,0.3);
+    g.fillStyle='rgba(20,12,6,0.35)';g.beginPath();g.arc(x,y,r1,a0,a1);g.fill();
+    g.beginPath();g.arc(x,y,r2,a0,a1);const e=[x+Math.cos(a1)*r1,y+Math.sin(a1)*r1];g.lineTo(x+Math.cos(a1)*(r1+r2)/2+1,y+Math.sin(a1)*(r1+r2)/2-0.6);g.lineTo(e[0],e[1]);g.arc(x,y,r1,a1,a0,true);g.lineTo(x+Math.cos(a0)*(r1+r2)/2-0.8,y+Math.sin(a0)*(r1+r2)/2+0.8);g.closePath();
+    g.fillStyle=radial(g,x,y,r2,[[0,'#d9875a'],[0.6,'#b8603a'],[1,'#86401f']]);g.fill();g.strokeStyle='#e9a57c';g.lineWidth=0.35;g.beginPath();g.arc(x,y,r2-0.2,a0+0.1,a1-0.1);g.stroke();
+    g.strokeStyle='#5e2a12';g.lineWidth=0.5;g.beginPath();g.arc(x,y,r1+0.25,a0+0.05,a1-0.05);g.stroke()}
+  else if(d.type==='mousse'){const rx=w/2,ry=w*0.36;g.fillStyle='rgba(10,25,8,0.35)';blobPath(g,x+0.6,y+0.9,rx,ry,rot,decoRng(d),12,0.25);g.fill();
+    for(let q=0;q<90;q++){const a=R()*TAU,rr=Math.sqrt(R());const px=x+Math.cos(a)*rx*rr,py=y+Math.sin(a)*ry*rr,r=0.6+R()*1.1;g.fillStyle=hsl(88+R()*30,45+R()*20,16+R()*16+(1-rr)*8);g.beginPath();g.arc(px,py,r,0,TAU);g.fill()}
+    for(let q=0;q<26;q++){const a=R()*TAU,rr=Math.sqrt(R())*0.9;g.fillStyle=hsl(80+R()*20,60,48+R()*12,0.7);g.beginPath();g.arc(x+Math.cos(a)*rx*rr-0.3,y+Math.sin(a)*ry*rr-0.3,0.3,0,TAU);g.fill()}}
+  else if(d.type==='mare'){const rx=w/2,ry=w*0.34;g.fillStyle='rgba(30,20,12,0.75)';blobPath(g,x,y,rx*1.18,ry*1.22,0,R,14,0.12);g.fill();
+    for(let q=0;q<9;q++){const a=R()*TAU;g.fillStyle=`hsl(30,6%,${40+R()*25}%)`;g.beginPath();g.ellipse(x+Math.cos(a)*rx*1.08,y+Math.sin(a)*ry*1.1,0.8+R()*0.9,0.6+R()*0.6,a,0,TAU);g.fill()}
+    blobPath(g,x,y,rx,ry,0,decoRng(d),14,0.1);const gr=g.createRadialGradient(x,y,0,x,y,rx);gr.addColorStop(0,'#0e2f52');gr.addColorStop(0.7,'#1d5a8e');gr.addColorStop(1,'#3d84ba');g.fillStyle=gr;g.fill();
+    g.save();g.clip();g.fillStyle='rgba(255,255,255,0.22)';g.beginPath();g.ellipse(x-rx*0.35,y-ry*0.4,rx*0.35,ry*0.18,-0.3,0,TAU);g.fill();
+    g.strokeStyle='rgba(180,225,255,0.55)';g.lineWidth=0.25;for(let q=0;q<2;q++){const rr=((simT*5+d.seed*20+q*6)%12);g.globalAlpha=1-rr/12;g.beginPath();g.ellipse(x+rx*0.15,y+ry*0.1,rr,rr*0.7,0,0,TAU);g.stroke()}g.restore()}
+  else if(d.type==='liege'){const L=w/2,th=w*0.17,dir=d.dir||1,N=14,pts=[],rough=[];
+    for(let q=0;q<=N;q++){const t=q/N;pts.push([x-L+t*2*L,y+Math.sin(t*Math.PI)*w*0.2*dir]);rough.push([0.8+R()*0.4,0.8+R()*0.4])}
+    const half=t=>th*(0.35+0.65*Math.pow(Math.sin(t*Math.PI),0.6));
+    const outline=()=>{g.beginPath();pts.forEach((p,q)=>{const n=half(q/N)*rough[q][0];q?g.lineTo(p[0],p[1]-n):g.moveTo(p[0],p[1]-n)});for(let q=N;q>=0;q--){const n=half(q/N)*rough[q][1];g.lineTo(pts[q][0],pts[q][1]+n)}g.closePath()};
+    g.save();g.translate(0.9,1.3);g.fillStyle='rgba(0,0,0,0.4)';outline();g.fill();g.restore();
+    outline();const gr=g.createLinearGradient(x,y-th*1.4,x,y+th*1.4);gr.addColorStop(0,'#a87c50');gr.addColorStop(0.45,'#7a5432');gr.addColorStop(1,'#46301a');g.fillStyle=gr;g.fill();
+    g.save();outline();g.clip();
+    // craquelures dans le sens de la longueur, comme une vraie écorce de chêne-liège
+    for(let k=0;k<6;k++){const off=(k/5-0.5)*1.6;g.strokeStyle=k%2?'rgba(40,24,10,0.65)':'rgba(30,18,6,0.5)';g.lineWidth=0.25+R()*0.25;g.beginPath();
+      let st=Math.floor(R()*4);for(let q=st;q<=Math.min(N,st+6+Math.floor(R()*6));q++){const t=q/N,p=pts[q],yy=p[1]+off*half(t)+(R()-0.5)*0.6;q===st?g.moveTo(p[0],yy):g.lineTo(p[0],yy)}g.stroke()}
+    for(let q=0;q<22;q++){const p=pts[Math.floor(R()*N)],t=R();g.fillStyle=`rgba(${R()<0.5?'205,165,115':'60,38,18'},0.45)`;g.beginPath();g.ellipse(p[0]+(R()-0.5)*3,p[1]+(t-0.5)*th*1.6,0.6+R()*0.6,0.25,0,0,TAU);g.fill()}
+    g.restore();outline();g.strokeStyle='rgba(25,15,6,0.6)';g.lineWidth=0.3;g.stroke()}
+  else if(d.type==='coquille'){const r=w*0.36;decoShadow(g,x,y,r,r,0,0.4);g.fillStyle=radial(g,x,y,r,[[0,'#f0d6a4'],[0.6,'#c9a06a'],[1,'#8e6a40']]);g.beginPath();g.arc(x,y,r,0,TAU);g.fill();
+    g.strokeStyle='#6a4520';g.lineWidth=0.45;g.beginPath();for(let a=0;a<TAU*2.6;a+=0.15){const rr=r*0.95*(1-a/(TAU*2.9));g.lineTo(x+Math.cos(a+rot)*rr,y+Math.sin(a+rot)*rr)}g.stroke();
+    g.fillStyle='#2a1a0c';g.beginPath();g.ellipse(x+Math.cos(rot+0.3)*r*0.75,y+Math.sin(rot+0.3)*r*0.75,r*0.3,r*0.18,rot+1.8,0,TAU);g.fill()}
+  else if(d.type==='champi'){const n=3+Math.floor(R()*3);for(let q=0;q<n;q++){const px=x+(q-(n-1)/2)*2.8+(R()-0.5),py=y+(R()-0.5)*2.4,r=1.4+R()*1.2;
+      decoShadow(g,px,py,r,r,0,0.35);g.fillStyle=radial(g,px,py,r,[[0,'#f2e2c4'],[0.55,'#c98a52'],[1,'#7a4220']]);g.beginPath();g.arc(px,py,r,0,TAU);g.fill();
+      if(R()<0.5){g.fillStyle='rgba(255,250,235,0.85)';for(let s=0;s<3;s++){g.beginPath();g.arc(px+(R()-0.5)*r,py+(R()-0.5)*r,0.22,0,TAU);g.fill()}}}}
+  g.restore()}};
+
+// ---------- bac à sable : fiche d'aide quand on prend une bête (nourriture, prédateurs, besoins) ----------
+// Pour équilibrer le bac : ce que la bête mange (et s'il y en a), qui la mange (et s'il y en a), où la poser.
+// Ressources : 'plante','fleurs','litiere','graine','cadavre','miellat' ; sinon un id d'espèce.
+const RES={plante:{ic:'🌱',nom:'Plantes'},fleurs:{ic:'🌸',nom:'Fleurs ouvertes'},litiere:{ic:'🍂',nom:'Litière'},graine:{ic:'🌾',nom:'Graines'},cadavre:{ic:'💀',nom:'Cadavres'},miellat:{ic:'🍯',nom:'Miellat (pucerons)'}};
+const CHASSE_SOL=['cloporte','lombric','fourmi','phasme','escargot','papillon','tenebrion','coccinelle'];
+const REL={
+  fourmi:{mange:['miellat','puceron','graine','cadavre'],par:['scolopendre','scorpion','araignee:sol']},
+  puceron:{mange:['plante'],par:['coccinelle','mante']},
+  coccinelle:{mange:['puceron'],par:['araignee','scolopendre','mante']},
+  cloporte:{mange:['litiere','cadavre'],par:['scolopendre','scorpion','araignee:sol']},
+  lombric:{mange:['litiere'],par:['scolopendre','araignee:sol']},
+  scolopendre:{mange:['cloporte','lombric','fourmi','coccinelle','rhinoceros'],par:[]},
+  araignee:{mange:['abeille','mouche','coccinelle','papillon'],par:['mante']},
+  'araignee:sol':{mange:[...CHASSE_SOL,'mouche'],par:[]},
+  'araignee:saut':{mange:['mouche','papillon','puceron','abeille','chenille'],par:['mante','araignee']},
+  abeille:{mange:['fleurs'],par:['araignee','mante']},
+  mouche:{mange:['cadavre'],par:['araignee','mante']},
+  phasme:{mange:['plante'],par:['araignee:sol']},
+  mante:{mange:['mouche','abeille','papillon','puceron'],par:['mante']},
+  escargot:{mange:['litiere','plante'],par:['scolopendre','araignee:sol']},
+  papillon:{mange:['fleurs','plante'],par:['araignee','mante','araignee:sol']},
+  scorpion:{mange:['tenebrion','cloporte','bousier','fourmi'],par:[]},
+  tenebrion:{mange:['litiere','graine','cadavre'],par:['scorpion']},
+  bousier:{mange:['litiere','cadavre'],par:['scorpion']},
+  rhinoceros:{mange:['litiere','plante'],par:['scolopendre']}};
+// les araignées chasseuses (loup, sauteuse, mygales) ne tissent pas : elles chassent au sol
+const relKey=id=>{const g=grpOf(id);if(g==='araignee'&&VSP[id]&&VSP[id].beh)return VSP[id].beh==='sauteuse'?'araignee:saut':'araignee:sol';return g};
+function present(r){const n=counts();
+  if(r==='plante')return plants.filter(p=>p.alive).length;
+  if(r==='fleurs')return plants.filter(p=>p.alive&&p.fl&&p.fl.open).length;
+  if(RES[r])return items.filter(it=>it.type===r&&!it.dead&&!it.carried).length;
+  if(r==='araignee:sol')return creatures.filter(c=>!c.dead&&c.sp.id==='araignee'&&c.sp.beh).length;
+  if(r==='araignee')return creatures.filter(c=>!c.dead&&c.sp.id==='araignee'&&!c.sp.beh).length;
+  return n[r]||0}
+function relLabel(r){if(RES[r])return RES[r];if(r==='araignee:sol')return {ic:'🕷',nom:'Araignées chasseuses'};if(r==='araignee')return {ic:'🕸',nom:'Araignées à toile'};const g=grpOf(r);return {ic:FICHES[g]?FICHES[g].ic:'',nom:grpNom(g)}}
+let aideId=null,aideOff=false;
+function aideHTML(id){const k=relKey(id),R=REL[k];if(!R)return '';const g=grpOf(id),F=FICHES[baseOf(id)]||FICHES[g]||{};
+  const pill=(r,kind)=>{const L=relLabel(r),n=present(r),cls=kind==='mange'?(n?'ok':'manque'):(n?'danger':'calme');return `<span class="apill ${cls}">${L.ic} ${L.nom} <b>${n||'—'}</b></span>`};
+  const mangeOk=R.mange.some(r=>present(r)>0),parN=R.par.reduce((a,r)=>a+present(r),0);
+  const bilan=!mangeOk?'⚠ Rien à manger dans ce bac pour l\'instant':parN?`⚠ ${parN} prédateur${parN>1?'s':''} dans le bac : garde assez de ${(w=>/[sx]$/.test(w)?w:w+'s')(grpNom(g).toLowerCase())}`:'✔ De quoi manger, aucun prédateur';
+  return `<div class="ahead"><b>${F.ic||''} ${spName(id)}</b><span class="abilan ${!mangeOk||parN?'warn':''}">${bilan}</span><button class="ax" title="Masquer l'aide">✕</button></div>
+   <div class="arow"><span class="alab">Mange</span>${R.mange.map(r=>pill(r,'mange')).join('')}</div>
+   <div class="arow"><span class="alab">Mangé par</span>${R.par.length?R.par.map(r=>pill(r,'par')).join(''):'<span class="apill calme">personne ici</span>'}</div>
+   ${F.besoin?`<div class="arow"><span class="alab">Besoin</span><span class="atxt">${F.besoin}</span></div>`:''}`}
+function aideShow(){const el=$('aide');if(!el)return;const on=lvl&&lvl.sandbox&&state==='play'&&tool&&!aideOff&&!drawer&&OPT.tips!==false&&REL[relKey(tool)];
+  if(!on){el.style.display='none';aideId=null;return}
+  el.innerHTML=aideHTML(tool);el.style.display='block';aideId=tool;el.querySelector('.ax').onclick=()=>{aideOff=true;aideShow()}}
+(()=>{const el=document.createElement('div');el.id='aide';document.body.appendChild(el)})();
+const pickTool1=pickTool;pickTool=function(id,fromDrawer){const r=pickTool1(id,fromDrawer);if(id!==aideId)aideOff=false;aideShow();return r};
+const closeDrawer1=closeDrawer;closeDrawer=function(){closeDrawer1();aideShow()};
+const openDrawer1=openDrawer;openDrawer=function(c){openDrawer1(c);aideShow()};
+// mise à jour des nombres pendant le jeu
+setInterval(()=>{if(aideId&&state==='play')aideShow();else if($('aide')&&$('aide').style.display!=='none')aideShow()},1000);
+if(window.__sim)window.__sim.aide=()=>{const el=$('aide');return el&&el.style.display!=='none'?el.innerText.replace(/\s+/g,' '):''};
+
+// ---------- panneau de contrôle du matériel, à côté du vivarium ----------
+// CTRL : 'aucun' (réglages seulement en touchant les appareils en 3/4),
+//        'panneau' (panneau à droite sur grand écran, tiroir du bas sur téléphone),
+//        'barre' (colonne d'icônes avec l'état de chaque appareil ; un clic ouvre ses réglages).
+let CTRL='barre'; // choix de l'utilisateur : barre compacte, un clic ouvre les réglages
+const CTRL_IDS=['thermo','spot','neon','mist','pump','heat','vent'];
+const CTRL_NOM={thermo:['🌡','Thermo-hygromètre'],spot:['💡','Spot LED'],neon:['▬','Néon T5'],mist:['💨','Brumisateur'],pump:['🚰','Réservoir'],heat:['🔥','Tapis chauffant'],vent:['🌀','Ventilation']};
+const fr1=v=>v.toFixed(1).replace('.',',');
+function ctrlEtat(id){if(devLocked(id))return '🔒';
+  if(id==='thermo')return `${fr1(temp())} °C · ${Math.round(surfWet()*100)} %`;
+  if(id==='spot')return DEV.spot.on?`${DEV.spot.int} %`:'éteint';
+  if(id==='neon')return DEV.neon.on?`${DEV.neon.int} %`:'éteint';
+  if(id==='mist'){const broken=lvl.showers===false||!has('prog');return broken?'manuel':DEV.mist.auto?`auto · ${Math.max(0,Math.ceil(showerT))} s`:'manuel'}
+  if(id==='pump')return `${Math.round(DEV.pump.level)} %`;
+  if(id==='heat')return DEV.heat.on?`→ ${DEV.heat.target} °C`:'éteint';
+  if(id==='vent')return DEV.vent.open?'ouverte':'fermée';return ''}
+const ctrlOn=()=>CTRL!=='aucun'&&state==='play';
+const ctrlWide=()=>window.innerWidth>=1000&&!LAND;
+let ctrlOpen=false,ctrlBusy=0;
+(()=>{const p=document.createElement('div');p.id='ctrl';document.body.appendChild(p);
+  const b=document.createElement('button');b.id='ctrlbtn';b.textContent='🎛 Matériel';document.body.appendChild(b);b.onclick=()=>{ctrlOpen=!ctrlOpen;ctrlDraw()};
+  const r=document.createElement('div');r.id='ctrlbar';document.body.appendChild(r);
+  p.addEventListener('pointerdown',()=>{ctrlBusy=performance.now()+1e5});addEventListener('pointerup',()=>{if(ctrlBusy)ctrlBusy=performance.now()+400})})();
+function ctrlSection(id){const [ic,nom]=CTRL_NOM[id];
+  let body=devLocked(id)?`<p class="dim">${lockTxt(DEV_KEY[id])}</p>`:devHTML(id).replace(/<h2>[^<]*<\/h2>/,'');
+  // thermomètre : dans le panneau, seulement les chiffres (le cadran et la courbe restent dans sa fenêtre)
+  if(id==='thermo')body=body.replace(/<svg[\s\S]*?<\/svg>/g,'').replace(/<img [^>]*>/g,'').replace(/<p class="dim">La dernière minute\.<\/p>/,'');
+  return `<section class="cs" data-id="${id}"><h3>${ic} ${nom}<span class="cst">${ctrlEtat(id)}</span></h3><div class="csb">${body}</div></section>`}
+function ctrlDraw(){const p=$('ctrl'),b=$('ctrlbtn'),r=$('ctrlbar');if(!p)return;
+  const panel=ctrlOn()&&CTRL==='panneau',bar=ctrlOn()&&CTRL==='barre';
+  document.body.classList.toggle('ctrlw',panel&&ctrlWide());
+  b.style.display=panel&&!ctrlWide()?'block':'none';
+  p.style.display=panel&&(ctrlWide()||ctrlOpen)?'block':'none';
+  r.style.display=bar?'flex':'none';document.body.classList.toggle('ctrlb',bar);
+  if(p.style.display==='block'){p.classList.toggle('sheet',!ctrlWide());
+    p.innerHTML=`<div class="chead"><b>🎛 Matériel</b><span class="dim">${isDay()?'☀ jour':'☾ nuit'} · métabolisme ×${fr1(metabF())}</span>${ctrlWide()?'':'<button class="cx">✕</button>'}</div>`+CTRL_IDS.map(ctrlSection).join('');
+    for(const s of p.querySelectorAll('.cs'))wireDev(s,s.dataset.id,ctrlDraw,ctrlDraw);
+    const x=p.querySelector('.cx');if(x)x.onclick=()=>{ctrlOpen=false;ctrlDraw()}}
+  if(bar){r.innerHTML=CTRL_IDS.map(id=>`<button data-id="${id}" class="${devLocked(id)?'lock':''}" title="${CTRL_NOM[id][1]}"><span class="ci">${CTRL_NOM[id][0]}</span><span class="cs2">${id==='thermo'&&!devLocked(id)?fr1(temp())+'°':ctrlEtat(id).replace('auto · ','⏱ ')}</span></button>`).join('');
+    r.querySelectorAll('button').forEach(bt=>bt.onclick=()=>openDev(bt.dataset.id))}}
+// mise à jour de l'état chaque seconde (sauf pendant qu'on manipule un réglage)
+setInterval(()=>{if(CTRL==='aucun')return;if(performance.now()<ctrlBusy){const p=$('ctrl');if(p)for(const s of p.querySelectorAll('.cs'))s.querySelector('.cst').textContent=ctrlEtat(s.dataset.id);return}ctrlDraw()},1000);
+// le panneau large prend de la place à droite : la zone de jeu se réduit d'autant
+const resize1=resize;resize=function(){resize1();
+  // paysage sur téléphone : la barre d'état prend une ligne en bas de la zone de jeu
+  if(CTRL==='barre'&&ctrlOn()&&LAND){BOT=48;if(COLS)camFit()}
+  if(CTRL==='panneau'&&ctrlOn()&&ctrlWide()){CVR+=318;W=window.innerWidth-CVL-CVR;cv.width=W*DPR;cv.style.width=W+'px';if(COLS)camFit()}};
+let ctrlLast='';setInterval(()=>{const k=CTRL+'|'+ctrlOn()+'|'+ctrlWide();if(k!==ctrlLast){ctrlLast=k;resize();ctrlDraw()}},300);
+
 // ================= CORRECTIFS DE RECETTE =================
 // HUD : le sélecteur de vues et la barre de gauche se placent sous le HUD, quelle que soit sa hauteur
 {const hud2=hud;hud=function(){hud2();try{const hb=Math.max(66,hudEl.getBoundingClientRect().bottom+4);$('viewsw').style.top=hb+'px';$('vnav').style.top=(hb+38)+'px';$('vstrip').style.top=(hb+76)+'px'}catch(e){}}}
 // bête minuscule à l'écran : dessin simplifié (rapide), avec sa couleur et son orientation
-function drawTiny(c){const L=realLen(c),a=Math.cos(c.ang)>=0?0:Math.PI;ctx.fillStyle=c.cLine||'#cfc';ctx.beginPath();ctx.ellipse(c.x,c.y-L*0.25,L*0.5,Math.max(0.6,L*0.2),c.fly?0:(c.sp.chain?Math.atan2(Math.sin(c.ang),Math.cos(c.ang)):a),0,TAU);ctx.fill()}
+function drawTiny(c){const L=realLen(c),a=Math.cos(c.ang)>=0?0:Math.PI,rot=c.fly?0:(c.sp.chain?Math.atan2(Math.sin(c.ang),Math.cos(c.ang)):a);
+  if(!FIN()){ctx.fillStyle=c.cLine||'#cfc';ctx.beginPath();ctx.ellipse(c.x,c.y-L*0.25,L*0.5,Math.max(0.6,L*0.2),rot,0,TAU);ctx.fill();return}
+  // mini silhouette : corps fin + pattes en traits (pas de tache)
+  const col=NAT()?natLine(c):(c.cLine||'#cfc'),px=1/camZ,h=Math.max(0.35*px*2,L*0.13);ctx.save();ctx.translate(c.x,c.y-Math.max(h,L*0.12));ctx.rotate(rot);
+  if(!c.fly&&!c.sp.chain&&L*camZ>=2.5){ctx.strokeStyle=col;ctx.globalAlpha=0.75;ctx.lineWidth=Math.max(0.6*px,L*0.04);ctx.beginPath();for(const q of [-0.3,0,0.3]){ctx.moveTo(q*L,0);ctx.lineTo(q*L+L*0.12,h*2.4)}ctx.stroke()}
+  ctx.globalAlpha=1;ctx.fillStyle=NAT()?natFill(c):col;ctx.beginPath();ctx.ellipse(0,0,L*0.48,h,0,0,TAU);ctx.fill();if(NAT()){ctx.strokeStyle=col;ctx.lineWidth=0.6*px;ctx.stroke()}ctx.restore()}
 // retour du briefing vers la liste des niveaux
 $('bbrief').onclick=()=>{$('brief').style.display='none';showMenu()};
 // noms courts lisibles pour les larves
@@ -3415,6 +4109,8 @@ for(const v of ROOM.list)if(v.name)v.name=String(v.name).replace(/[<>&"'`]/g,'')
 // effacer la progression : tout, sauf les options et la décoration de la salle, puis on recharge
 {const oo=openOpts;openOpts=function(){oo();const b=$('oreset');if(!b)return;let arm=false;b.onclick=()=>{if(!arm){arm=true;b.textContent='⚠ Toucher encore pour tout effacer';return}
   try{for(const k of Object.keys(localStorage))if(k.startsWith('biome_')&&k!=='biome_opts'&&k!=='biome_style')localStorage.removeItem(k)}catch(e){}location.reload()}};$('topt').onclick=()=>openOpts()}
+// iOS n'applique l'effet d'appui (:active) qu'avec un écouteur de toucher sur la page
+document.addEventListener('touchstart',()=>{},{passive:true});
 
 
 })();
