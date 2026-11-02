@@ -2,7 +2,7 @@ const {chromium}=require('playwright');
 (async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:800},deviceScaleFactor:2});
 const errs=[];p.on('pageerror',e=>errs.push(e.message+(e.stack||'').split('\n')[1]));
 await p.goto('file://'+require('path').resolve(__dirname,'../biome.html'));await p.evaluate(()=>localStorage.clear());await p.reload();
-await p.click('#tsand');await p.click('#radd');await p.mouse.click(200,90);await p.click('#radd');await p.waitForTimeout(300);
+await p.click('#tsand');await p.click('.slotfree');await p.mouse.click(200,90);await p.click('.slotfree');await p.waitForTimeout(300);
 // link from sheet of viv2
 await p.locator('#rsheet .tubes [data-l]').first().click();await p.waitForTimeout(200);await p.screenshot({path:'x1.png'});
 await p.mouse.click(200,90);await p.waitForTimeout(300);await p.screenshot({path:'x2.png'});

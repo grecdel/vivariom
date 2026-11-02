@@ -3,7 +3,7 @@ const {chromium}=require('playwright');
 const errs=[];p.on('pageerror',e=>errs.push(e.message+(e.stack||'').split('\n')[1]));
 await p.goto('file://'+require('path').resolve(__dirname,'../biome.html'));await p.evaluate(()=>localStorage.clear());await p.reload();
 await p.click('#tsand');await p.click('#rstyle');await p.click('[data-k=mur][data-v=sauge]');await p.click('[data-k=sol][data-v=carreau]');await p.click('[data-k=cadre][data-v=bois]');await p.waitForTimeout(100);await p.screenshot({path:'y0.png'});await p.click('#stok');
-await p.click('#radd');await p.click('#rsheet .cin');await p.waitForTimeout(300);
+await p.click('.slotfree');await p.click('#rsheet .cin');await p.waitForTimeout(300);
 await p.click('.cat[data-cat=betes]');await p.waitForTimeout(400);await p.screenshot({path:'y1.png'});
 await p.evaluate(()=>{for(const [t,x,y] of [["araignee:mygale",150,140],["araignee:mygale_bleue",320,140],["fourmi:noire",250,140],["fourmi:moissonneuse",400,140],["coccinelle:asiatique",200,80],["abeille:bourdon",150,60],["scolopendre:iule",300,140],["cloporte:boule",100,140],["plante:fougere",80,100],["plante:gramin",180,100],["plante:trefle",280,100],["plante:ronce",380,100],["liege",120,100],["volcan",230,100],["coquille",330,100],["champi",430,100]])window.__sim.tap(t,x,y);window.__sim.run(40)});
 await p.click('.cat[data-cat=betes]');await p.waitForTimeout(200);await p.screenshot({path:'y2.png'});

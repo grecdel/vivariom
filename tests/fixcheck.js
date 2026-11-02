@@ -2,7 +2,7 @@ const {chromium}=require('playwright');
 (async()=>{const b=await chromium.launch();const out=[];const errs=[];
 for(const [w,h] of [[360,740],[960,600],[1280,720],[844,390]]){const p=await b.newPage({viewport:{width:w,height:h}});p.on('pageerror',e=>errs.push(w+':'+e.message));
  await p.goto('file://'+require('path').resolve(__dirname,'../biome.html'));await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForTimeout(200);
- await p.click('#tsand');await p.click('#radd');await p.waitForTimeout(400);
+ await p.click('#tsand');await p.click('.slotfree');await p.waitForTimeout(400);
  const r=await p.evaluate(()=>{const s=document.getElementById('rsheet');const c=s.querySelector('.cin');const bb=c.getBoundingClientRect();return [Math.round(bb.bottom),innerHeight,s.scrollHeight>s.clientHeight]});
  await p.screenshot({path:`tests/fx_sheet_${w}.png`});
  out.push(`${w}x${h} sheet Entrer bottom ${r[0]} / ${r[1]} scrollable ${r[2]}`);
