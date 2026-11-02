@@ -2,7 +2,12 @@
 // HUD : le sélecteur de vues et la barre de gauche se placent sous le HUD, quelle que soit sa hauteur
 {const hud2=hud;hud=function(){hud2();try{const hb=Math.max(66,hudEl.getBoundingClientRect().bottom+4);$('viewsw').style.top=hb+'px';$('vnav').style.top=(hb+38)+'px';$('vstrip').style.top=(hb+76)+'px'}catch(e){}}}
 // bête minuscule à l'écran : dessin simplifié (rapide), avec sa couleur et son orientation
-function drawTiny(c){const L=realLen(c),a=Math.cos(c.ang)>=0?0:Math.PI;ctx.fillStyle=c.cLine||'#cfc';ctx.beginPath();ctx.ellipse(c.x,c.y-L*0.25,L*0.5,Math.max(0.6,L*0.2),c.fly?0:(c.sp.chain?Math.atan2(Math.sin(c.ang),Math.cos(c.ang)):a),0,TAU);ctx.fill()}
+function drawTiny(c){const L=realLen(c),a=Math.cos(c.ang)>=0?0:Math.PI,rot=c.fly?0:(c.sp.chain?Math.atan2(Math.sin(c.ang),Math.cos(c.ang)):a);
+  if(!FIN()){ctx.fillStyle=c.cLine||'#cfc';ctx.beginPath();ctx.ellipse(c.x,c.y-L*0.25,L*0.5,Math.max(0.6,L*0.2),rot,0,TAU);ctx.fill();return}
+  // mini silhouette : corps fin + pattes en traits (pas de tache)
+  const col=NAT()?natLine(c):(c.cLine||'#cfc'),px=1/camZ,h=Math.max(0.35*px*2,L*0.13);ctx.save();ctx.translate(c.x,c.y-Math.max(h,L*0.12));ctx.rotate(rot);
+  if(!c.fly&&!c.sp.chain&&L*camZ>=2.5){ctx.strokeStyle=col;ctx.globalAlpha=0.75;ctx.lineWidth=Math.max(0.6*px,L*0.04);ctx.beginPath();for(const q of [-0.3,0,0.3]){ctx.moveTo(q*L,0);ctx.lineTo(q*L+L*0.12,h*2.4)}ctx.stroke()}
+  ctx.globalAlpha=1;ctx.fillStyle=NAT()?natFill(c):col;ctx.beginPath();ctx.ellipse(0,0,L*0.48,h,0,0,TAU);ctx.fill();if(NAT()){ctx.strokeStyle=col;ctx.lineWidth=0.6*px;ctx.stroke()}ctx.restore()}
 // retour du briefing vers la liste des niveaux
 $('bbrief').onclick=()=>{$('brief').style.display='none';showMenu()};
 // noms courts lisibles pour les larves

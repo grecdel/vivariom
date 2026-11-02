@@ -70,6 +70,7 @@ python3 assemble.py && node tests/fixcheck.js && node tests/all_lv.js && node te
 `__sim.startLevel` appelle la version non enveloppée : `#vnav` ne s'affiche pas dans les tests. C'est normal.
 
 ## Points ouverts (connus)
+- Style de dessin des bêtes : `DESSIN` en tête de profile.js ('actuel', 'fin', 'nature') ; prototypes proposés, choix de l'utilisateur en attente (défaut : 'actuel'). `drawTiny` (fixes.js) suit aussi ce réglage.
 - Paysage sur téléphone (hauteur < 520 px) : à valider sur un vrai téléphone (toucher, rotation, mode gaucher).
 
 ## Publication
