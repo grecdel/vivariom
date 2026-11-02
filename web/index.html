@@ -289,6 +289,12 @@ body.obs>*:not(#c):not(#obsx):not(#toast){display:none!important}body.obs #obsx{
 .etape{position:absolute;width:68px;display:flex;flex-direction:column;align-items:center;background:none;border:0;color:#eee;padding:0;font:600 12px -apple-system,Roboto,sans-serif;text-align:center}
 .etape .eic{width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;background:#16301a;border:3px solid #8bff6a;box-shadow:0 4px 14px #000a}
 .etape b{width:130px;margin-top:4px;text-shadow:0 1px 3px #000}.etape small{color:#bcd;font-size:11px}.etape.lock{opacity:.5}.etape.lock .eic{border-color:#555;background:#1a1a1a}.etape.fini .eic{border-color:#ffe94d;background:#2a2608}
+/* Soins (soins.js) */
+#soin{display:none;position:fixed;left:8px;right:8px;bottom:134px;z-index:5;background:#0e0b0bf4;border:1px solid #b07a4a;border-radius:12px;padding:8px 10px;font:12.5px/1.4 -apple-system,Roboto,sans-serif;color:#eee;box-shadow:0 6px 20px #000a}
+#soin b{font-size:14px;color:#ffd9a0}#soin p{margin:4px 0}#soin ol{margin:4px 0 4px 18px;padding:0}#soin li{margin:2px 0}#soin .sx{position:absolute;right:6px;top:6px;background:#111;border:1px solid #444;color:#ccc;border-radius:50%;width:24px;height:24px;padding:0}
+#soin .sbtn{display:flex;gap:6px}#soin .sbtn .btn,#soin .sbtn .btn2{margin:4px 0 0;padding:7px;font-size:13px}
+@media (min-width:900px){body:not(.land) #soin{left:50%;right:auto;width:min(calc(100% - 16px),640px);transform:translateX(-50%)}}body.land #soin{left:184px;right:66px;bottom:auto;top:50px}body.land.left #soin{left:66px;right:184px}
+.soinchip{color:#ffb07a;cursor:pointer;margin-left:6px}.card.sante{border-color:#b07a4a}
 /* Confort (confort.js) */
 #tuto .thand{display:none;position:fixed;font-size:30px;z-index:41;pointer-events:none;filter:drop-shadow(0 2px 4px #000);animation:tap 1.1s ease-in-out infinite}
 @keyframes tap{0%,100%{transform:translate(0,10px) scale(1)}45%{transform:translate(0,0) scale(.88)}55%{transform:translate(0,0) scale(.88)}}
@@ -4404,11 +4410,31 @@ const EN_D={
 "Lisières humides, jardins et talus, surtout en juin et juillet.":"Damp woodland edges, gardens and banks, especially in June and July.","Sa lumière est froide : presque toute l'énergie devient lumière, sans chaleur, bien mieux qu'une ampoule.":"Its light is cold: almost all the energy becomes light, with no heat, far better than a light bulb.",
 "Une éclosion":"A hatching","Voir des petits sortir de leurs œufs.":"See babies come out of their eggs.","Une chasse":"A hunt","Voir un prédateur attraper sa proie.":"See a predator catch its prey.","Une métamorphose":"A metamorphosis","Voir une chrysalide ou une nymphe devenir adulte.":"See a chrysalis or a pupa become an adult.","Une fondation":"A founding","Voir une reine fonder sa colonie.":"See a queen found her colony.","Un piège de soie":"A silk trap","Voir une bête se prendre dans une toile.":"See a creature get caught in a web.","Des pucerons ailés":"Winged aphids","Voir des pucerons s'envoler d'une plante surpeuplée.":"See aphids fly off an overcrowded plant.","Sur le dos de maman":"On mum's back","Voir des petits scorpions portés par leur mère.":"See baby scorpions carried by their mother.","La lueur du ver luisant":"The glow-worm's light","Voir un ver luisant briller la nuit.":"See a glow-worm glow at night.","Le chant du grillon":"The cricket's song","Entendre (ou voir) un grillon chanter la nuit.":"Hear (or see) a cricket sing at night.","Une plante carnivore":"A carnivorous plant","Voir une dionée refermer son piège.":"See a flytrap close its trap.","Une guerre de fourmis":"An ant war","Voir deux colonies s'affronter.":"See two colonies fight.","Un champignon":"A fungus","Voir une bête attaquée par un champignon.":"See a creature attacked by a fungus.","Des moisissures":"Mould","Voir des moisissures sur un sol détrempé.":"See mould on soaked soil.","Une graine qui germe":"A sprouting seed","Voir une graine germer toute seule.":"See a seed sprout on its own.","Une ponte":"Egg laying","Voir une bête pondre ses œufs.":"See a creature lay its eggs.","Naturaliste":"Naturalist","Toutes les découvertes observées.":"All discoveries observed.","Savant":"Scholar","Un quiz sans faute.":"A perfect quiz.",
 "Des moments de vie à observer dans tes vivariums. Chaque découverte s'ajoute ici avec sa date.":"Moments of life to watch in your vivariums. Each discovery is added here with its date.","Laquelle de ces bêtes est la plus grande ?":"Which of these creatures is the biggest?","Or":"Gold","Jungle":"Jungle","🎁 Débloqué : le cadre":"🎁 Unlocked: the frame","et le mur":"and the wall","pour ta grande salle (🎨).":"for your big room (🎨).","🎁 Débloqué : le sol":"🎁 Unlocked: the floor","Sans faute, bravo !":"No mistakes, well done!","Relis les fiches et retente ta chance : un sans-faute débloque des décorations.":"Read the sheets again and try again: a perfect score unlocks decorations.","Rejouer":"Play again","✔ Bonne réponse !":"✔ Right answer!","✗ Raté…":"✗ Wrong…","🗺 Carte":"🗺 Map","↗ Partager la photo":"↗ Share the photo","Carte":"Map","Quiz":"Quiz","Découvertes":"Discoveries",
-
+"🧫 Des moisissures sur le sol":"🧫 Mould on the soil","Une bête est malade":"A creature is sick",
+"Le sol est trop mouillé : un petit champignon pousse.":"The soil is too wet: a tiny fungus is growing.",
+"Un champignon pousse quand le sol reste détrempé trop longtemps. Il affaiblit les bêtes et peut passer de l'une à l'autre.":"A fungus grows when the soil stays soaked for too long. It weakens the creatures and can spread from one to another.",
+"Pour l'aider":"To help it","Pour l'endiguer":"To stop it",
+"💨 Arrête la pluie un moment.":"💨 Stop the rain for a while.","🌀 Ouvre la fenêtre du bac (ventilation).":"🌀 Open the tank's window (ventilation).","💡 Laisse la lumière allumée : elle sèche le sol.":"💡 Leave the light on: it dries the soil.","✋ Éloigne la bête malade de ses amies.":"✋ Move the sick creature away from its friends.",
+"💨 Arrête de brumiser : coupe le programmateur du brumisateur un moment.":"💨 Stop misting: switch off the mister's timer for a while.",
+"💡 Garde la lumière allumée : elle chauffe et sèche le sol.":"💡 Keep the light on: it warms and dries the soil.",
+"🍂 Les moisissures mangent la litière et abîment les plantes : elles partent quand le sol sèche.":"🍂 Mould eats the leaf litter and damages plants: it goes away when the soil dries.",
+"✋ Isole la bête malade : prends ✋ Main, touche-la, puis touche un coin sec, loin des autres.":"✋ Isolate the sick creature: take ✋ Hand, touch it, then touch a dry corner, far from the others.",
+"Quand le sol est sec, la bête guérit toute seule.":"When the soil is dry, the creature heals by itself.",
+"La bête guérit quand le sol redevient sec (humidité du sol sous 45 %).":"The creature heals when the soil is dry again (soil moisture under 45%).",
+"🪄 Le faire pour moi":"🪄 Do it for me","J'ai compris":"Got it","soigner":"treat",
+"🪄 Brumisateur en pause 1 min, ventilation ouverte, lumière allumée : le sol va sécher.":"🪄 Mister paused for 1 min, ventilation open, light on: the soil will dry.",
+"💨 Le programmateur du brumisateur se remet en marche.":"💨 The mister's timer is running again.",
+"🍄 Une bête est malade : le sol est trop humide. Touche 🍄 en haut pour savoir quoi faire.":"🍄 A creature is sick: the soil is too damp. Touch 🍄 at the top to see what to do.",
+"🍄 Maladies et moisissures":"🍄 Diseases and mould","Santé du vivarium":"Vivarium health","D'où ça vient":"Where it comes from","Qui ne craint rien":"Who is safe","Comment l'endiguer":"How to stop it",
+"Un sol détrempé trop longtemps : un champignon blanc pousse sur les bêtes (elles s'affaiblissent et peuvent contaminer leurs voisines de la même espèce) et des moisissures couvrent le sol (elles abîment les plantes).":"Soil soaked for too long: a white fungus grows on the creatures (they weaken and can infect neighbours of the same species) and mould covers the soil (it damages plants).",
+"Les amis de l'humidité : lombrics, escargots, cloportes, vers luisants.":"The damp-lovers: earthworms, snails, woodlice, glow-worms.",
+"Brumiser moins, ouvrir la ventilation, garder la lumière, écarter la bête malade des autres. Elle guérit quand le sol redevient sec.":"Mist less, open the ventilation, keep the light on, move the sick creature away from the others. It heals when the soil is dry again.",
+"💡 Dans la nature aussi, l'humidité confinée favorise les champignons : c'est pour ça que les éleveurs aèrent leurs terrariums.":"💡 In nature too, trapped humidity helps fungi grow: that's why keepers ventilate their terrariums."
 };
 
 // Modèles : {} = morceau variable (traduit à son tour). Dans la traduction, {} = morceaux dans l'ordre, {0} {1}… = morceau n°.
 const EN_T=[
+["🍄 {} bêtes sont malades","🍄 {} creatures are sick"],["{} est guéri(e)","{} is cured"],["🌀 Ouvre la ventilation{} pour sécher l'air.","🌀 Open the ventilation{} to dry the air."],[" (pas encore débloquée ici)"," (not unlocked here yet)"],["Moisissures sur {} endroits.","Mould in {} places."],["Moisissures sur {} endroit.","Mould in {} place."],["{} — fais sécher le sol pour qu'elle guérisse","{} — dry the soil so it heals"],
 ["{} est morte","{} died"],["{} est mort de faim","{} died of hunger"],["{} est morte de faim","{} died of hunger"],["{} est mort de vieillesse","{} died of old age"],["{} est morte de vieillesse","{} died of old age"],["{} est mort","{} died"],
 ["{} a mangé : {}","{} ate: {}"],["{} pris(e) dans une toile","{} caught in a web"],
 ["🔒 Se débloque en réussissant le niveau {} « {} ».","🔒 Unlocked by completing level {} “{}”."],["{} Succès débloqué : {}","{} Achievement unlocked: {}"],["{} Succès débloqué :","{} Achievement unlocked:"],["Succès débloqué : {}","Achievement unlocked: {}"],
@@ -5295,6 +5321,58 @@ let CARTE=LS.get('biome_carte',true);
   $('phshare').onclick=async()=>{try{const img=document.querySelector('#photop img'),b=await (await fetch(img.src)).blob(),f=new File([b],'vivariom.png',{type:'image/png'});
     await navigator.share({files:[f],title:'Mon vivarium',text:'Mon vivarium dans Vivariom 🐜 https://grecdel.github.io/vivariom/'})}catch(e){}}}}
 if(window.__sim){window.__sim.quiz=()=>questions().map(q=>q.q+' → '+q.r.find(r=>r[1])[0]);window.__sim.decouv=()=>Object.keys(DEC).join(',');window.__sim.decouvre=decouvre}
+
+// ================= SOINS : expliquer et endiguer maladies et moisissures =================
+// Quand un champignon rend une bête malade ou que des moisissures apparaissent :
+// - en Facile (et en mode enfant, et la première fois dans un bac) : une carte d'aide pas à pas,
+//   avec un bouton « Le faire pour moi » ; la guérison est aussi plus rapide ;
+// - en Normal / Expert : un message court et un compteur 🍄 dans le HUD (toucher = l'aide).
+const aideForte=()=>!!(OPT.enfant||(lvl&&!lvl.sandbox&&DIFF==='facile'));
+let soinVu={},soinAuto=0;
+document.body.insertAdjacentHTML('beforeend','<div id="soin"></div>');
+function malades(){return creatures.filter(c=>!c.dead&&c.malade)}
+function moisi(){if(!MOI||MOI.length!==COLS)return 0;let n=0;for(let i=0;i<COLS;i++)if(MOI[i]>0.4)n++;return n}
+function soinCarte(type){const S=$('soin'),enf=!!OPT.enfant,m=malades().length,mo=moisi();
+  const titre=type==='moisi'?'🧫 Des moisissures sur le sol':`🍄 ${m>1?m+' bêtes sont malades':'Une bête est malade'}`;
+  const pourquoi=enf?'Le sol est trop mouillé : un petit champignon pousse.':'Un champignon pousse quand le sol reste détrempé trop longtemps. Il affaiblit les bêtes et peut passer de l\'une à l\'autre.';
+  const etapes=enf?['💨 Arrête la pluie un moment.','🌀 Ouvre la fenêtre du bac (ventilation).','💡 Laisse la lumière allumée : elle sèche le sol.','✋ Éloigne la bête malade de ses amies.']
+    :['💨 Arrête de brumiser : coupe le programmateur du brumisateur un moment.',`🌀 Ouvre la ventilation${devLocked('vent')?' (pas encore débloquée ici)':''} pour sécher l'air.`,'💡 Garde la lumière allumée : elle chauffe et sèche le sol.',type==='moisi'?'🍂 Les moisissures mangent la litière et abîment les plantes : elles partent quand le sol sèche.':'✋ Isole la bête malade : prends ✋ Main, touche-la, puis touche un coin sec, loin des autres.'];
+  S.innerHTML=`<button class="sx" id="soinx">✕</button><b>${titre}</b><p>${pourquoi}</p><p><u>${enf?'Pour l\'aider':'Pour l\'endiguer'}</u></p><ol>${etapes.map(e=>`<li>${e}</li>`).join('')}</ol>
+   <p class="dim">${enf?'Quand le sol est sec, la bête guérit toute seule.':'La bête guérit quand le sol redevient sec (humidité du sol sous 45 %). '+(mo?`Moisissures sur ${mo} endroit${mo>1?'s':''}.`:'')}</p>
+   <div class="sbtn">${aideForte()||lvl.sandbox?'<button class="btn" id="soinauto">🪄 Le faire pour moi</button>':''}<button class="btn2" id="soinok">J'ai compris</button></div>`;
+  S.style.display='block';$('soinx').onclick=$('soinok').onclick=()=>{S.style.display='none'};
+  const a=$('soinauto');if(a)a.onclick=()=>{soigner();S.style.display='none'}}
+function soigner(){const avant=DEV.mist.auto;DEV.mist.auto=false;if(!devLocked('vent'))DEV.vent.open=true;DEV.spot.on=true;soinAuto=60;soinAuto0=avant;
+  // les bêtes malades sont écartées vers l'endroit le plus sec
+  let best=0,bw=9;for(let i=4;i<COLS-4;i+=2){const w=WET[K(i,Math.min(ROWS-1,SURF[i]))];if(w<bw){bw=w;best=i}}
+  for(const c of malades())if(!c.fly&&c.sp.id!=='reine'){c.path=null;goTo(c,k=>Math.abs((k%COLS)-best)<=3,9000)}
+  say('🪄 Brumisateur en pause 1 min, ventilation ouverte, lumière allumée : le sol va sécher.');try{openDev(null)}catch(e){}}
+let soinAuto0=true,soinT=0;
+{const up=update;update=function(dt){up(dt);if(state!=='play')return;
+  if(soinAuto>0){soinAuto-=dt;if(soinAuto<=0&&soinAuto0&&lvl.showers!==false){DEV.mist.auto=true;say('💨 Le programmateur du brumisateur se remet en marche.')}}
+  soinT-=dt;if(soinT>0)return;soinT=1;const M=malades();
+  // en aide forte : guérison plus rapide dès que le sol sèche, contagion freinée
+  if(aideForte())for(const c of M){const i=clamp(Math.floor(c.x/CS),0,COLS-1),j=clamp(Math.floor((c.y-Y0)/CS)+1,0,ROWS-1);if((WET[K(i,j)]||0)<0.6&&Math.random()<0.12){c.malade=false;c.malT=0;c.humT=0;jlog('💚',`${nm(c)} est guéri(e)`)}}
+  const cle=(lvl.sandbox?'s'+(curViv&&curViv.id):'n'+lvlIdx);
+  if(M.length&&!soinVu[cle+'m']){soinVu[cle+'m']=1;if(aideForte()||(lvl.sandbox&&!LS.get('biome_soin_vu',0))){LS.set('biome_soin_vu',1);soinCarte('malade')}else say('🍄 Une bête est malade : le sol est trop humide. Touche 🍄 en haut pour savoir quoi faire.')}
+  if(moisi()>4&&!soinVu[cle+'o']){soinVu[cle+'o']=1;if(aideForte())soinCarte('moisi')}}}
+// compteur dans le HUD : touche-le pour l'aide
+{const h0=hud;hud=function(){h0();if(state!=='play')return;const m=malades().length,mo=moisi();if(!m&&mo<=4)return;
+  const r=hudEl.querySelector('.row:nth-child(2)')||hudEl.firstElementChild;if(!r)return;
+  r.insertAdjacentHTML('beforeend',`<span class="soinchip" data-soin="1">${m?'🍄'+m:''}${mo>4?' 🧫':''} <u>soigner</u></span>`)}}
+hudEl.addEventListener('click',e=>{if(e.target.closest('[data-soin]'))soinCarte(malades().length?'malade':'moisi')});
+{const sl=startLevel;startLevel=function(i){soinVu={};soinAuto=0;$('soin').style.display='none';sl(i)}}
+{const ev=enterViv;enterViv=function(v){soinVu={};soinAuto=0;$('soin').style.display='none';ev(v)}}
+// la mission de la bête malade dit quoi faire
+{const m0=mission;mission=function(c){const s=m0(c);return c&&c.malade?s+' — fais sécher le sol pour qu\'elle guérisse':s}}
+// une fiche « Maladies et moisissures » dans l'encyclopédie
+{const of=openFiches;openFiches=function(){of();const G=$('fgrid');if(!G||G.querySelector('.card.sante'))return;
+  G.insertAdjacentHTML('afterbegin',`<div class="card sante"><b>🍄 Maladies et moisissures</b><span class="badge">Santé du vivarium</span>
+   <p><u>D'où ça vient</u> Un sol détrempé trop longtemps : un champignon blanc pousse sur les bêtes (elles s'affaiblissent et peuvent contaminer leurs voisines de la même espèce) et des moisissures couvrent le sol (elles abîment les plantes).</p>
+   <p><u>Qui ne craint rien</u> Les amis de l'humidité : lombrics, escargots, cloportes, vers luisants.</p>
+   <p><u>Comment l'endiguer</u> Brumiser moins, ouvrir la ventilation, garder la lumière, écarter la bête malade des autres. Elle guérit quand le sol redevient sec.</p>
+   <p class="anec">💡 Dans la nature aussi, l'humidité confinée favorise les champignons : c'est pour ça que les éleveurs aèrent leurs terrariums.</p></div>`)}}
+if(window.__sim){window.__sim.soin=t=>soinCarte(t||'malade');window.__sim.rendreMalade=()=>{const c=creatures.find(c=>!c.dead&&!c.fly&&!['lombric','escargot','cloporte','luciole'].includes(c.sp.id));if(c){c.malade=true;c.malT=0}return !!c}}
 
 
 })();

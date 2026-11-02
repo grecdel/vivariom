@@ -25,7 +25,7 @@ python3 assemble.py        # produit biome.html (le jeu complet) et le dossier w
 Ordre des fichiers :
 - **core** : biome_core.js, variants.js, unlocks.js, decor.js, topview.js, profile.js, devices.js, links.js, lure.js, species2.js, species3.js
 - **main** : biome_main.js, menu.js, extras.js, tutorial.js, ambiance.js, save.js, bascule.js, tiroir.js, soie.js, instincts.js, decor_top.js, aide.js, ctrl.js, defis.js, langue.js, fixes.js (il remplace certaines fonctions)
-- **ajouts** (boucle à part dans assemble.py, après fixes.js) : progres.js, vie.js, milieu.js, salle2.js, confort.js, savoir.js
+- **ajouts** (boucle à part dans assemble.py, après fixes.js) : progres.js, vie.js, milieu.js, salle2.js, confort.js, savoir.js, soins.js
 
 ## Repères
 - **Monde** :
@@ -63,6 +63,7 @@ Ordre des fichiers :
 - **Milieu** (milieu.js) : plantes `arbo`, `dionee` (carnivore), `champignon` ; fruits (item `fruit`) ; plantes assoiffées affaissées ; moisissures (`MOI` par colonne) ; saisons en campagne (75 s chacune, dès le niveau 4) ; climat du bac (`v.climat` : tempéré, tropical, désert).
 - **Salle** (salle2.js) : partage d'un bac par code `VIVB1:` ou fichier `.vivarium` (📥 dans la salle), modèles Forêt/Désert/Mare, étiquette de couleur, mode observation 👁, rattrapage à l'ouverture (jusqu'à 5 min simulées selon l'absence, `v.vu`), carnet daté, album photo (IndexedDB `vivariom-album`), salle éclairée selon l'heure.
 - **Confort** (confort.js) : main animée du tutoriel, ↶ Annuler (20 s), appui long sur une bête = la suivre (🔍 loupe), accessibilité, sons (bourdonnements, pas, pluie), vibrations.
+- **Soins** (soins.js) : quand une bête est malade ou que le sol moisit, carte d'aide pas à pas (`#soin`) avec « 🪄 Le faire pour moi » en Facile, en mode enfant (`OPT.enfant`) et la première fois en bac à sable ; ailleurs, message court et 🍄 dans le HUD (toucher = l'aide) ; guérison plus rapide en Facile ; fiche « Maladies et moisissures ».
 - **Savoir** (savoir.js) : fiches enrichies (`PLUS` : où elle vit, anecdote, taille réelle), quiz (un sans-faute débloque des décors de salle), découvertes (`biome_decouv`), carte des chapitres en jardin (`biome_carte`), partage des photos.
 - **Sauvegardes** :
   - `LS.get/LS.set`, clés `biome_*` ;

@@ -35,7 +35,7 @@ rep("    if(i===0){ctx.globalAlpha=alpha;ctx.fillStyle=lc;ctx.fillRect(len/2-3,-
 core=open('biome_core.js').read()+'\n'+open('variants.js').read()+'\n'+open('unlocks.js').read()+'\n'+open('decor.js').read()+'\n'+open('topview.js').read()+'\n'+open('profile.js').read()+'\n'+open('devices.js').read()+'\n'+open('links.js').read()+'\n'+open('lure.js').read()+'\n'+open('species2.js').read()+'\n'+open('species3.js').read()
 main=open('biome_main.js').read()+'\n'+open('menu.js').read()+'\n'+open('extras.js').read()+"\n"+open('tutorial.js').read()+"\n"+open('ambiance.js').read()+'\n'+open('save.js').read()+'\n'+open('bascule.js').read()+'\n'+open('tiroir.js').read()+'\n'+open('soie.js').read()+'\n'+open('instincts.js').read()+'\n'+open('decor_top.js').read()+'\n'+open('aide.js').read()+'\n'+open('ctrl.js').read()+'\n'+open('defis.js').read()+'\n'+open('langue.js').read()+'\n'+open('fixes.js').read()+"\n"
 # fichiers ajoutés après fixes.js (modes de jeu, bêtes, milieu, salle, confort, savoir)
-for f in ['progres.js','vie.js','milieu.js','salle2.js','confort.js','savoir.js']:
+for f in ['progres.js','vie.js','milieu.js','salle2.js','confort.js','savoir.js','soins.js']:
     main+=open(f).read()+'\n'
 main=main.replace("for(const id of order)for(const c of creatures)if(c.sp.id===id)drawCreature(c,1,false);",
  "for(const id of order)for(const c of creatures)if(c.sp.id===id){drawProfile(c,1,false);if(c.load){const h=c.segs[0];ctx.fillStyle=c.load.type==='grain'?(c.load.t===1?'#8a6a3a':'#d8b060'):'#ffb43a';ctx.fillRect(h.x+Math.cos(h.a)*5-1.5,h.y+Math.sin(h.a)*5-1.5,3,3)}}")
@@ -330,6 +330,12 @@ body.obs>*:not(#c):not(#obsx):not(#toast){display:none!important}body.obs #obsx{
 .etape{position:absolute;width:68px;display:flex;flex-direction:column;align-items:center;background:none;border:0;color:#eee;padding:0;font:600 12px -apple-system,Roboto,sans-serif;text-align:center}
 .etape .eic{width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;background:#16301a;border:3px solid #8bff6a;box-shadow:0 4px 14px #000a}
 .etape b{width:130px;margin-top:4px;text-shadow:0 1px 3px #000}.etape small{color:#bcd;font-size:11px}.etape.lock{opacity:.5}.etape.lock .eic{border-color:#555;background:#1a1a1a}.etape.fini .eic{border-color:#ffe94d;background:#2a2608}
+/* Soins (soins.js) */
+#soin{display:none;position:fixed;left:8px;right:8px;bottom:134px;z-index:5;background:#0e0b0bf4;border:1px solid #b07a4a;border-radius:12px;padding:8px 10px;font:12.5px/1.4 -apple-system,Roboto,sans-serif;color:#eee;box-shadow:0 6px 20px #000a}
+#soin b{font-size:14px;color:#ffd9a0}#soin p{margin:4px 0}#soin ol{margin:4px 0 4px 18px;padding:0}#soin li{margin:2px 0}#soin .sx{position:absolute;right:6px;top:6px;background:#111;border:1px solid #444;color:#ccc;border-radius:50%;width:24px;height:24px;padding:0}
+#soin .sbtn{display:flex;gap:6px}#soin .sbtn .btn,#soin .sbtn .btn2{margin:4px 0 0;padding:7px;font-size:13px}
+@media (min-width:900px){body:not(.land) #soin{left:50%;right:auto;width:min(calc(100% - 16px),640px);transform:translateX(-50%)}}body.land #soin{left:184px;right:66px;bottom:auto;top:50px}body.land.left #soin{left:66px;right:184px}
+.soinchip{color:#ffb07a;cursor:pointer;margin-left:6px}.card.sante{border-color:#b07a4a}
 /* Confort (confort.js) */
 #tuto .thand{display:none;position:fixed;font-size:30px;z-index:41;pointer-events:none;filter:drop-shadow(0 2px 4px #000);animation:tap 1.1s ease-in-out infinite}
 @keyframes tap{0%,100%{transform:translate(0,10px) scale(1)}45%{transform:translate(0,0) scale(.88)}55%{transform:translate(0,0) scale(.88)}}
