@@ -36,6 +36,7 @@ function visiteTick(dt){const V=VISITE;if(!V||state!=='play'||view!=='side')retu
 $('vnav').insertAdjacentHTML('beforeend','<button id="vnvis" title="Visite guidée en plein écran">🎬</button>');
 $('vnvis').onclick=()=>visite(true);
 // ouverture directe en fond d'écran
+if(/[?&]fond=1/.test(location.search))document.body.classList.add('fond');
 if(/[?&]fond=1/.test(location.search))setTimeout(()=>{try{const v=ROOM.list[0];if(v){enterViv(v)}else{addViv();const w=ROOM.list[ROOM.list.length-1];if(w){w.modele='foret';enterViv(w)}}
   state='play';paused=false;last=performance.now();$('rsheet').classList.remove('open');$('rdim').style.display='none';setTimeout(()=>visite(true),400)}catch(e){}},600);
 

@@ -331,6 +331,8 @@ body.obs>*:not(#c):not(#obsx):not(#toast):not(#end):not(#brief):not(#absp){displ
 .etape{position:absolute;width:68px;display:flex;flex-direction:column;align-items:center;background:none;border:0;color:#eee;padding:0;font:600 12px -apple-system,Roboto,sans-serif;text-align:center}
 .etape .eic{width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;background:#16301a;border:3px solid #8bff6a;box-shadow:0 4px 14px #000a}
 .etape b{width:130px;margin-top:4px;text-shadow:0 1px 3px #000}.etape small{color:#bcd;font-size:11px}.etape.lock{opacity:.5}.etape.lock .eic{border-color:#555;background:#1a1a1a}.etape.fini .eic{border-color:#ffe94d;background:#2a2608}
+/* Fond d'écran (grand.js) */
+body.fond #toast,body.fond #obsx{display:none!important}
 /* Fiche à côté (grand.js) */
 #cote{display:none;position:fixed;right:0;top:0;bottom:0;width:var(--cote,0px);box-sizing:border-box;overflow-y:auto;background:#0b0e0bf6;border-left:1px solid #2d4a2f;padding:12px 12px 20px;color:#ddd;font:13px/1.45 -apple-system,Roboto,sans-serif;z-index:3}
 #cote h2{font:700 17px Georgia,serif;color:#fff;margin:2px 0 6px}#cote .cmis{color:#ffe94d;margin:4px 0 8px}#cote .badge{display:inline-block;background:#1a2a1a;border:1px solid #3d6b3f;border-radius:8px;padding:1px 7px;font-size:11.5px;margin:0 3px 6px 0}

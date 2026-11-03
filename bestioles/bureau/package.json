@@ -18,7 +18,7 @@
     "appId": "com.vivariom.bestioles",
     "productName": "Bestioles",
     "copyright": "© 2026 grecdel — tous droits réservés",
-    "files": ["main.js", "preload.js", "icone.png", "page/**"],
+    "files": ["main.js", "preload.js", "icone.png", "page/**", "jeu/**"],
     "artifactName": "Bestioles-${os}.${ext}",
     "win": { "target": "portable", "icon": "icone.png" },
     "portable": { "artifactName": "Bestioles-windows.exe" },

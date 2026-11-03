@@ -6,7 +6,17 @@ const path=require('path'),fs=require('fs'),os=require('os');
 if(process.platform==='linux'){app.commandLine.appendSwitch('enable-transparent-visuals');app.disableHardwareAcceleration()}
 if(!app.requestSingleInstanceLock()){app.quit()}
 
-let fen=null,icone=null,suivi=null;
+let fen=null,icone=null,suivi=null,fond=null;
+
+// ----- un vivarium vivant en fond d'écran (le jeu Vivariom en « visite guidée », derrière les fenêtres) -----
+function fondOn(){if(fond)return;const d=screen.getPrimaryDisplay(),b=d.bounds;
+  fond=new BrowserWindow({x:b.x,y:b.y,width:b.width,height:b.height,frame:false,resizable:false,movable:false,skipTaskbar:true,focusable:false,show:false,
+    type:process.platform==='linux'?'desktop':undefined,backgroundColor:'#000000',webPreferences:{contextIsolation:true,nodeIntegration:false}});
+  fond.setAlwaysOnTop(false);
+  fond.loadFile(path.join(__dirname,'jeu','index.html'),{query:{fond:'1'}});
+  fond.once('ready-to-show',()=>{if(!fond)return;fond.showInactive();if(process.platform!=='linux')fond.blur()});
+  fond.on('closed',()=>{fond=null;majMenu()});majMenu()}
+function fondOff(){if(fond){fond.destroy();fond=null}majMenu()}
 
 function allumer(){
   if(fen)return;
@@ -47,6 +57,7 @@ function majMenu(){if(!icone)return;
   icone.setToolTip(fen?'Bestioles : allumées (clic pour éteindre)':'Bestioles : éteintes (clic pour allumer)');
   icone.setContextMenu(Menu.buildFromTemplate([
     {label:fen?'Éteindre les bestioles':'Allumer les bestioles',click:basculer},
+    {label:'Vivarium en fond d\'écran',type:'checkbox',checked:!!fond,click:(it)=>it.checked?fondOn():fondOff()},
     {type:'separator'},
     {label:'Lancer au démarrage de l\'ordinateur',type:'checkbox',checked:demarrageAuto(),click:(it)=>reglerDemarrageAuto(it.checked)},
     {type:'separator'},

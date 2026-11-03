@@ -50,7 +50,7 @@ jobs:
           node-version: '22'
       - name: Préparer la page des bestioles
         shell: bash
-        run: cp -r bestioles/moteur bestioles/bureau/page
+        run: cp -r bestioles/moteur bestioles/bureau/page && mkdir -p bestioles/bureau/jeu && cp web/index.html bestioles/bureau/jeu/index.html
       - name: Fabriquer
         shell: bash
         working-directory: bestioles/bureau
