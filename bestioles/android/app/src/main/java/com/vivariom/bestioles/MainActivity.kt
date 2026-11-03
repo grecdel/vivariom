@@ -40,7 +40,7 @@ class MainActivity : Activity() {
             layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { topMargin = (10 * d).toInt() }
         }
         col.addView(texte("🐞 Bestioles", 26f, "#FFE94D"))
-        col.addView(texte("Des petites bêtes de Vivariom qui vivent sur ton écran : fourmis, coccinelle, araignée, papillon, mouches… Elles se promènent, chassent et s'évitent, par-dessus tes applis, sans rien toucher. Touche-en une : elle réagit. Les options sont sur le widget (⚙) et dans la notification."))
+        col.addView(texte("Des petites bêtes de Vivariom qui vivent sur ton écran : fourmis, coccinelle, araignée, papillon, mouches… Elles se promènent, chassent et s'évitent, par-dessus tes applis, sans rien toucher. Elles ne gênent jamais tes touches : tu peux écrire et toucher tes boutons à travers elles. Les options sont sur le widget (⚙) et dans la notification."))
         autoriser = bouton("1. Autoriser l'affichage par-dessus les autres applis", "#2A3A26", "#E8EEE4") {
             startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")))
         }

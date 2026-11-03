@@ -335,10 +335,10 @@ function majReglages(){menu.querySelectorAll('.rg').forEach(r=>{r.querySelector(
 function fermerMenu(){menu.hidden=true;selId=null;menuB=null}
 function hoteInteractif(v){if(window.bestiolesHote&&hoteInteractif.v!==v){hoteInteractif.v=v;window.bestiolesHote.interactif(v)}}
 addEventListener('pointerdown',e=>{if(!menu.hidden&&menu.contains(e.target))return;majPointeur(e.clientX,e.clientY);const b=toucher(e.clientX,e.clientY);
-  if(b)reagir(b,e.clientX,e.clientY)
+  if(b&&!window.bestiolesHote&&!window.AndroidBestioles)reagir(b,e.clientX,e.clientY)
   else{const ouvert=!menu.hidden;fermerMenu();if(!ouvert&&tenir)poserNourriture('miette',e.clientX+8,e.clientY+12)}}); // en tenant une miette : un clic dans le vide la pose là
 // souris (ordinateur) : les clics traversent sauf sur une bête ou sur le menu
-addEventListener('pointermove',e=>{majPointeur(e.clientX,e.clientY);hoteInteractif(!!toucher(e.clientX,e.clientY)||(!menu.hidden&&menu.contains(e.target)))});
+addEventListener('pointermove',e=>{majPointeur(e.clientX,e.clientY);hoteInteractif(!menu.hidden)});
 document.addEventListener('pointerleave',()=>{ptr.dedans=false});addEventListener('blur',()=>{ptr.dedans=false});
 document.documentElement.addEventListener('mouseleave',()=>{ptr.dedans=false});
 
@@ -419,7 +419,7 @@ const Bestioles=window.Bestioles={
   arreter(){actif=false;cv.hidden=true;fermerMenu();hoteInteractif(false)},
   action(id,a){action(+id,a)},ajouter,mode:changerMode,options:()=>ouvrirOptions(),reagir:id=>reagir(betes.find(o=>o.id===+id)),
   // ordinateur : position de la souris donnée par l'appli (sur Linux, la fenêtre ne reçoit rien tant qu'elle laisse passer les clics)
-  survol(x,y){majPointeur(x,y);const sur=!!toucher(x,y);hoteInteractif(sur||!menu.hidden);return sur},
+  survol(x,y){majPointeur(x,y);hoteInteractif(!menu.hidden);return false},
   especes:()=>Object.entries(ESP).map(([k,e])=>({id:k,nom:e.nom,ic:e.ic,n:REG[k],max:NMAX[k]})),
   // réglages : {espece:nombre}. configurer({fourmi:8,mante:0}) : enregistre et applique tout de suite.
   reglages:()=>({...REG}),

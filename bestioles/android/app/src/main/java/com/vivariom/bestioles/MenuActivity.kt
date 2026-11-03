@@ -37,7 +37,7 @@ class MenuActivity : Activity() {
             text = if (general) "🐞 Bestioles" else intent.getStringExtra("titre") ?: "Bestiole"; textSize = 17f; setTextColor(Color.WHITE)
         })
         col.addView(TextView(this).apply {
-            text = if (general) (if (BestiolesService.actif) "Allumées · touche une bête pour la faire réagir, garde le doigt dessus pour son menu" else "Éteintes") else (intent.getStringExtra("etat") ?: ""); textSize = 12f; setTextColor(Color.parseColor("#9FB48E")); setPadding(0, 0, 0, (8 * d).toInt())
+            text = if (general) (if (BestiolesService.actif) "Allumées · elles ne gênent jamais tes touches" else "Éteintes") else (intent.getStringExtra("etat") ?: ""); textSize = 12f; setTextColor(Color.parseColor("#9FB48E")); setPadding(0, 0, 0, (8 * d).toInt())
         })
         fun bouton(texte: String, couleur: String = "#E8EEE4", action: () -> Unit) = Button(this).apply {
             text = texte; isAllCaps = false; textSize = 15f; gravity = Gravity.START or Gravity.CENTER_VERTICAL

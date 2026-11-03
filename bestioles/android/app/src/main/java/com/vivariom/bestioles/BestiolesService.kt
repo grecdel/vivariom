@@ -103,7 +103,7 @@ class BestiolesService : Service() {
             val prefs = getSharedPreferences(PREFS, MODE_PRIVATE)
             if (!prefs.getBoolean("astuce", false)) {
                 prefs.edit().putBoolean("astuce", true).apply()
-                android.widget.Toast.makeText(this, "Touche une bête : elle réagit. Les options sont sur le widget (⚙) et dans la notification.", android.widget.Toast.LENGTH_LONG).show()
+                android.widget.Toast.makeText(this, "Les bestioles ne gênent jamais tes touches. Les options sont sur le widget (⚙) et dans la notification.", android.widget.Toast.LENGTH_LONG).show()
             }
         }
         actif = true
@@ -126,7 +126,7 @@ class BestiolesService : Service() {
         val notif = Notification.Builder(this, CANAL)
             .setSmallIcon(R.drawable.ic_tuile)
             .setContentTitle("Les bestioles se promènent")
-            .setContentText("Touche une bête : elle réagit. ⚙ Options : nourrir, ajouter, réglages.")
+            .setContentText("Elles ne gênent jamais tes touches. ⚙ Options : nourrir, ajouter, réglages.")
             .setContentIntent(ouvrir)
             .setOngoing(true)
             .addAction(Notification.Action.Builder(null, "⚙ Options", options).build())
@@ -166,42 +166,12 @@ class BestiolesService : Service() {
         @JavascriptInterface fun ecrireReglages(json: String) { this@BestiolesService.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString(REGLAGES, json).apply() }
     }
 
-    private fun majZones(json: String) {
-        if (!actif) return
-        val d = resources.displayMetrics.density
-        val vues = HashSet<Int>()
-        val tab = JSONArray(json)
-        for (k in 0 until tab.length()) {
-            val o = tab.getJSONObject(k)
-            val id = o.getInt("id")
-            vues.add(id)
-            infos[id] = Pair(o.optString("ic") + " " + o.optString("nom"), o.optString("etat"))
-            if (o.optInt("calme") == 1) calmes.add(id) else calmes.remove(id)
-            val taille = (maxOf(o.getInt("r") * 2, 64) * d).toInt()
-            val x = (o.getInt("x") * d).toInt() - taille / 2
-            val y = (o.getInt("y") * d).toInt() - taille / 2
-            val zone = zones[id]
-            if (zone == null) {
-                val v = View(this)
-                v.setOnClickListener { commande("Bestioles.reagir($id)") }
-                val lp = WindowManager.LayoutParams(taille, taille,
-                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
-                        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                    PixelFormat.TRANSLUCENT)
-                lp.gravity = Gravity.TOP or Gravity.START
-                lp.x = x; lp.y = y
-                try { wm.addView(v, lp); zones[id] = v } catch (_: Exception) {}
-            } else {
-                val lp = zone.layoutParams as WindowManager.LayoutParams
-                if (lp.x != x || lp.y != y || lp.width != taille) {
-                    lp.x = x; lp.y = y; lp.width = taille; lp.height = taille
-                    try { wm.updateViewLayout(zone, lp) } catch (_: Exception) {}
-                }
-            }
-        }
-        val parties = zones.keys.filter { it !in vues }
-        for (id in parties) { zones.remove(id)?.let { try { wm.removeView(it) } catch (_: Exception) {} }; infos.remove(id) }
+    // Plus aucune zone tactile sur les bêtes (demande de l'utilisateur) : elles ne doivent jamais gêner l'écran
+    // (taper un message, toucher un bouton…). Les touchers traversent toujours la superposition.
+    private fun majZones(@Suppress("UNUSED_PARAMETER") json: String) {
+        if (zones.isEmpty()) return
+        for (v in zones.values) try { wm.removeView(v) } catch (_: Exception) {}
+        zones.clear()
     }
 
     private fun commande(js: String) { web?.evaluateJavascript(js, null) }
