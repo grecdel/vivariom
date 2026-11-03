@@ -34,6 +34,9 @@ Coche quand c'est vérifié et que ça marche. Si ça ne marche pas, laisse `[ ]
 - [ ] Les tiges ploient quand une bête grimpe ou qu'un insecte se pose ; toiles qui ondulent ; grains de sable sous les pattes
 - [ ] Aide contre les maladies (carte « 🪄 Le faire pour moi » en Facile, 🍄 en haut de l'écran sinon)
 
+- [ ] Nouvelles bêtes : perce-oreille, gendarme, libellule, moustique, gerris, têtard → grenouille (pose une mare 💧 d'abord)
+- [ ] Maladies des plantes (feuilles marbrées de jaune, taches brunes), fourmi champignonniste (variante de la fourmi), essaim d'abeilles
+
 ### Bac à sable et salle
 - [x] Modèles tout prêts (Forêt, Désert, Mare) à la création d'un bac
 - [x] Climat du bac (Tempéré, Tropical, Désert) et étiquette de couleur
@@ -42,6 +45,9 @@ Coche quand c'est vérifié et que ça marche. Si ça ne marche pas, laisse `[ ]
 - [x] Mode observation 👁 (✕ en haut à droite pour revenir)
 - [ ] Album photo 🖼 (les photos 📷 s'y rangent)
 - [x] Salle plus sombre le soir et la nuit
+- [ ] Format « Mur vivant » et modèle « À étages » (terrasses, souche, mare, lierre)
+- [ ] 🎬 Visite guidée en plein écran ; fond d'écran vivant dans l'appli Bestioles de l'ordinateur (menu de l'icône)
+- [ ] Tablette : la fiche de la bête à droite du bac (Options → Affichage → Fiche à côté)
 
 ### Confort
 - [x] Bouton ↶ Annuler après avoir posé une bête ou une plante
@@ -53,6 +59,7 @@ Coche quand c'est vérifié et que ça marche. Si ça ne marche pas, laisse `[ ]
 - [x] Fiches des espèces : taille réelle, où elle vit, anecdote
 - [x] Quiz 🧠 et Découvertes 🔎 dans les fiches
 - [x] Version anglaise (Options → Langue → English)
+- [ ] Notifications (Options → Appareil) et mode enfant (Options → Jeu)
 - [x] Téléphone en paysage (outils en colonne)
 
 ### Bestioles (le bonus)
@@ -78,24 +85,24 @@ Coche celles que tu veux. Claude les fera dans l'ordre de la liste.
 - [ ] 6. Éditeur de niveaux : choisir espèces, réserves et objectif, puis envoyer à un ami
 
 ### Bêtes et nature
-- [x] 7. Nouvelles espèces : perce-oreille, gendarme, libellule, têtard qui devient grenouille
-- [x] 8. Vraie mare avec vie aquatique : larves de moustique, gerris sur l'eau
-- [x] 9. Maladies des plantes : virus transmis par les pucerons, feuilles tachées
-- [x] 10. Fourmis champignonnistes qui coupent des feuilles
-- [x] 11. Essaims d'abeilles qui partent fonder une nouvelle ruche
+- [x] 7. ✅ fait le 03/11 — Nouvelles espèces : perce-oreille, gendarme, libellule, têtard qui devient grenouille
+- [x] 8. ✅ fait le 03/11 — Vraie mare avec vie aquatique : larves de moustique, gerris sur l'eau
+- [x] 9. ✅ fait le 03/11 — Maladies des plantes : virus transmis par les pucerons, feuilles tachées
+- [x] 10. ✅ fait le 03/11 — Fourmis champignonnistes qui coupent des feuilles
+- [x] 11. ✅ fait le 03/11 — Essaims d'abeilles qui partent fonder une nouvelle ruche
 
 ### Bac à sable
-- [x] 12. Bacs plus grands, mode « terrarium mural » plein écran
-- [x] 13. Plusieurs étages dans un même bac : sol, souche, mare, plantes grimpantes
-- [x] 14. Fond d'écran vivant sur ordinateur
+- [x] 12. ✅ fait le 03/11 — Bacs plus grands, mode « terrarium mural » plein écran
+- [x] 13. ✅ fait le 03/11 — Plusieurs étages dans un même bac : sol, souche, mare, plantes grimpantes
+- [x] 14. ✅ fait le 03/11 — Fond d'écran vivant sur ordinateur
 - [ ] 15. Concours entre amis : le plus beau bac de la semaine
 
 ### Confort
-- [x] 16. Notification sur le téléphone (« Tes pucerons ont envahi le bac ! »), si tu le veux bien
-- [x] 17. Mode « pour les enfants » : textes simplifiés, plus d'aide, pas de mort affichée
+- [x] 16. ✅ fait le 03/11 — Notification sur le téléphone (« Tes pucerons ont envahi le bac ! »), si tu le veux bien
+- [x] 17. ✅ fait le 03/11 — Mode « pour les enfants » : textes simplifiés, plus d'aide, pas de mort affichée
 - [ ] 18. Voix qui lit les fiches à voix haute
 - [ ] 19. Vraie appli Android dans le Play Store (compte développeur payant, une fois)
-- [x] 20. Version tablette : bac et fiche côte à côte
+- [x] 20. ✅ fait le 03/11 — Version tablette : bac et fiche côte à côte
 
 ---
 

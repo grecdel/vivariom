@@ -25,7 +25,7 @@ python3 assemble.py        # produit biome.html (le jeu complet) et le dossier w
 Ordre des fichiers :
 - **core** : biome_core.js, variants.js, unlocks.js, decor.js, topview.js, profile.js, devices.js, links.js, lure.js, species2.js, species3.js
 - **main** : biome_main.js, menu.js, extras.js, tutorial.js, ambiance.js, save.js, bascule.js, tiroir.js, soie.js, instincts.js, decor_top.js, aide.js, ctrl.js, defis.js, langue.js, fixes.js (il remplace certaines fonctions)
-- **ajouts** (boucle à part dans assemble.py, après fixes.js) : progres.js, vie.js, vegetal.js, milieu.js, salle2.js, confort.js, savoir.js, soins.js, physique.js
+- **ajouts** (boucle à part dans assemble.py, après fixes.js) : progres.js, vie.js, vegetal.js, milieu.js, salle2.js, confort.js, savoir.js, soins.js, aqua.js, jardin2.js, famille.js, grand.js, physique.js
 
 ## Repères
 - **Monde** :
@@ -65,6 +65,10 @@ Ordre des fichiers :
 - **Confort** (confort.js) : main animée du tutoriel, ↶ Annuler (20 s), appui long sur une bête = la suivre (🔍 loupe), accessibilité, sons (bourdonnements, pas, pluie), vibrations.
 - **Végétaux** (vegetal.js) : style « organique » choisi par l'utilisateur (`VEG='organique'` ; 'ondule' et 'actuel' restent) : tiges qui ondulent et s'affinent (`tigeXY`), feuilles en amande nervurées aux teintes variées, pétales arrondis ; fleur, graminée, fougère, trèfle et ronce (les autres plantes gardent leur dessin).
 - **Physique** (physique.js) : ressorts amortis, sans moteur externe : les tiges ploient sous le poids des bêtes et oscillent quand un insecte se pose (`p.bx`/`p.bv`) ; les bêtes posées sur une tige sont dessinées dessus (`decalTige`) ; toiles rondes qui ondulent depuis le point touché et se creusent sous une proie (soie.js, `o.hx/o.hy/o.charge`) ; grains de sable sous les pattes (`GRAINS`) ; litière poussée au passage.
+- **Mare et nouvelles espèces** (aqua.js) : la mare (décor, w 30) est une vraie zone d'eau (`mares()`, `profMare`) ; bêtes d'eau `AQUA` (larvelib, larvemou, tetard, gerris) nagent dedans (`c.mare`, `nage`) et meurent sans mare ; cycles têtard→grenouille, larve→libellule, larve→moustique (`metamorphose`) ; perce-oreille, gendarme, libellule, moustique, grenouille (langue, dessin à part en vue de côté et de dessus).
+- **Jardin 2** (jardin2.js) : virus de la mosaïque transmis par les pucerons (`p.virus`, ne guérit pas) et taches brunes dues à l'humidité (`p.taches`, guérissent au sec) ; fourmi champignonniste (variante `fourmi:atta` : découpe des feuilles `c.feuille`, jardin de champignon `col.jardin`) ; essaims d'abeilles (`ESSAIM` : grappe puis départ).
+- **Famille** (famille.js) : notifications (option `OPT.notif`, seulement jeu ouvert en arrière-plan ; clic → sw.js `notificationclick`) ; mode enfant (`OPT.enfant` : Facile forcé via `DIFF_USER`, carnet sans mort, restes dessinés en feuilles, défaite douce).
+- **Grand** (grand.js) : format `mural` (120 × 60 cm), lierre grimpant, modèle « À étages » (terrasses `marche`), visite guidée plein écran 🎬 (`visite`, caméra automatique), lien `?fond=1` (fond d'écran ; utilisé par l'appli Bestioles de bureau, option « Vivarium en fond d'écran », qui embarque web/index.html dans `jeu/`), panneau « fiche à côté » sur tablette (`#cote`, `OPT.cote` auto/oui/non).
 - **Soins** (soins.js) : quand une bête est malade ou que le sol moisit, carte d'aide pas à pas (`#soin`) avec « 🪄 Le faire pour moi » en Facile, en mode enfant (`OPT.enfant`) et la première fois en bac à sable ; ailleurs, message court et 🍄 dans le HUD (toucher = l'aide) ; guérison plus rapide en Facile ; fiche « Maladies et moisissures ».
 - **Savoir** (savoir.js) : fiches enrichies (`PLUS` : où elle vit, anecdote, taille réelle), quiz (un sans-faute débloque des décors de salle), découvertes (`biome_decouv`), carte des chapitres en jardin (`biome_carte`), partage des photos.
 - **Sauvegardes** :
