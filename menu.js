@@ -93,10 +93,10 @@ const pick=(o,keys)=>{const r={};for(const k of keys)if(o[k]!==undefined)r[k]=o[
 function serialize(){
   const ci=c=>c?colonies.indexOf(c):-1;
   return {v:1,fmt:FMT,soil:SOIL0,T:b64(T),DUG:b64(DUG),NUT:b64(q8(NUT)),WET:b64(q8(WET)),simT,dayClock,DEV:JSON.parse(JSON.stringify(DEV)),
-    plants:plants.filter(p=>p.alive).map(p=>pick(p,['id','col','z','kind','base','h','maxH','e','age','maxAge','fl','hue','aph','wet'])),
+    plants:plants.filter(p=>p.alive).map(p=>pick(p,['id','col','z','kind','base','h','maxH','e','age','maxAge','fl','hue','aph','wet','virus','taches'])),
     items:items.filter(it=>!it.dead&&!it.carried).map(it=>Object.assign(pick(it,['type','i','x','y','z','age','val','k','kind','col']),{cs:it.c?(it.c.sp.vid||it.c.sp.id):null,pi:it.p?plants.indexOf(it.p):-1})),
     decos:decos.map(d=>pick(d,['type','i','dz','w','seed','dir','h','moss'])),
-    colonies:colonies.map(c=>({wv:c.wsp?c.wsp.vid:null,i:c.i,entr:c.entr,food:c.food,eggs:c.eggs,cells:c.cells,chamber:[...c.chamber],home:c.home,dead:c.dead})),
+    colonies:colonies.map(c=>({wv:c.wsp?c.wsp.vid:null,i:c.i,entr:c.entr,food:c.food,eggs:c.eggs,cells:c.cells,chamber:[...c.chamber],home:c.home,dead:c.dead,jardin:c.jardin||0})),
     journal:JOURNAL.slice(-80),links:null,
     creatures:creatures.filter(c=>!c.dead).map(c=>Object.assign(pick(c,['x','y','z','energy','age','state','fly','home','plan','chamberStart','planIdx','stade','stT','bebe','malade','malT','ailes']),{id:c.sp.vid||c.sp.id,col:ci(c.col)}))}}
 function restore(S){
