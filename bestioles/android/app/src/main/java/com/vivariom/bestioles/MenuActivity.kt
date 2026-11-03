@@ -46,6 +46,11 @@ class MenuActivity : Activity() {
             setOnClickListener { action() }
             layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { topMargin = (6 * d).toInt() }
         }
+        // lien direct vers le jeu (s'ouvre dans l'appli Vivariom installée, sinon dans le navigateur)
+        if (general) col.addView(bouton("🎮 Jouer à Vivariom", "#FFE94D") {
+            try { startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://grecdel.github.io/vivariom/")).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) } catch (_: Exception) {}
+            finish()
+        })
         if (general && !BestiolesService.actif) col.addView(bouton("⏻ Allumer les bestioles", "#8BFF6A") { BasculeActivity.basculer(this); finish() })
         if (!general) col.addView(bouton(if (calme) "🏃 La réveiller" else "😌 La calmer") { js("Bestioles.action($id,'${if (calme) "reveiller" else "calmer"}')"); finish() })
         val duo = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }

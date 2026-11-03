@@ -318,6 +318,7 @@ function ouvrirOptions(){selId=null;menuB={x:W/2-130,y:H/2};
    <div class="ajout" hidden>${Object.entries(ESP).map(([k,e])=>`<button data-esp="${k}">${e.ic} ${e.nom}</button>`).join('')}</div>
    <button data-a="reglages">⚙️ Réglages : quelles bêtes, combien</button>
    <div class="regl" hidden><p>${estNuit()?'🌙 C\'est la nuit : les papillons dorment ailleurs, les vers luisants brillent.':'☀️ C\'est le jour : les vers luisants sortiront à la nuit tombée.'}</p>${lignesReglages()}<button data-a="defaut" class="petit">↺ Revenir aux réglages de départ</button></div>
+   <button data-a="jeu">🎮 Jouer à Vivariom</button>
    <button data-a="fermer">Fermer</button>
    <button data-a="eteindre" class="off">⏻ Tout éteindre</button>`;
   menu.hidden=false;placerMenu();
@@ -325,6 +326,7 @@ function ouvrirOptions(){selId=null;menuB={x:W/2-130,y:H/2};
     if(a==='ajouter'||a==='reglages'){const z=menu.querySelector(a==='ajouter'?'.ajout':'.regl');z.hidden=!z.hidden;placerMenu();return}
     if(a==='defaut'){Bestioles.configurer({...DEFAUT});majReglages();return}
     if(a==='fermer'){fermerMenu();hoteInteractif(false);return}
+    if(a==='jeu'){const u='https://grecdel.github.io/vivariom/';if(window.bestiolesHote&&window.bestiolesHote.jeu)window.bestiolesHote.jeu(u);else window.open(u,'_blank');fermerMenu();hoteInteractif(false);return}
     action(-1,a);fermerMenu();hoteInteractif(false)});
   menu.querySelectorAll('[data-esp]').forEach(bt=>bt.onclick=e=>{e.stopPropagation();ajouter(bt.dataset.esp,W/2+rnd(-80,80),H/2+rnd(-80,80));fermerMenu();hoteInteractif(false)});
   menu.querySelectorAll('.rg [data-m]').forEach(bt=>bt.onclick=e=>{e.stopPropagation();const k=bt.parentNode.dataset.k;Bestioles.configurer({[k]:REG[k]+(+bt.dataset.m)});majReglages()});

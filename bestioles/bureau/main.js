@@ -1,6 +1,6 @@
 // Vivariom — Bestioles pour Windows et Linux. © 2026 grecdel — tous droits réservés.
 // Une icône près de l'horloge allume ou éteint des bestioles qui vivent sur l'écran, par-dessus les fenêtres.
-const {app,BrowserWindow,Tray,Menu,ipcMain,screen,nativeImage}=require('electron');
+const {app,BrowserWindow,Tray,Menu,ipcMain,screen,nativeImage,shell}=require('electron');
 const path=require('path'),fs=require('fs'),os=require('os');
 
 if(process.platform==='linux'){app.commandLine.appendSwitch('enable-transparent-visuals');app.disableHardwareAcceleration()}
@@ -42,6 +42,7 @@ function options(){const go=()=>{if(!fen)return;fen.setIgnoreMouseEvents(false);
 
 ipcMain.on('interactif',(_e,v)=>{if(fen)fen.setIgnoreMouseEvents(!v,{forward:true})});
 ipcMain.on('eteindre',()=>eteindre());
+ipcMain.on('jeu',(_e,u)=>{if(u==='https://grecdel.github.io/vivariom/')shell.openExternal(u)});
 
 // ----- lancement au démarrage de l'ordinateur -----
 const autostartLinux=path.join(os.homedir(),'.config','autostart','bestioles.desktop');
@@ -61,6 +62,7 @@ function majMenu(){if(!icone)return;
   icone.setContextMenu(Menu.buildFromTemplate([
     {label:fen?'Éteindre les bestioles':'Allumer les bestioles',click:basculer},
     {label:'⚙ Options…',click:options},
+    {label:'🎮 Jouer à Vivariom',click:()=>shell.openExternal('https://grecdel.github.io/vivariom/')},
     {label:'Vivarium en fond d\'écran',type:'checkbox',checked:!!fond,click:(it)=>it.checked?fondOn():fondOff()},
     {type:'separator'},
     {label:'Lancer au démarrage de l\'ordinateur',type:'checkbox',checked:demarrageAuto(),click:(it)=>reglerDemarrageAuto(it.checked)},

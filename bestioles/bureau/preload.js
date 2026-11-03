@@ -3,7 +3,8 @@
 const {ipcRenderer}=require('electron');
 window.bestiolesHote={
   interactif:(v)=>ipcRenderer.send('interactif',!!v),
-  eteindre:()=>ipcRenderer.send('eteindre')
+  eteindre:()=>ipcRenderer.send('eteindre'),
+  jeu:(u)=>ipcRenderer.send('jeu',u)
 };
 // position de la souris envoyée par l'appli (nécessaire sur Linux)
 ipcRenderer.on('curseur',(_e,x,y)=>{if(window.Bestioles&&window.Bestioles.survol)window.Bestioles.survol(x,y)});
