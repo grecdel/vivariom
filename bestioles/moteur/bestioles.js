@@ -192,7 +192,7 @@ const IA={
     b.t-=dt;if(b.t<=0){b.t=rnd(3,9);b.bouge=Math.random()<0.45}
     if(b.bouge){errer(b,dt,b.E.vit);b.etat='avance doucement dans le noir'}else{b.v=0;b.etat='brille pour appeler'}},
 };
-function vivre(dt){simT+=dt;
+function vivre(dt){simT+=dt;if(SOUCHE)SOUCHE.t+=dt;
   // changement jour / nuit : les papillons s'en vont le soir, les vers luisants rentrent le matin
   const nuit=estNuit();if(phase!==null&&nuit!==phase){fairePartir(nuit?'papillon':'verluisant',99);renfort=simT+10}phase=nuit;
   // pointeur rapide tout près : peur
@@ -202,6 +202,7 @@ function vivre(dt){simT+=dt;
     const brille=b.esp==='verluisant'&&nuit&&!(b.peur>0)&&!b.part;b.lueur+=clamp((brille?1:0)-b.lueur,-dt*1.5,dt*0.6);
     if(b.bulle){b.bulle.t-=dt;if(b.bulle.t<=0)b.bulle=null}
     if(b.part){partir(b,dt);continue}
+    if(b.cache){seCacher(b,dt);continue}
     if(b.tourne>0){b.tourne-=dt;b.a+=dt*14;b.v=0;continue}
     if(b.virevolte){const V=b.virevolte;V.t-=dt;if(V.t<=0)b.virevolte=null;else{const an=simT*3+b.id;volerVers(b,V.x+Math.cos(an)*45,V.y+Math.sin(an)*30,dt,1);continue}}
     if(vite&&!b.calme&&!b.saut&&hyp(b.x-ptr.x,b.y-ptr.y)<120+b.E.L){b.peur=rnd(1,1.8);b.peurX=ptr.x;b.peurY=ptr.y}
@@ -273,22 +274,24 @@ function dessineMiette(m,x,y,a){g.save();g.globalAlpha=a;
   g.restore()}
 function dessiner(){g.setTransform(DPR,0,0,DPR,0,0);g.clearRect(0,0,W,H);
   for(const m of miettes)dessineMiette(m,m.x,m.y,clamp((m.vie-m.age)/5,0,1));
-  for(const b of betes)if(!b.vol){g.globalAlpha=opacite(b);dessine(b)}for(const b of betes)if(b.vol){g.globalAlpha=opacite(b);dessine(b)}g.globalAlpha=1;
+  for(const b of betes)if(!b.vol&&!b.dehors){g.globalAlpha=opacite(b);dessine(b)}for(const b of betes)if(b.vol&&!b.dehors){g.globalAlpha=opacite(b);dessine(b)}g.globalAlpha=1;
+  if(SOUCHE){const S=SOUCHE,k=S.t/0.9;if(k>=1)SOUCHE=null;else{g.save();g.globalAlpha=0.55*(1-k);g.fillStyle='#2a1c10';g.beginPath();g.ellipse(S.x,S.y,90*(1+k*0.6),36*(1+k*0.6),0,0,TAU);g.fill();
+    g.globalAlpha=0.7*(1-k);g.fillStyle='#4a3420';for(let q=0;q<10;q++){const a=q*0.63,r=60+k*120;g.beginPath();g.arc(S.x+Math.cos(a)*r,S.y+Math.sin(a)*r*0.4,2.5*(1-k),0,TAU);g.fill()}g.restore()}}
   if(tientMiette())dessineMiette({type:'miette',col:'#d8b46a',r:4.5,val:1,val0:1},ptr.x+8,ptr.y+12,1)}
 
 // ---------- boucle ----------
 function boucle(t){if(!actif)return;const dt=Math.min(0.05,(t-(tPrec||t))/1000);tPrec=t;vivre(dt);dessiner();
   if(window.AndroidBestioles&&(t-(boucle.envoi||0))>60){boucle.envoi=t;try{AndroidBestioles.positions(JSON.stringify(cibles()))}catch(e){}}
   requestAnimationFrame(boucle)}
-function cibles(){return betes.filter(b=>!b.part).map(b=>({id:b.id,x:Math.round(b.x),y:Math.round(b.y),r:Math.round(Math.max(30,b.E.L*1.1)),esp:b.esp,nom:b.E.nom,ic:b.E.ic,calme:b.calme?1:0,etat:b.calme?'calme':b.etat}))}
-function toucher(x,y){let best=null,bd=1e9;for(const b of betes){if(b.part)continue;const d=hyp(b.x-x,b.y-y),R=Math.max(30,b.E.L*1.1);if(d<R&&d<bd){bd=d;best=b}}return best}
+function cibles(){return betes.filter(b=>!b.part&&!b.dehors).map(b=>({id:b.id,x:Math.round(b.x),y:Math.round(b.y),r:Math.round(Math.max(30,b.E.L*1.1)),esp:b.esp,nom:b.E.nom,ic:b.E.ic,calme:b.calme?1:0,etat:b.calme?'calme':b.etat}))}
+function toucher(x,y){let best=null,bd=1e9;for(const b of betes){if(b.part||b.dehors)continue;const d=hyp(b.x-x,b.y-y),R=Math.max(30,b.E.L*1.1);if(d<R&&d<bd){bd=d;best=b}}return best}
 
 // ---------- menu (navigateur, Windows, Linux) ----------
 let selId=null,menuB=null;const clicT={t:0,id:-1};addEventListener('contextmenu',e=>{if(toucher(e.clientX,e.clientY))e.preventDefault()});const menu=document.createElement('div');menu.id='bmenu';menu.hidden=true;document.body.appendChild(menu);
 function placerMenu(){if(menu.hidden||!menuB)return;const mw=menu.offsetWidth||220,mh=menu.offsetHeight||220,b=menuB;
   menu.style.left=clamp(b.x+20,8,Math.max(8,W-mw-8))+'px';menu.style.top=clamp(b.y-mh/2,8,Math.max(8,H-mh-8))+'px'}
 function lignesReglages(){return Object.entries(ESP).map(([k,e])=>`<div class="rg" data-k="${k}"><span>${e.ic} ${e.nom}</span><button data-m="-1" aria-label="moins">−</button><b>${REG[k]}</b><button data-m="1" aria-label="plus">＋</button></div>`).join('')}
-function ouvrirMenu(b){selId=b.id;menuB=b;const E=b.E;
+function ouvrirMenu(b){if(!b){ouvrirOptions();return}selId=b.id;menuB=b;const E=b.E;
   menu.innerHTML=`<div class="mt">${E.ic} <b>${E.nom}</b><span>${b.calme?'calme':b.etat}</span></div>
    <button data-a="${b.calme?'reveiller':'calmer'}">${b.calme?'🏃 La réveiller':'😌 La calmer'}</button>
    <div class="duo"><button data-a="miette">🍞 Poser une miette</button><button data-a="miel">🍯 Goutte de miel</button></div>
@@ -307,18 +310,53 @@ function ouvrirMenu(b){selId=b.id;menuB=b;const E=b.E;
   menu.querySelectorAll('[data-esp]').forEach(bt=>bt.onclick=e=>{e.stopPropagation();ajouter(bt.dataset.esp,b.x+rnd(-40,40),b.y+rnd(-40,40));fermerMenu()});
   menu.querySelectorAll('.rg [data-m]').forEach(bt=>bt.onclick=e=>{e.stopPropagation();const k=bt.parentNode.dataset.k;Bestioles.configurer({[k]:REG[k]+(+bt.dataset.m)});majReglages()});
   hoteInteractif(true)}
+function ouvrirOptions(){selId=null;menuB={x:W/2-130,y:H/2};
+  menu.innerHTML=`<div class="mt">🐞 <b>Bestioles</b><span>touche une bête : elle réagit</span></div>
+   <div class="duo"><button data-a="miette">🍞 Poser une miette</button><button data-a="miel">🍯 Goutte de miel</button></div>
+   <button data-a="tenir">${tenir?'✋ Lâcher la miette':'🫳 Tenir une miette'}</button>
+   <button data-a="ajouter">➕ Ajouter une bête…</button>
+   <div class="ajout" hidden>${Object.entries(ESP).map(([k,e])=>`<button data-esp="${k}">${e.ic} ${e.nom}</button>`).join('')}</div>
+   <button data-a="reglages">⚙️ Réglages : quelles bêtes, combien</button>
+   <div class="regl" hidden><p>${estNuit()?'🌙 C\'est la nuit : les papillons dorment ailleurs, les vers luisants brillent.':'☀️ C\'est le jour : les vers luisants sortiront à la nuit tombée.'}</p>${lignesReglages()}<button data-a="defaut" class="petit">↺ Revenir aux réglages de départ</button></div>
+   <button data-a="fermer">Fermer</button>
+   <button data-a="eteindre" class="off">⏻ Tout éteindre</button>`;
+  menu.hidden=false;placerMenu();
+  menu.querySelectorAll('[data-a]').forEach(bt=>bt.onclick=e=>{e.stopPropagation();const a=bt.dataset.a;
+    if(a==='ajouter'||a==='reglages'){const z=menu.querySelector(a==='ajouter'?'.ajout':'.regl');z.hidden=!z.hidden;placerMenu();return}
+    if(a==='defaut'){Bestioles.configurer({...DEFAUT});majReglages();return}
+    if(a==='fermer'){fermerMenu();hoteInteractif(false);return}
+    action(-1,a);fermerMenu();hoteInteractif(false)});
+  menu.querySelectorAll('[data-esp]').forEach(bt=>bt.onclick=e=>{e.stopPropagation();ajouter(bt.dataset.esp,W/2+rnd(-80,80),H/2+rnd(-80,80));fermerMenu();hoteInteractif(false)});
+  menu.querySelectorAll('.rg [data-m]').forEach(bt=>bt.onclick=e=>{e.stopPropagation();const k=bt.parentNode.dataset.k;Bestioles.configurer({[k]:REG[k]+(+bt.dataset.m)});majReglages()});
+  hoteInteractif(true)}
 function majReglages(){menu.querySelectorAll('.rg').forEach(r=>{r.querySelector('b').textContent=REG[r.dataset.k]})}
 function fermerMenu(){menu.hidden=true;selId=null;menuB=null}
 function hoteInteractif(v){if(window.bestiolesHote&&hoteInteractif.v!==v){hoteInteractif.v=v;window.bestiolesHote.interactif(v)}}
 addEventListener('pointerdown',e=>{if(!menu.hidden&&menu.contains(e.target))return;majPointeur(e.clientX,e.clientY);const b=toucher(e.clientX,e.clientY);
-  if(b){if(window.AndroidBestioles){try{AndroidBestioles.touche(b.id,b.esp,b.E.nom,b.calme?1:0)}catch(_){}}
-    else{const t=maintenant();if(e.button===2||(t-(clicT.t||0)<350&&clicT.id===b.id)){ouvrirMenu(b);clicT.t=0}else{reagir(b,e.clientX,e.clientY);clicT.t=t;clicT.id=b.id}}}
+  if(b)reagir(b,e.clientX,e.clientY)
   else{const ouvert=!menu.hidden;fermerMenu();if(!ouvert&&tenir)poserNourriture('miette',e.clientX+8,e.clientY+12)}}); // en tenant une miette : un clic dans le vide la pose là
 // souris (ordinateur) : les clics traversent sauf sur une bête ou sur le menu
 addEventListener('pointermove',e=>{majPointeur(e.clientX,e.clientY);hoteInteractif(!!toucher(e.clientX,e.clientY)||(!menu.hidden&&menu.contains(e.target)))});
 document.addEventListener('pointerleave',()=>{ptr.dedans=false});addEventListener('blur',()=>{ptr.dedans=false});
 document.documentElement.addEventListener('mouseleave',()=>{ptr.dedans=false});
 
+// ---------- écran d'accueil / appli ouverte (Android) ----------
+// dans une appli : la plupart des bêtes se cachent au bord de l'écran, une ou deux restent ;
+// retour à l'accueil : elles réapparaissent toutes d'un coup et détalent, comme sous une souche qu'on soulève.
+let MODE='accueil',SOUCHE=null;
+function changerMode(m){m=m==='appli'?'appli':'accueil';if(m===MODE)return MODE;MODE=m;const vis=betes.filter(b=>!b.part&&!b.mort);
+  if(m==='appli'){const restent=vis.slice().sort((a,b)=>(a.esp==='fourmi'||a.esp==='coccinelle'?-1:0)-(b.esp==='fourmi'||b.esp==='coccinelle'?-1:0)||Math.random()-0.5).slice(0,vis.length>6?2:1);
+    for(const b of vis)if(!restent.includes(b)){const bords=[[b.x,-30],[b.x,H+30],[-30,b.y],[W+30,b.y]].sort((p,q)=>hyp(p[0]-b.x,p[1]-b.y)-hyp(q[0]-b.x,q[1]-b.y));b.cache={x:bords[0][0],y:bords[0][1]}}}
+  else{const sx=rnd(W*0.25,W*0.75),sy=rnd(H*0.45,H*0.75);SOUCHE={x:sx,y:sy,t:0};
+    for(const b of vis){if(!b.cache)continue;b.cache=null;b.dehors=false;b.x=clamp(sx+rnd(-60,60),10,W-10);b.y=clamp(sy+rnd(-30,30),10,H-10);b.apparait=0;b.peur=rnd(1.2,2.2);b.peurX=sx;b.peurY=sy;b.calme=false;if(b.E.vole){b.vol=true;b.t=0}}}
+  return MODE}
+function seCacher(b,dt){const c=b.cache;if(b.dehors){b.v=0;return}if(b.E.vole)volerVers(b,c.x,c.y,dt,1);else{tourneVers(b,c.x,c.y,8,dt);avance(b,b.E.vit*2,dt)}
+  b.etat='se cache';if(b.x<-15||b.x>W+15||b.y<-15||b.y>H+15)b.dehors=true}
+{const n0=nouvelle;nouvelle=function(...a){const b=n0(...a);if(MODE==='appli'&&b&&betes.filter(o=>!o.cache&&!o.part&&o!==b).length>=2){b.cache={x:-30,y:b.y};b.dehors=true}return b}}
+// navigateur seul (sans appli autour) : un petit bouton ⚙ pour les options
+setTimeout(()=>{if(window.AndroidBestioles||window.bestiolesHote)return;const o=document.createElement('button');o.id='bopt';o.textContent='⚙';o.title='Options des bestioles';
+  o.style.cssText='position:fixed;right:10px;bottom:10px;z-index:5;width:40px;height:40px;border-radius:50%;border:1px solid #2f3f2a;background:#161c15ee;color:#e8eee4;font-size:20px;cursor:pointer';
+  o.onclick=e=>{e.stopPropagation();menu.hidden?ouvrirOptions():fermerMenu()};document.body.appendChild(o)},300);
 // ---------- commandes (aussi utilisées par les hôtes) ----------
 function presDe(b){if(!b)return[undefined,undefined];const cote=b.x>W-120?-1:b.x<120?1:(Math.random()<0.5?-1:1),an=(cote<0?Math.PI:0)+rnd(-0.7,0.7),d=rnd(45,70);
   return[b.x+Math.cos(an)*d,b.y+Math.sin(an)*d]}
@@ -345,7 +383,7 @@ function ajouter(esp,x,y){if(!ESP[esp])return;if(presentes(esp).length>=plafond(
 const Bestioles=window.Bestioles={
   demarrer(){if(actif)return;if(!betes.length)peupler();actif=true;cv.hidden=false;tPrec=0;requestAnimationFrame(boucle)},
   arreter(){actif=false;cv.hidden=true;fermerMenu();hoteInteractif(false)},
-  action(id,a){action(+id,a)},ajouter,reagir:id=>reagir(betes.find(o=>o.id===+id)),
+  action(id,a){action(+id,a)},ajouter,mode:changerMode,options:()=>ouvrirOptions(),reagir:id=>reagir(betes.find(o=>o.id===+id)),
   // ordinateur : position de la souris donnée par l'appli (sur Linux, la fenêtre ne reçoit rien tant qu'elle laisse passer les clics)
   survol(x,y){majPointeur(x,y);const sur=!!toucher(x,y);hoteInteractif(sur||!menu.hidden);return sur},
   especes:()=>Object.entries(ESP).map(([k,e])=>({id:k,nom:e.nom,ic:e.ic,n:REG[k],max:NMAX[k]})),

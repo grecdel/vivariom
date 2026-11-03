@@ -25,6 +25,7 @@ class MainActivity : Activity() {
     private lateinit var etat: TextView
     private lateinit var interrupteur: Button
     private lateinit var autoriser: Button
+    private lateinit var discret: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +40,7 @@ class MainActivity : Activity() {
             layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { topMargin = (10 * d).toInt() }
         }
         col.addView(texte("🐞 Bestioles", 26f, "#FFE94D"))
-        col.addView(texte("Des petites bêtes de Vivariom qui vivent sur ton écran : fourmis, coccinelle, araignée, papillon, mouches… Elles se promènent, chassent et s'évitent, par-dessus tes applis, sans rien toucher. Touche-en une pour la calmer ou la faire disparaître."))
+        col.addView(texte("Des petites bêtes de Vivariom qui vivent sur ton écran : fourmis, coccinelle, araignée, papillon, mouches… Elles se promènent, chassent et s'évitent, par-dessus tes applis, sans rien toucher. Touche-en une : elle réagit. Les options sont sur le widget (⚙) et dans la notification."))
         autoriser = bouton("1. Autoriser l'affichage par-dessus les autres applis", "#2A3A26", "#E8EEE4") {
             startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")))
         }
@@ -48,6 +49,11 @@ class MainActivity : Activity() {
         col.addView(interrupteur)
         etat = texte("", 13f, "#9FB48E")
         col.addView(etat)
+        col.addView(texte("Discrètes dans les applis : quand tu ouvres une appli, une ou deux bêtes seulement restent ; au retour sur l'écran d'accueil, toutes ressortent, comme sous une souche qu'on soulève. Il faut pour ça autoriser Bestioles à savoir quelle appli est ouverte (rien n'est envoyé nulle part).", 13f))
+        discret = bouton("2. Autoriser « Accès aux données d'utilisation »", "#2A3A26", "#E8EEE4") {
+            try { startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)) } catch (_: Exception) {}
+        }
+        col.addView(discret)
         col.addView(texte("Pour les allumer et les éteindre d'un geste :", 15f, "#E8EEE4"))
         col.addView(bouton("➕ Ajouter le widget sur l'écran d'accueil", "#161C15", "#E8EEE4") {
             val am = getSystemService(AppWidgetManager::class.java)
@@ -70,6 +76,9 @@ class MainActivity : Activity() {
         val ok = Settings.canDrawOverlays(this)
         autoriser.text = if (ok) "✔ Affichage par-dessus les applis autorisé" else "1. Autoriser l'affichage par-dessus les autres applis"
         autoriser.isEnabled = !ok
+        val u = BestiolesService.accesUtilisation(this)
+        discret.text = if (u) "✔ Bêtes discrètes dans les applis" else "2. Autoriser « Accès aux données d'utilisation »"
+        discret.isEnabled = !u
         interrupteur.isEnabled = ok
         interrupteur.text = if (BestiolesService.actif) "Éteindre les bestioles" else "Allumer les bestioles"
         etat.text = if (!ok) "Commence par l'autorisation : sans elle, les bêtes ne peuvent pas sortir de l'appli."

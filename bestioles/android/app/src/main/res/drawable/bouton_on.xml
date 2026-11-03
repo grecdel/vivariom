@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- widget : bouton « allumées » (vert) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="#FF2E5A22" />
+    <stroke android:width="1dp" android:color="#FF8BFF6A" />
+    <corners android:radius="16dp" />
+</shape>

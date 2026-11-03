@@ -1,23 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- widget : un seul bouton, allumer / éteindre les bestioles -->
+<!-- widget : deux boutons côte à côte : allumer / éteindre, et options -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="horizontal" android:gravity="center_vertical"
     android:background="@drawable/fond_widget" android:padding="6dp">
-<LinearLayout
-    android:id="@+id/widget_bouton"
-    android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent"
-    android:orientation="horizontal" android:gravity="center">
-    <ImageView android:id="@+id/widget_icone" android:layout_width="36dp" android:layout_height="36dp"
-        android:src="@mipmap/ic_launcher" android:contentDescription="@string/app_name" />
-    <TextView android:id="@+id/widget_texte"
-        android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:layout_marginStart="8dp" android:textColor="#FFE8EEE4" android:textSize="14sp"
-        android:text="Bestioles\néteintes" />
-</LinearLayout>
-    <!-- petit bouton : ouvrir les options (ajouter une bête, nourrir, réglages) -->
-    <TextView android:id="@+id/widget_options"
-        android:layout_width="44dp" android:layout_height="44dp" android:layout_marginStart="4dp"
-        android:gravity="center" android:text="⚙" android:textSize="22sp" android:textColor="#FFE8EEE4"
-        android:contentDescription="Options des bestioles" />
+    <LinearLayout
+        android:id="@+id/widget_bouton"
+        android:layout_width="0dp" android:layout_weight="1.4" android:layout_height="match_parent"
+        android:orientation="horizontal" android:gravity="center"
+        android:background="@drawable/bouton_off" android:paddingStart="6dp" android:paddingEnd="6dp">
+        <ImageView android:id="@+id/widget_icone" android:layout_width="30dp" android:layout_height="30dp"
+            android:src="@mipmap/ic_launcher" android:contentDescription="@string/app_name" />
+        <TextView android:id="@+id/widget_texte"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginStart="6dp" android:textColor="#FFE8EEE4" android:textSize="13sp"
+            android:text="⏻ Éteintes" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/widget_options"
+        android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent"
+        android:layout_marginStart="6dp"
+        android:orientation="horizontal" android:gravity="center"
+        android:background="@drawable/bouton_options">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:textColor="#FFE8EEE4" android:textSize="13sp" android:text="⚙ Options"
+            android:contentDescription="Options des bestioles" />
+    </LinearLayout>
 </LinearLayout>

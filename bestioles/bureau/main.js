@@ -36,6 +36,9 @@ function allumer(){
 }
 function eteindre(){if(suivi){clearInterval(suivi);suivi=null}if(fen){fen.destroy();fen=null}majMenu()}
 function basculer(){fen?eteindre():allumer()}
+// options (ajouter, nourrir, réglages) : le menu s'ouvre au milieu de l'écran
+function options(){const go=()=>{if(!fen)return;fen.setIgnoreMouseEvents(false);fen.webContents.executeJavaScript('Bestioles.options()').catch(()=>{});if(process.platform!=='linux')fen.focus()};
+  if(fen)go();else{allumer();fen.webContents.once('did-finish-load',()=>setTimeout(go,300))}}
 
 ipcMain.on('interactif',(_e,v)=>{if(fen)fen.setIgnoreMouseEvents(!v,{forward:true})});
 ipcMain.on('eteindre',()=>eteindre());
@@ -57,6 +60,7 @@ function majMenu(){if(!icone)return;
   icone.setToolTip(fen?'Bestioles : allumées (clic pour éteindre)':'Bestioles : éteintes (clic pour allumer)');
   icone.setContextMenu(Menu.buildFromTemplate([
     {label:fen?'Éteindre les bestioles':'Allumer les bestioles',click:basculer},
+    {label:'⚙ Options…',click:options},
     {label:'Vivarium en fond d\'écran',type:'checkbox',checked:!!fond,click:(it)=>it.checked?fondOn():fondOff()},
     {type:'separator'},
     {label:'Lancer au démarrage de l\'ordinateur',type:'checkbox',checked:demarrageAuto(),click:(it)=>reglerDemarrageAuto(it.checked)},

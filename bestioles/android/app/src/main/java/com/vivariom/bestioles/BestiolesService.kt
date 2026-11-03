@@ -2,11 +2,14 @@
 package com.vivariom.bestioles
 
 import android.annotation.SuppressLint
+import android.app.AppOpsManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.app.usage.UsageEvents
+import android.app.usage.UsageStatsManager
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
@@ -46,11 +49,20 @@ class BestiolesService : Service() {
         const val REGLAGES = "reglages"   // JSON {espece: nombre}, écrit par la page (bestioles.js)
         @Volatile var actif = false
 
+        /** L'utilisateur a-t-il donné l'accès aux données d'utilisation (pour savoir si une appli est ouverte) ? */
+        fun accesUtilisation(ctx: Context): Boolean {
+            val ops = ctx.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+            val m = if (Build.VERSION.SDK_INT >= 29) ops.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), ctx.packageName)
+                else @Suppress("DEPRECATION") ops.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), ctx.packageName)
+            return m == AppOpsManager.MODE_ALLOWED
+        }
+
         /** Met à jour le texte du widget et l'état de la tuile. */
         fun majAffichage(ctx: Context) {
             val gestion = AppWidgetManager.getInstance(ctx)
             val vues = RemoteViews(ctx.packageName, R.layout.widget)
-            vues.setTextViewText(R.id.widget_texte, if (actif) "Bestioles\nallumées" else "Bestioles\néteintes")
+            vues.setTextViewText(R.id.widget_texte, if (actif) "⏻ Allumées" else "⏻ Éteintes")
+            vues.setInt(R.id.widget_bouton, "setBackgroundResource", if (actif) R.drawable.bouton_on else R.drawable.bouton_off)
             vues.setInt(R.id.widget_icone, "setImageAlpha", if (actif) 255 else 110)
             vues.setOnClickPendingIntent(R.id.widget_bouton, BasculeActivity.intentionWidget(ctx))
             vues.setOnClickPendingIntent(R.id.widget_options, PendingIntent.getActivity(ctx, 11,
@@ -91,10 +103,11 @@ class BestiolesService : Service() {
             val prefs = getSharedPreferences(PREFS, MODE_PRIVATE)
             if (!prefs.getBoolean("astuce", false)) {
                 prefs.edit().putBoolean("astuce", true).apply()
-                android.widget.Toast.makeText(this, "Touche une bête : elle réagit. Garde le doigt dessus : son menu. ⚙ sur le widget : les options.", android.widget.Toast.LENGTH_LONG).show()
+                android.widget.Toast.makeText(this, "Touche une bête : elle réagit. Les options sont sur le widget (⚙) et dans la notification.", android.widget.Toast.LENGTH_LONG).show()
             }
         }
         actif = true
+        principal.removeCallbacks(suivi); principal.postDelayed(suivi, 1500)
         majAffichage(this)
         return START_STICKY
     }
@@ -113,7 +126,7 @@ class BestiolesService : Service() {
         val notif = Notification.Builder(this, CANAL)
             .setSmallIcon(R.drawable.ic_tuile)
             .setContentTitle("Les bestioles se promènent")
-            .setContentText("Touche une bête : elle réagit. Garde le doigt dessus : son menu.")
+            .setContentText("Touche une bête : elle réagit. ⚙ Options : nourrir, ajouter, réglages.")
             .setContentIntent(ouvrir)
             .setOngoing(true)
             .addAction(Notification.Action.Builder(null, "⚙ Options", options).build())
@@ -147,7 +160,7 @@ class BestiolesService : Service() {
     /** Appelé par la page (bestioles.js). */
     inner class Pont {
         @JavascriptInterface fun positions(json: String) { principal.post { majZones(json) } }
-        @JavascriptInterface fun touche(id: Int, esp: String, nom: String, calme: Int) { principal.post { ouvrirMenu(id) } }
+        @JavascriptInterface fun touche(id: Int, esp: String, nom: String, calme: Int) { /* la bête réagit dans la page ; plus de menu sur les bêtes */ }
         /** Réglages (quelles bêtes, combien) : gardés aussi par l'appli, au cas où la page les perdrait. */
         @JavascriptInterface fun lireReglages(): String = this@BestiolesService.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(REGLAGES, "") ?: ""
         @JavascriptInterface fun ecrireReglages(json: String) { this@BestiolesService.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString(REGLAGES, json).apply() }
@@ -171,7 +184,6 @@ class BestiolesService : Service() {
             if (zone == null) {
                 val v = View(this)
                 v.setOnClickListener { commande("Bestioles.reagir($id)") }
-                v.setOnLongClickListener { ouvrirMenu(id); true }
                 val lp = WindowManager.LayoutParams(taille, taille,
                     WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
@@ -194,6 +206,29 @@ class BestiolesService : Service() {
 
     private fun commande(js: String) { web?.evaluateJavascript(js, null) }
 
+    // ----- écran d'accueil ou appli ouverte ? (avec l'accès aux données d'utilisation, donné par l'utilisateur) -----
+    private var modeActuel = "accueil"
+    private var lanceurs: Set<String> = emptySet()
+    private val suivi = object : Runnable { override fun run() { if (!actif) return; verifierPremierPlan(); principal.postDelayed(this, 1200) } }
+    private fun verifierPremierPlan() {
+        if (!accesUtilisation(this)) return
+        try {
+            if (lanceurs.isEmpty()) lanceurs = packageManager.queryIntentActivities(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME), 0)
+                .map { it.activityInfo.packageName }.toSet()
+            val usm = getSystemService(USAGE_STATS_SERVICE) as UsageStatsManager
+            val fin = System.currentTimeMillis()
+            val ev = usm.queryEvents(fin - 15000, fin)
+            val e = UsageEvents.Event()
+            var dernier: String? = null
+            @Suppress("DEPRECATION") val premierPlan = UsageEvents.Event.MOVE_TO_FOREGROUND // = ACTIVITY_RESUMED (1)
+            while (ev.hasNextEvent()) { ev.getNextEvent(e); if (e.eventType == premierPlan) dernier = e.packageName }
+            val p = dernier ?: return
+            if (p == packageName || p == "com.android.systemui") return // nos propres fenêtres et le volet ne changent rien
+            val mode = if (p in lanceurs) "accueil" else "appli"
+            if (mode != modeActuel) { modeActuel = mode; commande("Bestioles.mode('$mode')") }
+        } catch (_: Exception) {}
+    }
+
     private fun ouvrirMenu(id: Int) {
         val (titre, etat) = infos[id] ?: Pair("Bestiole", "")
         startActivity(Intent(this, MenuActivity::class.java)
@@ -203,6 +238,7 @@ class BestiolesService : Service() {
 
     private fun arreter() {
         actif = false
+        principal.removeCallbacks(suivi)
         for (v in zones.values) try { wm.removeView(v) } catch (_: Exception) {}
         zones.clear()
         web?.let { try { wm.removeView(it) } catch (_: Exception) {}; it.destroy() }
