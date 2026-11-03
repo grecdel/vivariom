@@ -239,6 +239,28 @@ const EN_D={
 "Mur vivant":"Living wall","120 × 60 × 40 cm · immense, plutôt pour ordinateur ou tablette":"120 × 60 × 40 cm · huge, best on a computer or tablet","Lierre grimpant":"Climbing ivy","Lierre":"Ivy","Grimpe le long de la vitre du fond : un escalier de feuilles pour les bêtes, de l'ombre en bas.":"Climbs up the back glass: a staircase of leaves for creatures, shade below.","À étages":"Terraced","🎬 Visite guidée · touche ✕ en haut à droite pour sortir":"🎬 Guided tour · tap ✕ at the top right to leave","Visite guidée":"Guided tour","Visite guidée en plein écran":"Full-screen guided tour","jeune":"young","âgée":"old","âgé":"old","🍄 malade":"🍄 sick","malade":"sick","Niv.":"Lv.","Touche une bête (main ✋) ou garde le doigt dessus pour voir sa fiche ici.":"Tap a creature (✋ hand) or hold your finger on it to see its sheet here.","Auto":"Auto","📋 Fiche à côté du bac":"📋 Sheet beside the tank","grand écran, tablette":"large screen, tablet",
 "Mon vivarium dans Vivariom 🐜 https://grecdel.github.io/vivariom/":"My vivarium in Vivariom 🐜 https://grecdel.github.io/vivariom/",
 
+// ---------- histoire.js : carnet de terrain de Camille ----------
+"Premier jour de terrain. Un vivarium vide, de la terre, de l'eau… Tout commence par une petite pousse. Je note tout ici.":"First day in the field. An empty vivarium, some earth, some water… It all starts with a little shoot. I'm writing everything down here.",
+"Les fourmis ! Une reine seule va fonder une cité entière. Je vais la regarder creuser.":"Ants! A single queen is going to found a whole city. I'm going to watch her dig.",
+"Les araignées tissent des pièges d'une précision folle. Il faudra les nourrir sans vider le ciel.":"Spiders weave incredibly precise traps. I'll have to feed them without emptying the sky.",
+"Sous terre, une autre vie : scolopendres, cloportes, lombrics. Tout ce qu'on ne voit pas d'habitude.":"Underground, another life: centipedes, woodlice, earthworms. Everything we usually never see.",
+"Les phasmes ressemblent à des brindilles. Je ne les vois que lorsqu'ils bougent !":"Stick insects look like twigs. I only spot them when they move!",
+"La mante attend, immobile. Patience… je vais faire comme elle.":"The mantis waits, motionless. Patience… I'll do the same.",
+"Œuf, chenille, chrysalide, papillon : la plus belle des transformations.":"Egg, caterpillar, chrysalis, butterfly: the most beautiful transformation of all.",
+"Le désert : chaud le jour, froid la nuit. Le scorpion brille sous la lampe UV, paraît-il.":"The desert: hot by day, cold at night. The scorpion glows under the UV lamp, apparently.",
+"Les grands coléoptères : bousiers et scarabées rhinocéros. Des costauds du recyclage.":"The big beetles: dung beetles and rhinoceros beetles. The heavyweights of recycling.",
+"une graine qui germe toute seule":"a seed sprouting on its own","les premières ouvrières nées dans le nid":"the first workers born in the nest","une ponte de coccinelle près des pucerons":"a ladybird laying eggs near the aphids","une abeille qui pond au pied des fleurs":"a bee laying eggs at the foot of the flowers","une bête prise dans une toile":"a creature caught in a web","des asticots qui deviennent mouches":"maggots turning into flies","la scolopendre qui attrape une proie":"the centipede catching prey","des œufs de phasme qui éclosent":"stick insect eggs hatching","une oothèque de mante qui éclot":"a mantis ootheca hatching","une chrysalide qui devient papillon":"a chrysalis becoming a butterfly","des petits escargots qui éclosent":"baby snails hatching","le scorpion qui brille sous la lampe UV":"the scorpion glowing under the UV lamp","un ver de farine qui devient ténébrion":"a mealworm becoming a mealworm beetle","un bousier qui enterre sa boule":"a dung beetle burying its ball","un scarabée rhinocéros qui sort de terre":"a rhinoceros beetle coming out of the ground","des petits cloportes qui naissent":"baby woodlice being born","un lombric qui se reproduit":"an earthworm breeding",
+"Des petits viennent d'éclore ! Minuscules… ils vont grandir à vue d'œil.":"Babies have just hatched! Tiny… they'll grow before my eyes.",
+"Une chasse ! Chaque prédateur garde les autres en équilibre. C'est dur, mais c'est la nature.":"A hunt! Every predator keeps the others in balance. It's harsh, but that's nature.",
+"Aïe… une espèce manque à l'appel. S'il en reste en réserve, il faut en reposer vite.":"Ouch… a species is missing. If there are some left in reserve, I must put some back quickly.",
+"Un champignon blanc sur une bête : le sol est trop mouillé. J'aère et je brumise moins.":"A white fungus on a creature: the soil is too wet. I'll air it out and mist less.",
+"Des moisissures sur le sol. Trop d'eau ! Un vivarium doit respirer.":"Mould on the soil. Too much water! A vivarium has to breathe.",
+"Coup dur en vue. Je garde l'œil sur le thermomètre et le brumisateur.":"Trouble ahead. I'm keeping an eye on the thermometer and the mister.",
+"Les feuilles jaunissent en mosaïque : un virus apporté par les pucerons. Des coccinelles m'aideraient.":"The leaves are yellowing in a mosaic: a virus brought by the aphids. Ladybirds would help me.",
+"Un essaim ! Les abeilles se serrent en grappe avant de partir fonder une nouvelle colonie.":"A swarm! The bees huddle in a cluster before leaving to found a new colony.",
+"Des pucerons avec des ailes : leur plante est surpeuplée, alors ils partent ailleurs.":"Aphids with wings: their plant is overcrowded, so they're leaving.",
+"(vu !)":"(seen!)","✎ À observer :":"✎ To observe:","✨ Nouveau :":"✨ New:","À observer :":"To observe:","📔 Toutes les observations du jour sont dans le carnet de Camille !":"📔 All of today's observations are in Camille's notebook!","Toutes mes observations sont faites. Quelle journée !":"All my observations are done. What a day!","Encore une observation à faire… on la verra la prochaine fois.":"One more observation to make… we'll see it next time.","Je n'ai rien pu observer de spécial aujourd'hui. Rejouer pour voir ?":"I couldn't observe anything special today. Play again to see?","📔 Carnet de Camille":"📔 Camille's notebook","Carnet de Camille":"Camille's notebook","Le carnet est encore vide : lance un niveau de la campagne.":"The notebook is still empty: start a campaign level.","📔 Carnet de Camille (mode histoire)":"📔 Camille's notebook (story mode)",
+
 };
 
 // Modèles : {} = morceau variable (traduit à son tour). Dans la traduction, {} = morceaux dans l'ordre, {0} {1}… = morceau n°.
@@ -289,6 +311,11 @@ const EN_T=[
 ["🍄 {} bêtes sont malades","🍄 {} creatures are sick"],["{} bêtes sont malades","{} creatures are sick"],["Moisissures sur {} endroit.","Mould in {} spot."],["Moisissures sur {} endroits.","Mould in {} spots."],
 ["{} — fais sécher le sol pour qu'elle guérisse","{} — dry the soil so it can heal"],
 ["Énergie {}","Energy {}"],["âge {} s","age {} s"],["💧 sol {} %","💧 soil {}%"],["Niv. {} · {}","Lv. {} · {}"],
+["Carnet de Camille — jour {}","Camille's notebook — day {}"],["📔 Carnet de Camille — jour {}","📔 Camille's notebook — day {}"],["Carnet de Camille — {}","Camille's notebook — {}"],
+["{} À observer : {} (vu !)","{} To observe: {} (seen!)"],["{} À observer : {} (0/1)","{} To observe: {} (0/1)"],["✎ À observer : {}","✎ To observe: {}"],["À observer : {}","To observe: {}"],
+["Ça y est, j'ai vu {} ! Je l'ajoute à mon carnet.","There it is, I saw {}! I'm adding it to my notebook."],
+[/^(\d+) observations? réussies? · (\d+) pages?$/u,(g,a,b)=>`${a} observation${a>1?'s':''} made · ${b} page${b>1?'s':''}`],
+[/^(\d{1,2}) (janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)$/u,(g,d,m)=>d+' '+{janvier:'January',février:'February',mars:'March',avril:'April',mai:'May',juin:'June',juillet:'July',août:'August',septembre:'September',octobre:'October',novembre:'November',décembre:'December'}[m]],
 ["Succès : {}","Achievement: {}"],["Mange : {}","Eats: {}"],["Mangé par : {}","Eaten by: {}"],["Besoin : {}","Needs: {}"],
 ];
 
