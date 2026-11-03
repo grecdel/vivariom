@@ -53,6 +53,10 @@ class BestiolesService : Service() {
             vues.setTextViewText(R.id.widget_texte, if (actif) "Bestioles\nallumées" else "Bestioles\néteintes")
             vues.setInt(R.id.widget_icone, "setImageAlpha", if (actif) 255 else 110)
             vues.setOnClickPendingIntent(R.id.widget_bouton, BasculeActivity.intentionWidget(ctx))
+            vues.setOnClickPendingIntent(R.id.widget_options, PendingIntent.getActivity(ctx, 11,
+                Intent(ctx, MenuActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                    .putExtra("general", true),
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT))
             gestion.updateAppWidget(ComponentName(ctx, WidgetBestioles::class.java), vues)
             try { TileService.requestListeningState(ctx, ComponentName(ctx, TuileBestioles::class.java)) } catch (_: Exception) {}
         }
@@ -81,7 +85,15 @@ class BestiolesService : Service() {
             COMMANDE -> { intent.getStringExtra("js")?.let { web?.evaluateJavascript(it, null) }; return START_STICKY }
         }
         if (!Settings.canDrawOverlays(this)) { arreter(); return START_NOT_STICKY }
-        if (web == null) creerPage()
+        if (web == null) {
+            creerPage()
+            // la première fois : comment jouer avec les bêtes
+            val prefs = getSharedPreferences(PREFS, MODE_PRIVATE)
+            if (!prefs.getBoolean("astuce", false)) {
+                prefs.edit().putBoolean("astuce", true).apply()
+                android.widget.Toast.makeText(this, "Touche une bête : elle réagit. Garde le doigt dessus : son menu. ⚙ sur le widget : les options.", android.widget.Toast.LENGTH_LONG).show()
+            }
+        }
         actif = true
         majAffichage(this)
         return START_STICKY
@@ -95,12 +107,16 @@ class BestiolesService : Service() {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         val ouvrir = PendingIntent.getActivity(this, 2, Intent(this, MainActivity::class.java),
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        val options = PendingIntent.getActivity(this, 3, Intent(this, MenuActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_ANIMATION).putExtra("general", true),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         val notif = Notification.Builder(this, CANAL)
             .setSmallIcon(R.drawable.ic_tuile)
             .setContentTitle("Les bestioles se promènent")
-            .setContentText("Touche une bête pour la calmer ou la faire disparaître.")
+            .setContentText("Touche une bête : elle réagit. Garde le doigt dessus : son menu.")
             .setContentIntent(ouvrir)
             .setOngoing(true)
+            .addAction(Notification.Action.Builder(null, "⚙ Options", options).build())
             .addAction(Notification.Action.Builder(null, "Éteindre", eteindre).build())
             .build()
         if (Build.VERSION.SDK_INT >= 34) startForeground(1, notif, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
@@ -148,13 +164,14 @@ class BestiolesService : Service() {
             vues.add(id)
             infos[id] = Pair(o.optString("ic") + " " + o.optString("nom"), o.optString("etat"))
             if (o.optInt("calme") == 1) calmes.add(id) else calmes.remove(id)
-            val taille = (o.getInt("r") * 2 * d).toInt()
+            val taille = (maxOf(o.getInt("r") * 2, 64) * d).toInt()
             val x = (o.getInt("x") * d).toInt() - taille / 2
             val y = (o.getInt("y") * d).toInt() - taille / 2
             val zone = zones[id]
             if (zone == null) {
                 val v = View(this)
-                v.setOnClickListener { ouvrirMenu(id) }
+                v.setOnClickListener { commande("Bestioles.reagir($id)") }
+                v.setOnLongClickListener { ouvrirMenu(id); true }
                 val lp = WindowManager.LayoutParams(taille, taille,
                     WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
@@ -174,6 +191,8 @@ class BestiolesService : Service() {
         val parties = zones.keys.filter { it !in vues }
         for (id in parties) { zones.remove(id)?.let { try { wm.removeView(it) } catch (_: Exception) {} }; infos.remove(id) }
     }
+
+    private fun commande(js: String) { web?.evaluateJavascript(js, null) }
 
     private fun ouvrirMenu(id: Int) {
         val (titre, etat) = infos[id] ?: Pair("Bestiole", "")

@@ -29,14 +29,15 @@ class MenuActivity : Activity() {
         super.onCreate(savedInstanceState)
         val id = intent.getIntExtra("id", -1)
         val calme = intent.getBooleanExtra("calme", false)
+        val general = intent.getBooleanExtra("general", false) || id < 0
         val d = resources.displayMetrics.density
         val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding((14 * d).toInt(), (12 * d).toInt(), (14 * d).toInt(), (12 * d).toInt()) }
 
         col.addView(TextView(this).apply {
-            text = intent.getStringExtra("titre") ?: "Bestiole"; textSize = 17f; setTextColor(Color.WHITE)
+            text = if (general) "🐞 Bestioles" else intent.getStringExtra("titre") ?: "Bestiole"; textSize = 17f; setTextColor(Color.WHITE)
         })
         col.addView(TextView(this).apply {
-            text = intent.getStringExtra("etat") ?: ""; textSize = 12f; setTextColor(Color.parseColor("#9FB48E")); setPadding(0, 0, 0, (8 * d).toInt())
+            text = if (general) (if (BestiolesService.actif) "Allumées · touche une bête pour la faire réagir, garde le doigt dessus pour son menu" else "Éteintes") else (intent.getStringExtra("etat") ?: ""); textSize = 12f; setTextColor(Color.parseColor("#9FB48E")); setPadding(0, 0, 0, (8 * d).toInt())
         })
         fun bouton(texte: String, couleur: String = "#E8EEE4", action: () -> Unit) = Button(this).apply {
             text = texte; isAllCaps = false; textSize = 15f; gravity = Gravity.START or Gravity.CENTER_VERTICAL
@@ -45,14 +46,15 @@ class MenuActivity : Activity() {
             setOnClickListener { action() }
             layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { topMargin = (6 * d).toInt() }
         }
-        col.addView(bouton(if (calme) "🏃 La réveiller" else "😌 La calmer") { js("Bestioles.action($id,'${if (calme) "reveiller" else "calmer"}')"); finish() })
+        if (general && !BestiolesService.actif) col.addView(bouton("⏻ Allumer les bestioles", "#8BFF6A") { BasculeActivity.basculer(this); finish() })
+        if (!general) col.addView(bouton(if (calme) "🏃 La réveiller" else "😌 La calmer") { js("Bestioles.action($id,'${if (calme) "reveiller" else "calmer"}')"); finish() })
         val duo = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-        duo.addView(bouton("🍞 Poser une miette") { js("Bestioles.action($id,'miette')"); finish() }.apply {
+        duo.addView(bouton("🍞 Poser une miette") { js(if (general) "Bestioles.nourrir('miette')" else "Bestioles.action($id,'miette')"); finish() }.apply {
             textSize = 13f; layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { topMargin = (6 * d).toInt(); rightMargin = (3 * d).toInt() } })
-        duo.addView(bouton("🍯 Goutte de miel") { js("Bestioles.action($id,'miel')"); finish() }.apply {
+        duo.addView(bouton("🍯 Goutte de miel") { js(if (general) "Bestioles.nourrir('miel')" else "Bestioles.action($id,'miel')"); finish() }.apply {
             textSize = 13f; layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { topMargin = (6 * d).toInt(); leftMargin = (3 * d).toInt() } })
         col.addView(duo)
-        col.addView(bouton("👋 La faire disparaître") { js("Bestioles.action($id,'retirer')"); finish() })
+        if (!general) col.addView(bouton("👋 La faire disparaître") { js("Bestioles.action($id,'retirer')"); finish() })
 
         val grille = GridLayout(this).apply { columnCount = 2; visibility = android.view.View.GONE }
         for ((esp, nom) in especes) grille.addView(Button(this).apply {
@@ -102,7 +104,7 @@ class MenuActivity : Activity() {
         liste.addView(bouton("↺ Revenir aux réglages de départ") { for ((k, v) in defaut) changer(k, v) })
         col.addView(bouton("⚙️ Réglages : quelles bêtes, combien") { liste.visibility = if (liste.visibility == android.view.View.GONE) android.view.View.VISIBLE else android.view.View.GONE })
         col.addView(liste)
-        col.addView(bouton("⏻ Tout éteindre", "#FFB3A8") {
+        if (BestiolesService.actif) col.addView(bouton("⏻ Tout éteindre", "#FFB3A8") {
             startService(Intent(this, BestiolesService::class.java).setAction(BestiolesService.ETEINDRE)); finish()
         })
         setContentView(ScrollView(this).apply { addView(col) })
@@ -110,6 +112,7 @@ class MenuActivity : Activity() {
     }
 
     private fun js(commande: String) {
+        if (!BestiolesService.actif) return
         startService(Intent(this, BestiolesService::class.java).setAction(BestiolesService.COMMANDE).putExtra("js", commande))
     }
 }
