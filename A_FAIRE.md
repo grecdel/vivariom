@@ -60,6 +60,7 @@ Coche quand c'est vérifié et que ça marche. Si ça ne marche pas, laisse `[ ]
 - [x] Quiz 🧠 et Découvertes 🔎 dans les fiches
 - [x] Version anglaise (Options → Langue → English)
 - [ ] Notifications (Options → Appareil) et mode enfant (Options → Jeu)
+- [ ] Carnet de Camille : page au début de chaque niveau, observations à faire, 📔 dans la campagne
 - [x] Téléphone en paysage (outils en colonne)
 
 ### Bestioles (le bonus)
@@ -77,7 +78,7 @@ Coche quand c'est vérifié et que ça marche. Si ça ne marche pas, laisse `[ ]
 Coche celles que tu veux. Claude les fera dans l'ordre de la liste.
 
 ### Jeu
-- [x] 1. Mode « histoire » : un petit naturaliste qui commente tes progrès et te donne des missions
+- [x] 1. ✅ fait le 03/11 (style B, carnet de terrain) — Mode « histoire » : un petit naturaliste qui commente tes progrès et te donne des missions
 - [ ] 2. Visiteurs rares : papillon de nuit, lézard (qui mange tout !), oiseau derrière la vitre
 - [ ] 3. Événements du calendrier : neige à Noël, citrouilles en octobre, vers luisants en juin
 - [ ] 4. Classement personnel : meilleurs temps par niveau, progrès de la semaine

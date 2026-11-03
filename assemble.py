@@ -35,7 +35,7 @@ rep("    if(i===0){ctx.globalAlpha=alpha;ctx.fillStyle=lc;ctx.fillRect(len/2-3,-
 core=open('biome_core.js').read()+'\n'+open('variants.js').read()+'\n'+open('unlocks.js').read()+'\n'+open('decor.js').read()+'\n'+open('topview.js').read()+'\n'+open('profile.js').read()+'\n'+open('devices.js').read()+'\n'+open('links.js').read()+'\n'+open('lure.js').read()+'\n'+open('species2.js').read()+'\n'+open('species3.js').read()
 main=open('biome_main.js').read()+'\n'+open('menu.js').read()+'\n'+open('extras.js').read()+"\n"+open('tutorial.js').read()+"\n"+open('ambiance.js').read()+'\n'+open('save.js').read()+'\n'+open('bascule.js').read()+'\n'+open('tiroir.js').read()+'\n'+open('soie.js').read()+'\n'+open('instincts.js').read()+'\n'+open('decor_top.js').read()+'\n'+open('aide.js').read()+'\n'+open('ctrl.js').read()+'\n'+open('defis.js').read()+'\n'+open('langue.js').read()+'\n'+open('fixes.js').read()+"\n"
 # fichiers ajoutés après fixes.js (modes de jeu, bêtes, milieu, salle, confort, savoir)
-for f in ['progres.js','vie.js','vegetal.js','milieu.js','salle2.js','confort.js','savoir.js','soins.js','aqua.js','jardin2.js','famille.js','grand.js','physique.js']:
+for f in ['progres.js','vie.js','vegetal.js','milieu.js','salle2.js','confort.js','savoir.js','soins.js','aqua.js','jardin2.js','famille.js','grand.js','histoire.js','physique.js']:
     main+=open(f).read()+'\n'
 main=main.replace("for(const id of order)for(const c of creatures)if(c.sp.id===id)drawCreature(c,1,false);",
  "for(const id of order)for(const c of creatures)if(c.sp.id===id){drawProfile(c,1,false);if(c.load){const h=c.segs[0];ctx.fillStyle=c.load.type==='grain'?(c.load.t===1?'#8a6a3a':'#d8b060'):'#ffb43a';ctx.fillRect(h.x+Math.cos(h.a)*5-1.5,h.y+Math.sin(h.a)*5-1.5,3,3)}}")
@@ -340,6 +340,20 @@ body.fond #toast,body.fond #obsx{display:none!important}
 #cote .cpop{display:flex;flex-wrap:wrap;gap:8px;font-size:15px;margin:8px 0}#cote .cj{font-size:12px;color:#aaa;margin:3px 0}
 body.cotew #viewsw,body.cotew #zoomui,body.cotew #undo,body.cotew #suivi{margin-right:var(--cote)}body.cotew #pal,body.cotew #drawer,body.cotew #bar,body.cotew #aide,body.cotew #soin{left:8px!important;right:calc(var(--cote) + 8px)!important;width:auto!important;transform:none!important}
 body.cotew #soin{bottom:auto;top:150px;max-height:calc(100vh - 320px);overflow-y:auto}
+/* Carnet de Camille (histoire.js) */
+#carnet{display:none;position:fixed;left:10px;right:10px;bottom:140px;z-index:4;background:#efe3c2;color:#3a2a14;border-radius:4px;padding:12px 30px 10px 34px;font:14px/1.42 Georgia,serif;box-shadow:0 6px 18px #000b;
+ background-image:repeating-linear-gradient(#efe3c2 0 21px,#d8c79c 21px 22px);transform:rotate(-1deg)}
+#carnet:before{content:'';position:absolute;left:22px;top:0;bottom:0;width:2px;background:#d07a6a}
+#carnet .sk{position:absolute;right:28px;top:-34px}#carnet h4{margin:0 0 4px;font:italic 700 15px Georgia,serif;color:#5a3a14}#carnet .mis{font-style:italic;color:#6a3010;margin-top:4px;font-size:13px}
+#carnet .cx{position:absolute;right:6px;top:6px;background:none;border:0;color:#7a5a30;font-size:15px;padding:2px 4px}
+#carnet.vu{animation:carnetin .35s ease-out}@keyframes carnetin{from{opacity:0;transform:translateY(14px) rotate(-1deg)}to{opacity:1;transform:rotate(-1deg)}}
+@media (min-width:900px){body:not(.land) #carnet{left:50%;right:auto;width:min(calc(100% - 20px),600px);transform:translateX(-50%) rotate(-1deg)}#carnet.vu{animation:none}}
+body.land #carnet{left:184px;right:66px;bottom:auto;top:46px;font-size:13px}body.land.left #carnet{left:66px;right:184px}
+body.cotew #carnet{left:10px!important;right:calc(var(--cote) + 10px)!important;width:auto!important;transform:rotate(-1deg)!important}
+@media (max-width:700px){body.ctrlb:not(.land) #carnet{bottom:192px}}
+.carnetbrief{display:block;margin:10px 0;background:#efe3c2;color:#3a2a14;border-radius:4px;padding:9px 12px;font:13.5px/1.4 Georgia,serif;text-align:left;background-image:repeating-linear-gradient(#efe3c2 0 20px,#d8c79c 20px 21px)}
+.carnetbrief b{display:block;font-style:italic;color:#5a3a14;margin-bottom:3px}.carnetbrief span{display:block}.carnetbrief i{display:block;color:#6a3010;margin-top:4px}
+#carnetp{z-index:62}.livre{display:grid;gap:8px}.livre .lp{background:#efe3c2;color:#3a2a14;border-radius:4px;padding:8px 12px;font:13.5px/1.4 Georgia,serif}.livre h4{margin:0 0 3px;font-style:italic;color:#5a3a14}.livre p{margin:0}.livre small{color:#7a6040}
 /* Soins (soins.js) */
 #soin{display:none;position:fixed;left:8px;right:8px;bottom:134px;z-index:5;background:#0e0b0bf4;border:1px solid #b07a4a;border-radius:12px;padding:8px 10px;font:12.5px/1.4 -apple-system,Roboto,sans-serif;color:#eee;box-shadow:0 6px 20px #000a}
 #soin b{font-size:14px;color:#ffd9a0}#soin p{margin:4px 0}#soin ol{margin:4px 0 4px 18px;padding:0}#soin li{margin:2px 0}#soin .sx{position:absolute;right:6px;top:6px;background:#111;border:1px solid #444;color:#ccc;border-radius:50%;width:24px;height:24px;padding:0}

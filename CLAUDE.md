@@ -25,7 +25,7 @@ python3 assemble.py        # produit biome.html (le jeu complet) et le dossier w
 Ordre des fichiers :
 - **core** : biome_core.js, variants.js, unlocks.js, decor.js, topview.js, profile.js, devices.js, links.js, lure.js, species2.js, species3.js
 - **main** : biome_main.js, menu.js, extras.js, tutorial.js, ambiance.js, save.js, bascule.js, tiroir.js, soie.js, instincts.js, decor_top.js, aide.js, ctrl.js, defis.js, langue.js, fixes.js (il remplace certaines fonctions)
-- **ajouts** (boucle à part dans assemble.py, après fixes.js) : progres.js, vie.js, vegetal.js, milieu.js, salle2.js, confort.js, savoir.js, soins.js, aqua.js, jardin2.js, famille.js, grand.js, physique.js
+- **ajouts** (boucle à part dans assemble.py, après fixes.js) : progres.js, vie.js, vegetal.js, milieu.js, salle2.js, confort.js, savoir.js, soins.js, aqua.js, jardin2.js, famille.js, grand.js, histoire.js, physique.js
 
 ## Repères
 - **Monde** :
@@ -69,6 +69,7 @@ Ordre des fichiers :
 - **Jardin 2** (jardin2.js) : virus de la mosaïque transmis par les pucerons (`p.virus`, ne guérit pas) et taches brunes dues à l'humidité (`p.taches`, guérissent au sec) ; fourmi champignonniste (variante `fourmi:atta` : découpe des feuilles `c.feuille`, jardin de champignon `col.jardin`) ; essaims d'abeilles (`ESSAIM` : grappe puis départ).
 - **Famille** (famille.js) : notifications (option `OPT.notif`, seulement jeu ouvert en arrière-plan ; clic → sw.js `notificationclick`) ; mode enfant (`OPT.enfant` : Facile forcé via `DIFF_USER`, carnet sans mort, restes dessinés en feuilles, défaite douce).
 - **Grand** (grand.js) : format `mural` (120 × 60 cm), lierre grimpant, modèle « À étages » (terrasses `marche`), visite guidée plein écran 🎬 (`visite`, caméra automatique), lien `?fond=1` (fond d'écran ; utilisé par l'appli Bestioles de bureau, option « Vivarium en fond d'écran », qui embarque web/index.html dans `jeu/`), panneau « fiche à côté » sur tablette (`#cote`, `OPT.cote` auto/oui/non).
+- **Mode histoire** (histoire.js) : le carnet de terrain de Camille (style B choisi) : page d'introduction par niveau (`INTRO` par chapitre), 2 missions d'observation tirées des espèces (`MISSIONS`, réussies par le carnet de bord ou un test), commentaires sur les événements (`COMMENTS`, 25 s d'écart), bilan des observations en fin de niveau, livre des pages gardées (📔 dans la campagne, `biome_carnet`, `biome_camille`) ; option `OPT.camille`.
 - **Soins** (soins.js) : quand une bête est malade ou que le sol moisit, carte d'aide pas à pas (`#soin`) avec « 🪄 Le faire pour moi » en Facile, en mode enfant (`OPT.enfant`) et la première fois en bac à sable ; ailleurs, message court et 🍄 dans le HUD (toucher = l'aide) ; guérison plus rapide en Facile ; fiche « Maladies et moisissures ».
 - **Savoir** (savoir.js) : fiches enrichies (`PLUS` : où elle vit, anecdote, taille réelle), quiz (un sans-faute débloque des décors de salle), découvertes (`biome_decouv`), carte des chapitres en jardin (`biome_carte`), partage des photos.
 - **Sauvegardes** :
