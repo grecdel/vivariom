@@ -35,7 +35,7 @@ rep("    if(i===0){ctx.globalAlpha=alpha;ctx.fillStyle=lc;ctx.fillRect(len/2-3,-
 core=open('biome_core.js').read()+'\n'+open('variants.js').read()+'\n'+open('unlocks.js').read()+'\n'+open('decor.js').read()+'\n'+open('topview.js').read()+'\n'+open('profile.js').read()+'\n'+open('devices.js').read()+'\n'+open('links.js').read()+'\n'+open('lure.js').read()+'\n'+open('species2.js').read()+'\n'+open('species3.js').read()
 main=open('biome_main.js').read()+'\n'+open('menu.js').read()+'\n'+open('extras.js').read()+"\n"+open('tutorial.js').read()+"\n"+open('ambiance.js').read()+'\n'+open('save.js').read()+'\n'+open('bascule.js').read()+'\n'+open('tiroir.js').read()+'\n'+open('soie.js').read()+'\n'+open('instincts.js').read()+'\n'+open('decor_top.js').read()+'\n'+open('aide.js').read()+'\n'+open('ctrl.js').read()+'\n'+open('defis.js').read()+'\n'+open('langue.js').read()+'\n'+open('fixes.js').read()+"\n"
 # fichiers ajoutés après fixes.js (modes de jeu, bêtes, milieu, salle, confort, savoir)
-for f in ['progres.js','vie.js','vegetal.js','milieu.js','salle2.js','confort.js','savoir.js','soins.js','aqua.js','jardin2.js','physique.js']:
+for f in ['progres.js','vie.js','vegetal.js','milieu.js','salle2.js','confort.js','savoir.js','soins.js','aqua.js','jardin2.js','famille.js','physique.js']:
     main+=open(f).read()+'\n'
 main=main.replace("for(const id of order)for(const c of creatures)if(c.sp.id===id)drawCreature(c,1,false);",
  "for(const id of order)for(const c of creatures)if(c.sp.id===id){drawProfile(c,1,false);if(c.load){const h=c.segs[0];ctx.fillStyle=c.load.type==='grain'?(c.load.t===1?'#8a6a3a':'#d8b060'):'#ffb43a';ctx.fillRect(h.x+Math.cos(h.a)*5-1.5,h.y+Math.sin(h.a)*5-1.5,3,3)}}")
@@ -447,6 +447,8 @@ const CACHE='vivariom-VERSION';
 const FILES=['./','index.html','manifest.webmanifest','icones/icone-192.png','icones/icone-512.png','icones/icone-192-masque.png','icones/icone-512-masque.png','icones/apple-touch-icon.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
+// toucher une notification ramène au jeu
+self.addEventListener('notificationclick',e=>{e.notification.close();e.waitUntil(clients.matchAll({type:'window'}).then(L=>{for(const c of L)if('focus' in c)return c.focus();return clients.openWindow('./')}))});
 self.addEventListener('fetch',e=>{const r=e.request;if(r.method!=='GET'||new URL(r.url).origin!==location.origin)return;
   // pages : on redemande toujours au serveur s'il y a plus récent (sinon le navigateur peut garder l'ancienne 10 min)
   e.respondWith(fetch(r,r.mode==='navigate'||/\\/(index\\.html)?$/.test(new URL(r.url).pathname)?{cache:'no-cache'}:{}).then(res=>{if(res.ok){const cp=res.clone();caches.open(CACHE).then(c=>c.put(r,cp))}return res})

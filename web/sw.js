@@ -1,8 +1,10 @@
-// Vivariom — fonctionnement hors ligne. Version 964c604840 (changée à chaque assemblage).
-const CACHE='vivariom-964c604840';
+// Vivariom — fonctionnement hors ligne. Version 8c68f47f30 (changée à chaque assemblage).
+const CACHE='vivariom-8c68f47f30';
 const FILES=['./','index.html','manifest.webmanifest','icones/icone-192.png','icones/icone-512.png','icones/icone-192-masque.png','icones/icone-512-masque.png','icones/apple-touch-icon.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
+// toucher une notification ramène au jeu
+self.addEventListener('notificationclick',e=>{e.notification.close();e.waitUntil(clients.matchAll({type:'window'}).then(L=>{for(const c of L)if('focus' in c)return c.focus();return clients.openWindow('./')}))});
 self.addEventListener('fetch',e=>{const r=e.request;if(r.method!=='GET'||new URL(r.url).origin!==location.origin)return;
   // pages : on redemande toujours au serveur s'il y a plus récent (sinon le navigateur peut garder l'ancienne 10 min)
   e.respondWith(fetch(r,r.mode==='navigate'||/\/(index\.html)?$/.test(new URL(r.url).pathname)?{cache:'no-cache'}:{}).then(res=>{if(res.ok){const cp=res.clone();caches.open(CACHE).then(c=>c.put(r,cp))}return res})

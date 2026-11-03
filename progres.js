@@ -3,7 +3,7 @@
 // ⏳ survie (tenir le plus longtemps possible), 📊 bilan de fin de niveau, succès difficiles.
 // Un mode spécial part d'un niveau existant (même terrain, mêmes espèces) dont on change les règles.
 let SPECIAL=null;// {type:'defi'|'jour'|'survie', ...}
-const DIFF_USER=()=>{const d=LS.get('biome_diff','normal');return DIFFS[d]?d:'normal'};
+const DIFF_USER=()=>{if(OPT.enfant)return 'facile';const d=LS.get('biome_diff','normal');return DIFFS[d]?d:'normal'};
 function seedRng(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const jourCle=()=>{const d=new Date();return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate()};
 // ----- le défi du jour : tiré au sort avec la date comme graine -----
