@@ -209,6 +209,7 @@ function vivre(dt){simT+=dt;if(SOUCHE)SOUCHE.t+=dt;
     if(b.peur>0){b.peur-=dt;fuitPointeur(b,dt);continue}
     if(b.calme){b.v=0;b.etat='calme';b.alt=Math.max(0,b.alt-dt*2);b.vol=false;continue}
     if(b.etat==='mange'&&b.t>0&&!b.saut){b.t-=dt;b.v=0;continue}
+    if(relations(b,dt))continue;
     IA[b.esp](b,dt)}
   betes=betes.filter(b=>!b.mort);
   for(const m of miettes){m.age+=dt;if(m.age>m.vie)m.mort=true}miettes=miettes.filter(m=>!m.mort);
@@ -275,8 +276,7 @@ function dessineMiette(m,x,y,a){g.save();g.globalAlpha=a;
 function dessiner(){g.setTransform(DPR,0,0,DPR,0,0);g.clearRect(0,0,W,H);
   for(const m of miettes)dessineMiette(m,m.x,m.y,clamp((m.vie-m.age)/5,0,1));
   for(const b of betes)if(!b.vol&&!b.dehors){g.globalAlpha=opacite(b);dessine(b)}for(const b of betes)if(b.vol&&!b.dehors){g.globalAlpha=opacite(b);dessine(b)}g.globalAlpha=1;
-  if(SOUCHE){const S=SOUCHE,k=S.t/0.9;if(k>=1)SOUCHE=null;else{g.save();g.globalAlpha=0.55*(1-k);g.fillStyle='#2a1c10';g.beginPath();g.ellipse(S.x,S.y,90*(1+k*0.6),36*(1+k*0.6),0,0,TAU);g.fill();
-    g.globalAlpha=0.7*(1-k);g.fillStyle='#4a3420';for(let q=0;q<10;q++){const a=q*0.63,r=60+k*120;g.beginPath();g.arc(S.x+Math.cos(a)*r,S.y+Math.sin(a)*r*0.4,2.5*(1-k),0,TAU);g.fill()}g.restore()}}
+  if(SOUCHE&&SOUCHE.t>0.9)SOUCHE=null;
   if(tientMiette())dessineMiette({type:'miette',col:'#d8b46a',r:4.5,val:1,val0:1},ptr.x+8,ptr.y+12,1)}
 
 // ---------- boucle ----------
@@ -340,6 +340,38 @@ addEventListener('pointermove',e=>{majPointeur(e.clientX,e.clientY);hoteInteract
 document.addEventListener('pointerleave',()=>{ptr.dedans=false});addEventListener('blur',()=>{ptr.dedans=false});
 document.documentElement.addEventListener('mouseleave',()=>{ptr.dedans=false});
 
+// ---------- relations entre les bêtes ----------
+// fourmis : gardent leurs pucerons (chassent les coccinelles qui s'en approchent), les « traient », se saluent,
+// et s'unissent contre l'araignée ; coccinelles : évitent les fourmis ; araignée et mante : reculent devant un groupe de fourmis ;
+// papillons : petite danse à deux.
+const proches=(b,esp,r)=>betes.filter(o=>o!==b&&!o.mort&&!o.part&&!o.dehors&&!o.cache&&o.esp===esp&&hyp(o.x-b.x,o.y-b.y)<r);
+function bulle(b,txt,p=1){if(!b.bulle&&Math.random()<p)b.bulle={txt,t:1.4}}
+function relations(b,dt){if(b.repas||b.saut||b.etat==='mange')return false;
+  if(b.esp==='fourmi'){
+    if(b.pause>0){b.pause-=dt;b.v=0;return true}
+    // une coccinelle s'approche des pucerons : on la chasse
+    const coc=proches(b,'coccinelle',140).find(c=>!c.vol&&proches(c,'puceron',90).length);
+    if(coc){const d=hyp(coc.x-b.x,coc.y-b.y);tourneVers(b,coc.x,coc.y,8,dt);avance(b,b.E.vit*1.6,dt);b.etat='défend ses pucerons';bulle(b,'💢',dt*2);
+      if(d<12){coc.peur=1.4;coc.peurX=b.x;coc.peurY=b.y;coc.vol=true;coc.t=0;bulle(coc,'😣');b.etat='chasse la coccinelle'}return true}
+    // à plusieurs contre l'araignée
+    const ara=proches(b,'araignee',90)[0];if(ara&&proches(ara,'fourmi',70).length>=3){tourneVers(b,ara.x,ara.y,8,dt);avance(b,b.E.vit*1.4,dt);b.etat='attaque l\'araignée en groupe';bulle(b,'⚔',dt*1.5);return true}
+    // traire un puceron (miellat) avant de rentrer au nid
+    if(!b.porte){if(b.traire){const p=b.traire;if(p.mort||p.part){b.traire=null;return false}const d=hyp(p.x-b.x,p.y-b.y);
+        if(d>9){tourneVers(b,p.x,p.y,7,dt);avance(b,b.E.vit,dt);b.etat='va traire un puceron';return true}
+        b.v=0;b.traitT=(b.traitT||0)+dt;b.etat='trait un puceron';tourneVers(b,p.x,p.y,5,dt);if(b.traitT>1.6){b.traitT=0;b.traire=null;b.porte='#ffb43a';bulle(b,'🍯');bulle(p,'💧')}return true}
+      if(Math.random()<dt*0.06){const p=proches(b,'puceron',110)[0];if(p){b.traire=p;return true}}}
+    // deux fourmis se croisent : elles se touchent les antennes
+    if(Math.random()<dt*0.8){const f=proches(b,'fourmi',11)[0];if(f&&!(f.pause>0)){b.pause=f.pause=0.5;b.etat=f.etat='se salue (antennes)'}}
+    return false}
+  if(b.esp==='coccinelle'&&!b.vol){const f=proches(b,'fourmi',32);if(f.length){b.vol=true;b.t=0;b.etat='fuit les fourmis';bulle(b,'💨',dt*3);return true}}
+  if(b.esp==='araignee'||b.esp==='mante'){const f=proches(b,'fourmi',55);if(f.length>=3){const cx=f.reduce((a,o)=>a+o.x,0)/f.length,cy=f.reduce((a,o)=>a+o.y,0)/f.length;
+      if(b.esp==='araignee'&&!b.saut){const an=Math.atan2(b.y-cy,b.x-cx),d=rnd(50,80);b.saut={x0:b.x,y0:b.y,x1:clamp(b.x+Math.cos(an)*d,10,W-10),y1:clamp(b.y+Math.sin(an)*d,10,H-10),t:0,proie:null};bulle(b,'😱');b.etat='saute loin des fourmis';return true}
+      if(b.esp==='mante'){b.a+=clamp(angD(b.a,Math.atan2(b.y-cy,b.x-cx)),-5*dt,5*dt);avance(b,b.E.vit*2,dt);b.etat='recule devant les fourmis';bulle(b,'😬',dt);return true}}}
+  if(b.esp==='papillon'&&b.vol){if(b.danse>0){b.danse-=dt;const o=b.partenaire;if(!o||o.mort){b.danse=0;return false}const an=simT*4+(b.id%2?Math.PI:0);
+      volerVers(b,(b.x+o.x)/2+Math.cos(an)*25,(b.y+o.y)/2+Math.sin(an)*18,dt,0.9);b.etat='danse avec un autre papillon';return true}
+    if(Math.random()<dt*0.05){const o=proches(b,'papillon',160).find(o=>o.vol&&!(o.danse>0));if(o){b.danse=o.danse=4;b.partenaire=o;o.partenaire=b;bulle(b,'💕')}}}
+  if(b.esp==='mouche'&&!b.vol){const a=proches(b,'araignee',60)[0]||proches(b,'mante',60)[0];if(a){b.vol=true;b.t=0;b.etat='s\'envole, une araignée la guette';return true}}
+  return false}
 // ---------- écran d'accueil / appli ouverte (Android) ----------
 // dans une appli : la plupart des bêtes se cachent au bord de l'écran, une ou deux restent ;
 // retour à l'accueil : elles réapparaissent toutes d'un coup et détalent, comme sous une souche qu'on soulève.
