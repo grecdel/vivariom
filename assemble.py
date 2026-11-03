@@ -35,7 +35,7 @@ rep("    if(i===0){ctx.globalAlpha=alpha;ctx.fillStyle=lc;ctx.fillRect(len/2-3,-
 core=open('biome_core.js').read()+'\n'+open('variants.js').read()+'\n'+open('unlocks.js').read()+'\n'+open('decor.js').read()+'\n'+open('topview.js').read()+'\n'+open('profile.js').read()+'\n'+open('devices.js').read()+'\n'+open('links.js').read()+'\n'+open('lure.js').read()+'\n'+open('species2.js').read()+'\n'+open('species3.js').read()
 main=open('biome_main.js').read()+'\n'+open('menu.js').read()+'\n'+open('extras.js').read()+"\n"+open('tutorial.js').read()+"\n"+open('ambiance.js').read()+'\n'+open('save.js').read()+'\n'+open('bascule.js').read()+'\n'+open('tiroir.js').read()+'\n'+open('soie.js').read()+'\n'+open('instincts.js').read()+'\n'+open('decor_top.js').read()+'\n'+open('aide.js').read()+'\n'+open('ctrl.js').read()+'\n'+open('defis.js').read()+'\n'+open('langue.js').read()+'\n'+open('fixes.js').read()+"\n"
 # fichiers ajoutés après fixes.js (modes de jeu, bêtes, milieu, salle, confort, savoir)
-for f in ['progres.js','vie.js','vegetal.js','milieu.js','salle2.js','confort.js','savoir.js','soins.js','aqua.js','jardin2.js','famille.js','physique.js']:
+for f in ['progres.js','vie.js','vegetal.js','milieu.js','salle2.js','confort.js','savoir.js','soins.js','aqua.js','jardin2.js','famille.js','grand.js','physique.js']:
     main+=open(f).read()+'\n'
 main=main.replace("for(const id of order)for(const c of creatures)if(c.sp.id===id)drawCreature(c,1,false);",
  "for(const id of order)for(const c of creatures)if(c.sp.id===id){drawProfile(c,1,false);if(c.load){const h=c.segs[0];ctx.fillStyle=c.load.type==='grain'?(c.load.t===1?'#8a6a3a':'#d8b060'):'#ffb43a';ctx.fillRect(h.x+Math.cos(h.a)*5-1.5,h.y+Math.sin(h.a)*5-1.5,3,3)}}")
@@ -331,6 +331,12 @@ body.obs>*:not(#c):not(#obsx):not(#toast):not(#end):not(#brief):not(#absp){displ
 .etape{position:absolute;width:68px;display:flex;flex-direction:column;align-items:center;background:none;border:0;color:#eee;padding:0;font:600 12px -apple-system,Roboto,sans-serif;text-align:center}
 .etape .eic{width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;background:#16301a;border:3px solid #8bff6a;box-shadow:0 4px 14px #000a}
 .etape b{width:130px;margin-top:4px;text-shadow:0 1px 3px #000}.etape small{color:#bcd;font-size:11px}.etape.lock{opacity:.5}.etape.lock .eic{border-color:#555;background:#1a1a1a}.etape.fini .eic{border-color:#ffe94d;background:#2a2608}
+/* Fiche à côté (grand.js) */
+#cote{display:none;position:fixed;right:0;top:0;bottom:0;width:var(--cote,0px);box-sizing:border-box;overflow-y:auto;background:#0b0e0bf6;border-left:1px solid #2d4a2f;padding:12px 12px 20px;color:#ddd;font:13px/1.45 -apple-system,Roboto,sans-serif;z-index:3}
+#cote h2{font:700 17px Georgia,serif;color:#fff;margin:2px 0 6px}#cote .cmis{color:#ffe94d;margin:4px 0 8px}#cote .badge{display:inline-block;background:#1a2a1a;border:1px solid #3d6b3f;border-radius:8px;padding:1px 7px;font-size:11.5px;margin:0 3px 6px 0}
+#cote u{color:#8bff6a;text-decoration:none;font-weight:600;margin-right:4px}#cote p{margin:6px 0}#cote .anec{background:#1a1808;border-left:3px solid #ffe94d;padding:5px 8px;border-radius:4px;color:#e8e0b0}
+#cote .cpop{display:flex;flex-wrap:wrap;gap:8px;font-size:15px;margin:8px 0}#cote .cj{font-size:12px;color:#aaa;margin:3px 0}
+body.cotew #viewsw,body.cotew #zoomui,body.cotew #undo,body.cotew #suivi{margin-right:var(--cote)}body.cotew #pal,body.cotew #drawer,body.cotew #bar,body.cotew #aide,body.cotew #soin{left:8px!important;right:calc(var(--cote) + 8px)!important;width:auto!important;transform:none!important}
 /* Soins (soins.js) */
 #soin{display:none;position:fixed;left:8px;right:8px;bottom:134px;z-index:5;background:#0e0b0bf4;border:1px solid #b07a4a;border-radius:12px;padding:8px 10px;font:12.5px/1.4 -apple-system,Roboto,sans-serif;color:#eee;box-shadow:0 6px 20px #000a}
 #soin b{font-size:14px;color:#ffd9a0}#soin p{margin:4px 0}#soin ol{margin:4px 0 4px 18px;padding:0}#soin li{margin:2px 0}#soin .sx{position:absolute;right:6px;top:6px;background:#111;border:1px solid #444;color:#ccc;border-radius:50%;width:24px;height:24px;padding:0}
