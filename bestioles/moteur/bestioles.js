@@ -30,15 +30,16 @@ const ESP={
   mante:{nom:'Mante',ic:'🦗',L:34,h:95,s:45,l:38,vit:10,pattes:6,ant:6,proies:['mouche','papillon','coccinelle','fourmi'],corps:[[0.14,0.18],[0.4,0.1],[0.46,0.2]]},
   phasme:{nom:'Phasme',ic:'🌿',L:30,h:90,s:35,l:30,vit:4,pattes:6,ant:10,corps:[[0.1,0.06],[0.35,0.06],[0.55,0.07]]},
   grillon:{nom:'Grillon',ic:'🎶',L:16,h:30,s:30,l:12,vit:18,pattes:6,ant:16,corps:[[0.22,0.3],[0.2,0.32],[0.58,0.34]]},
+  phryne:{nom:'Phryne',ic:'🦀',L:22,h:25,s:35,l:28,vit:22,pattes:6,ant:0,proies:['grillon','mouche','puceron'],corps:[[0.3,0.4],[0.2,0.3],[0.5,0.4]]},
   solifuge:{nom:'Solifuge',ic:'🦂',L:24,h:38,s:45,l:55,vit:60,pattes:8,ant:0,proies:['fourmi','grillon','puceron'],corps:[[0.3,0.35],[0.15,0.25],[0.55,0.35]]},
   verluisant:{nom:'Ver luisant',ic:'✨',L:17,h:30,s:22,l:24,vit:9,pattes:6,ant:3,corps:[[0.12,0.16],[0.15,0.24],[0.16,0.27],[0.16,0.27],[0.16,0.24],[0.13,0.2],[0.12,0.15]]},
 };
 for(const k in ESP)ESP[k].L*=ECH;
 const PREDS={};for(const k in ESP)for(const p of ESP[k].proies||[])(PREDS[p]=PREDS[p]||[]).push(k);
 // réglages par défaut (nombre de bêtes de chaque espèce) et maximum proposé dans les réglages
-const DEFAUT={fourmi:5,puceron:6,coccinelle:1,mouche:2,araignee:1,papillon:1,mante:0,verluisant:2,phasme:1,grillon:1,solifuge:0};
-const NMAX={fourmi:15,puceron:14,coccinelle:4,mouche:6,araignee:3,papillon:4,mante:2,verluisant:5,phasme:3,grillon:4,solifuge:2};
-const MAX={fourmi:9,puceron:14,coccinelle:2,mouche:4,araignee:2,papillon:2,mante:1,verluisant:3,phasme:2,grillon:3,solifuge:1};
+const DEFAUT={fourmi:5,puceron:6,coccinelle:1,mouche:2,araignee:1,papillon:1,mante:0,verluisant:2,phasme:1,grillon:1,solifuge:1,phryne:1};
+const NMAX={fourmi:15,puceron:14,coccinelle:4,mouche:6,araignee:3,papillon:4,mante:2,verluisant:5,phasme:3,grillon:4,solifuge:2,phryne:2};
+const MAX={fourmi:9,puceron:14,coccinelle:2,mouche:4,araignee:2,papillon:2,mante:1,verluisant:3,phasme:2,grillon:3,solifuge:1,phryne:1};
 const CLE='bestioles_reglages';
 
 // ---------- réglages (gardés dans le navigateur, et chez l'appli Android si elle sait le faire) ----------
@@ -159,6 +160,10 @@ const IA={
     if(b.chante>0){b.chante-=dt;b.v=0;b.etat='chante (frotte ses ailes)';if(Math.random()<dt*1.2)b.bulle={txt:'🎵',t:1.2};return}
     if(Math.random()<dt*0.3){const an=b.a+rnd(-1,1),d=rnd(35,70);b.hop={x0:b.x,y0:b.y,x1:clamp(b.x+Math.cos(an)*d,15,W-15),y1:clamp(b.y+Math.sin(an)*d,15,H-15),t:0};b.a=an;return}
     if(Math.random()<dt*0.4){b.v=0;b.etat='grignote';return}errer(b,dt,b.E.vit*0.6);b.etat='explore'},
+  phryne(b,dt){const nuit=estNuit();b.frappe=Math.max(0,(b.frappe||0)-dt);const p=b.faim>0.3?pres(b,['grillon','mouche','puceron'].flatMap(vivantes).filter(o=>!o.vol&&!o.part&&!o.dehors),nuit?120:50):null;
+    if(p&&hyp(p.x-b.x,p.y-b.y)<22){tourneVers(b,p.x,p.y,6,dt);b.v=0;if(hyp(p.x-b.x,p.y-b.y)<16){b.frappe=0.5;mange(b,p,0.5);b.etat='replie sa proie'}else b.etat='tâte avec ses fouets';return}
+    if(p&&nuit){tourneVers(b,p.x,p.y,3,dt);avance(b,b.E.vit*0.8,dt);b.etat='approche à pas de crabe';return}
+    if(b.pause>0){b.pause-=dt;b.v=0;b.etat=nuit?'à l\'affût':'cachée, attend la nuit';return}if(Math.random()<dt*0.4)b.pause=rnd(2,6);errer(b,dt,b.E.vit*(nuit?0.8:0.3));b.etat='avance de côté'},
   solifuge(b,dt){const nuit=estNuit();const p=b.faim>0.3?pres(b,['fourmi','grillon','puceron'].flatMap(vivantes).filter(o=>!o.vol&&!o.part&&!o.dehors),220):null;
     if(p){tourneVers(b,p.x,p.y,9,dt);avance(b,b.E.vit*(nuit?1.3:0.9),dt);b.etat='fonce sur une proie';if(hyp(p.x-b.x,p.y-b.y)<9){mange(b,p,0.5);b.etat='broie sa proie'}return}
     if(b.pause>0){b.pause-=dt;b.v=0;b.etat=nuit?'guette':'se repose à l\'ombre';return}if(Math.random()<dt*0.5)b.pause=rnd(0.5,2.5);errer(b,dt,b.E.vit*(nuit?1:0.5));b.etat='court en zigzag'},
@@ -263,11 +268,18 @@ function corpsDessus(b,u){const e=b.esp,E=b.E,wig=Math.sin(simT*6+b.id)*0.3,vol=
   if(e==='grillon'){const c='#1a1612';for(const sd of [-1,1]){seg2(-1.5*u,sd*0.8*u,-3.6*u,sd*1.9*u,u*0.8,u*0.5,c);seg2(-3.6*u,sd*1.9*u,-5.8*u,sd*1.4*u,u*0.3,u*0.2,c)}pattes2(b,u,[0.3,-0.6],[1.3,1.5],0.22,c,0.8);
     ell2(-2*u,0,u*3,u*1.6,0,c,'#4a443c',u*0.12);g.fillStyle=hsl(40,55,40);g.beginPath();g.ellipse(-1.8*u,0,u*2.6,u*1.1,0,0,TAU);g.fill();if(b.chante>0){g.strokeStyle='rgba(255,233,160,0.6)';g.lineWidth=u*0.1;for(const r of [1.6,2.4]){g.beginPath();g.arc(-1.8*u,0,r*u,-0.6,0.6);g.stroke()}}
     for(const sd of [-1,1])trait2([[-4.8*u,sd*0.3*u],[-6.2*u,sd*0.8*u]],'#000',u*0.15);ell2(0.6*u,0,u*1.1,u*1.2,0,c);ell2(1.6*u,0,u*0.75,u*0.85,0,c);ant2(u,1.9,'#000',7,false,wig);return}
+  if(e==='phryne'){const br=hsl(25,35,28),cl=hsl(38,45,58),fo=hsl(20,30,16),ph=b.ph*2.2,mv=b.v>0?1:0;
+    [[-0.6,0.9],[-1.6,0.1],[-2.5,-0.9]].forEach(([x,f],i)=>{for(const sd of [-1,1]){const sw=Math.sin(ph+i*Math.PI+(sd>0?Math.PI:0))*0.15*mv,t1=sd*(Math.PI/2-f*0.5)+sw,t2=sd*(Math.PI/2-f*0.9)+sw;
+      const x0=x*u,y0=sd*1.4*u,kx=x0+Math.cos(t1)*4.2*u,ky=y0+Math.sin(t1)*4.2*u,fx=kx+Math.cos(t2)*5*u,fy=ky+Math.sin(t2)*5*u;seg2(x0,y0,kx,ky,0.45*u,0.35*u,br);seg2(kx,ky,fx,fy,0.35*u,0.15*u,br);ell2(kx+(fx-kx)*0.4,ky+(fy-ky)*0.4,u*0.25,u*0.25,0,cl)}});
+    ell2(-5.6*u,0,u*3.6,u*2.4,0,hsl(25,30,22));for(let q=-3;q<=3;q++){const hh=u*2.3*Math.sqrt(Math.max(0,1-(q/3.8)**2));trait2([[-5.6*u+q*u*0.95,-hh],[-5.6*u+q*u*0.95,hh]],fo,u*0.12)}
+    ell2(-1.2*u,0,u*1.9,u*2.7,0,br,fo,u*0.12);ell2(-1.2*u,0,u*0.5,u*1.2,0,cl);ell2(0.4*u,0,u*0.25,u*0.25,0,'#e8d090');
+    const fr=b.frappe>0?1:0;for(const sd of [-1,1]){const kx=(2.2+fr*2)*u,ky=sd*(2.6-fr*1.4)*u,fx=fr?6*u:0.9*u,fy=sd*(fr?0.8:0.6)*u;seg2(0.4*u,sd*0.8*u,kx,ky,0.7*u,0.6*u,hsl(28,40,32));seg2(kx,ky,fx,fy,0.55*u,0.3*u,hsl(28,40,32));
+      const pts=[[0,sd*1.6*u]];let x=0,y=sd*1.6*u;const bal=Math.sin(simT*1.7+b.id*3+(sd>0?1.4:0));for(let q=1;q<=18;q++){const t=q/18,a=sd*(0.75-t*0.55+bal*0.35*t);x+=Math.cos(a)*1.2*u;y+=Math.sin(a)*1.2*u;pts.push([x,y])}trait2(pts,cl,Math.max(0.6,u*0.12))}return}
   if(e==='solifuge'){const c=hsl(38,45,58),f=hsl(30,40,35);pattes2(b,u,[0.3,-0.4,-1.1,-1.8],[2,2.4],0.3,c,0.6);ell2(-2.6*u,0,u*2.6,u*1.4,0,hsl(30,35,45));for(let q=0;q<4;q++)trait2([[(-1.2-q*0.9)*u,-1.2*u],[(-1.2-q*0.9)*u,1.2*u]],f,u*0.1);
     ell2(0.8*u,0,u*1.6,u*1.5,0,c,f,u*0.1);const o=0.15+0.15*Math.sin(simT*3+b.id);for(const sd of [-1,1]){g.save();g.translate(2*u,sd*0.45*u);g.rotate(sd*o);ell2(1.4*u,0,u*1.6,u*0.45,0,hsl(22,60,42),'#1a0e06',u*0.1);g.restore();
       seg2(1.2*u,sd*0.9*u,2.6*u,sd*2.4*u,u*0.45,u*0.4,c);seg2(2.6*u,sd*2.4*u,4.4*u,sd*2.2*u,u*0.4,u*0.38,c);ell2(4.5*u,sd*2.2*u,u*0.35,u*0.35,0,hsl(40,50,80))}ell2(1.3*u,0,u*0.25,u*0.25,0,'#111');return}
   return false}
-function dessine(b){if(['fourmi','coccinelle','mouche','araignee','papillon','mante','phasme','grillon','solifuge'].includes(b.esp)){const L=b.E.L,u=L/10*(b.esp==='papillon'?0.6:b.esp==='phasme'?0.95:b.esp==='solifuge'?0.75:0.9);
+function dessine(b){if(['fourmi','coccinelle','mouche','araignee','papillon','mante','phasme','grillon','solifuge','phryne'].includes(b.esp)){const L=b.E.L,u=L/10*(b.esp==='papillon'?0.6:b.esp==='phasme'?0.95:b.esp==='solifuge'?0.75:b.esp==='phryne'?0.5:0.9);
     g.save();g.translate(b.x,b.y);const al=b.alt||0;g.save();g.translate(3+al*10,4+al*14);g.rotate(b.a);g.fillStyle=`rgba(0,0,0,${(0.22-al*0.08).toFixed(2)})`;g.beginPath();g.ellipse(-L*0.15,0,L*0.55,L*(b.esp==='papillon'?0.5:0.26),0,0,TAU);g.fill();g.restore();
     g.rotate(b.a);const sc=1+al*0.12;g.scale(sc,sc);g.lineCap='round';g.lineJoin='round';g.translate(L*0.22,0);corpsDessus(b,u);if(b.porte){g.fillStyle=b.porte;g.beginPath();g.arc(2.6*u,0,L*0.16,0,TAU);g.fill()}g.restore();
     if(b.bulle){const k=b.bulle.t,a=clamp(k/0.4,0,1),up=(1.6-k)*14;g.save();g.globalAlpha*=a;g.font=`${Math.max(16,L*0.9)}px sans-serif`;g.textAlign='center';g.fillText(b.bulle.txt,b.x,b.y-L*0.9-up);g.restore()}
@@ -370,6 +382,7 @@ function ouvrirOptions(){selId=null;menuB={x:W/2-130,y:H/2};
    <button data-a="reglages">⚙️ Réglages : quelles bêtes, combien</button>
    <div class="regl" hidden><p>${estNuit()?'🌙 C\'est la nuit : les papillons dorment ailleurs, les vers luisants brillent.':'☀️ C\'est le jour : les vers luisants sortiront à la nuit tombée.'}</p>${lignesReglages()}<button data-a="defaut" class="petit">↺ Revenir aux réglages de départ</button></div>
    <button data-a="jeu">🎮 Jouer à Vivariom</button>
+   <button data-a="contact">✉ Un bug, une idée ? Écris-nous</button>
    <button data-a="fermer">Fermer</button>
    <button data-a="eteindre" class="off">⏻ Tout éteindre</button>`;
   menu.hidden=false;placerMenu();
@@ -377,7 +390,7 @@ function ouvrirOptions(){selId=null;menuB={x:W/2-130,y:H/2};
     if(a==='ajouter'||a==='reglages'){const z=menu.querySelector(a==='ajouter'?'.ajout':'.regl');z.hidden=!z.hidden;placerMenu();return}
     if(a==='defaut'){Bestioles.configurer({...DEFAUT});majReglages();return}
     if(a==='fermer'){fermerMenu();hoteInteractif(false);return}
-    if(a==='jeu'){const u='https://grecdel.github.io/vivariom/';if(window.bestiolesHote&&window.bestiolesHote.jeu)window.bestiolesHote.jeu(u);else window.open(u,'_blank');fermerMenu();hoteInteractif(false);return}
+    if(a==='jeu'||a==='contact'){const u='https://grecdel.github.io/vivariom/'+(a==='contact'?'?contact=1':'');if(window.bestiolesHote&&window.bestiolesHote.jeu)window.bestiolesHote.jeu(u);else window.open(u,'_blank');fermerMenu();hoteInteractif(false);return}
     action(-1,a);fermerMenu();hoteInteractif(false)});
   menu.querySelectorAll('[data-esp]').forEach(bt=>bt.onclick=e=>{e.stopPropagation();ajouter(bt.dataset.esp,W/2+rnd(-80,80),H/2+rnd(-80,80));fermerMenu();hoteInteractif(false)});
   menu.querySelectorAll('.rg [data-m]').forEach(bt=>bt.onclick=e=>{e.stopPropagation();const k=bt.parentNode.dataset.k;Bestioles.configurer({[k]:REG[k]+(+bt.dataset.m)});majReglages()});

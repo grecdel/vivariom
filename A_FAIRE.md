@@ -37,6 +37,8 @@ Coche quand c'est vérifié et que ça marche. Si ça ne marche pas, laisse `[ ]
 
 - [ ] Nouvelles bêtes : perce-oreille, gendarme, libellule, moustique, gerris, têtard → grenouille (pose une mare 💧 d'abord)
 - [ ] Maladies des plantes (feuilles marbrées de jaune, taches brunes), fourmi champignonniste (variante de la fourmi), essaim d'abeilles
+- [ ] Phryne (bac à sable, climat tropical) : deux longs fouets, pédipalpes épineux, chasse la nuit
+- [ ] Formulaire de contact ✉ (menu du jeu, Options → Contact, options des Bestioles)
 
 ### Bac à sable et salle
 - [x] Modèles tout prêts (Forêt, Désert, Mare) à la création d'un bac

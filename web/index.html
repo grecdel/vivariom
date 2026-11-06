@@ -4532,7 +4532,8 @@ const EN_D={
 "Plat et vert comme une feuille, avec de fausses nervures et des « morsures » sur les bords. Il se balance comme une feuille dans le vent.":"Flat and green like a leaf, with fake veins and \"bite marks\" on the edges. It sways like a leaf in the wind.",
 "Couvert d'épines, la queue recourbée au-dessus du dos comme un scorpion : il imite une touffe de feuilles mortes.":"Covered in spines, its tail curled over its back like a scorpion: it mimics a clump of dead leaves.",
 "Noir velours, yeux jaunes et ailes rouge vif : il prévient qu'il n'est pas bon à manger.":"Velvet black, yellow eyes and bright red wings: it warns that it is not good to eat.",
-"L'un des plus lourds insectes du monde : vert pomme, trapu et épineux. La femelle peut peser 50 g.":"One of the heaviest insects in the world: apple green, stocky and spiny. The female can weigh 50 g."
+"L'un des plus lourds insectes du monde : vert pomme, trapu et épineux. La femelle peut peser 50 g.":"One of the heaviest insects in the world: apple green, stocky and spiny. The female can weigh 50 g.",
+"Phryne":"Whip spider","Chasseuse de nuit, à l'affût":"Night-time ambush hunter","Grillons, cloportes, mouches, perce-oreilles, ténébrions : tout ce qui passe à portée de ses fouets.":"Crickets, woodlice, flies, earwigs, darkling beetles: anything that comes within reach of her whips.","Personne ici. Dans la nature : grenouilles, lézards, scolopendres.":"No one here. In the wild: frogs, lizards, centipedes.","Calme les grillons et les cloportes trop nombreux.":"Keeps crickets and woodlice from overrunning the tank.","Chaud et humide (climat tropical), un tronc, de l'écorce ou une pierre pour se cacher le jour. Elle chasse la nuit.":"Warm and humid (tropical climate), a log, bark or a stone to hide under by day. She hunts at night.","Toute plate, elle marche de côté comme un crabe. Ses deux premières pattes sont devenues de longs fouets fins, plus longs que tout son corps, qu'elle agite pour tâter le noir. Quand une proie les touche, ses pédipalpes hérissés d'épines se déplient d'un coup et la referment comme un piège. Pas de venin, pas de soie : elle est inoffensive.":"Completely flat, she walks sideways like a crab. Her first pair of legs has become two long thin whips, longer than her whole body, which she waves to feel her way in the dark. When prey touches them, her spiny pedipalps snap open and close on it like a trap. No venom, no silk: she is harmless.","Forêts tropicales d'Afrique, d'Amérique et d'Asie : sous les écorces, dans les grottes et les troncs creux.":"Tropical forests of Africa, the Americas and Asia: under bark, in caves and hollow logs.","Les mères portent leurs petits sur le dos, et des chercheurs ont vu des petits phrynes rester près de leur mère et se toucher avec leurs fouets : un des rares arachnides qui vivent en famille.":"Mothers carry their young on their back, and researchers have seen young whip spiders stay close to their mother and touch each other with their whips: one of the few arachnids that live as a family.","Une phryne porte ses œufs sous le ventre":"A whip spider carries her eggs under her belly","🦀 Replie sa proie dans ses pédipalpes épineux":"🦀 Folds her prey into her spiny pedipalps","☀ Cachée sous l'écorce jusqu'à la nuit":"☀ Hiding under bark until nightfall","🌙 À l'affût, elle tâte le noir avec ses fouets":"🌙 Lying in wait, feeling the dark with her whips","le standard ou le grand bac, avec un tronc ou de l'écorce":"the standard or the large tank, with a log or bark","✉ Contact":"✉ Contact","Contact":"Contact","Un bug, une idée, une question ? Écris-le ici : ça aide beaucoup à améliorer le jeu.":"A bug, an idea, a question? Write it here: it really helps improve the game.","C'est…":"It's…","🐞 Un bug":"🐞 A bug","💡 Une idée ou une demande":"💡 An idea or a request","💬 Autre chose":"💬 Something else","Ton message":"Your message","Joindre les infos sur l'appareil (aide à trouver les bugs)":"Attach device info (helps track down bugs)","📨 Envoyer":"📨 Send","🐙 Envoyer sur GitHub":"🐙 Send on GitHub","Il faut un compte GitHub (gratuit). Ton message y sera public : n'y mets rien de personnel.":"You need a (free) GitHub account. Your message will be public there: don't put anything personal in it.","📋 Copier le message":"📋 Copy the message","✏ Écris d'abord ton message.":"✏ Write your message first.","✔ La page GitHub s'est ouverte : vérifie ton message puis touche « Create » (ou « Submit new issue »).":"✔ The GitHub page has opened: check your message, then tap “Create” (or “Submit new issue”).","✔ Message copié.":"✔ Message copied.","Copie impossible ici : sélectionne le texte à la main.":"Can't copy here: select the text by hand.","Envoi…":"Sending…","✔ Merci ! Ton message est bien parti.":"✔ Thank you! Your message has been sent.","⚠ L'envoi n'a pas marché (pas de connexion ?). Essaie GitHub ou copie le message.":"⚠ Sending failed (no connection?). Try GitHub or copy the message.","✉ Un bug, une idée ? Écris-nous":"✉ A bug, an idea? Write to us","✉ Signaler un bug, proposer une idée":"✉ Report a bug, suggest an idea","En quelques mots (ex. : la coccinelle traverse le sol)":"In a few words (e.g. the ladybird goes through the ground)","Raconte ce qui s'est passé, ce que tu faisais juste avant, ou ce que tu aimerais voir dans le jeu.":"Tell us what happened, what you were doing just before, or what you'd like to see in the game.","Ton prénom ou pseudo (facultatif)":"Your first name or nickname (optional)"
 };
 
 // Modèles : {} = morceau variable (traduit à son tour). Dans la traduction, {} = morceaux dans l'ordre, {0} {1}… = morceau n°.
@@ -6613,6 +6614,148 @@ function decalTige(c){if(VEG==='actuel')return 0;const p=plantePortee(c);if(!p)r
 {const dp=drawProfile;drawProfile=function(c,alpha,gray){const dx=gray?0:decalTige(c);if(!dx){dp(c,alpha,gray);return}ctx.save();ctx.translate(dx,0);dp(c,alpha,gray);ctx.restore()}}
 {const dt0=drawTiny;drawTiny=function(c){const dx=decalTige(c);if(!dx){dt0(c);return}ctx.save();ctx.translate(dx,0);dt0(c);ctx.restore()}}
 if(window.__sim)window.__sim.phys=()=>({flexion:plants.map(p=>(p.bx||0).toFixed(2)).join(' '),grains:GRAINS.length,toiles:orbs.filter(o=>o.world===T).map(o=>(o.charge||0).toFixed(2)).join(' ')});
+
+// ================= LA PHRYNE (amblypyge) =================
+// Arachnide tropical tout plat, ni araignée ni scorpion : la première paire de pattes est devenue deux longs fouets
+// qui tâtent devant elle, et ses pédipalpes épineux replient les proies comme une mante. Chasse la nuit, à l'affût,
+// le jour elle se cache sous l'écorce ou un tronc. Sans venin, inoffensive.
+
+const BSP7=[{id:'phryne',nom:'Phryne',la:'Damon diadema',role:'chasseur',h:25,s:35,l:30,spd:35,hz:2,ant:0,start:70,decay:0.09,age:1100,...INS({hd:[8,10,'o'],th:[4,8,'o'],ab:[14,11,'o'],sp:70,L:[10,12]})}];
+Object.assign(REAL,{phryne:[30,40]});
+for(const sp of BSP7){sp.mass=sp.dims.reduce((m,d)=>m+d[0]*d[1],0)/40;sp.dims=sp.dims.map(d=>[d[0]*SC,d[1]*SC,d[2]]);sp.legs=sp.legs.map(l=>[l[0],l[1],l[2],l[3],l[4]*SC,l[5]*SC]);
+  sp.ant=0;sp.f=[];const L=[sp.legs[0][4],sp.legs[0][5]];sp.thresh=Math.max(2,(L[0]+L[1])*0.4);const dl=sp.dims.reduce((m,d)=>m+d[0],0),R=REAL[sp.id];sp.sf=R[0]/dl;sp.spd=R[1];SPI[sp.id]=sp}
+FICHES.phryne={nom:'Phryne',ic:'🦀',role:'Chasseuse de nuit, à l\'affût',mange:"Grillons, cloportes, mouches, perce-oreilles, ténébrions : tout ce qui passe à portée de ses fouets.",par:"Personne ici. Dans la nature : grenouilles, lézards, scolopendres.",aide:"Calme les grillons et les cloportes trop nombreux.",besoin:"Chaud et humide (climat tropical), un tronc, de l'écorce ou une pierre pour se cacher le jour. Elle chasse la nuit.",comp:"Toute plate, elle marche de côté comme un crabe. Ses deux premières pattes sont devenues de longs fouets fins, plus longs que tout son corps, qu'elle agite pour tâter le noir. Quand une proie les touche, ses pédipalpes hérissés d'épines se déplient d'un coup et la referment comme un piège. Pas de venin, pas de soie : elle est inoffensive."};
+if(typeof PLUS!=='undefined')PLUS.phryne={ou:"Forêts tropicales d'Afrique, d'Amérique et d'Asie : sous les écorces, dans les grottes et les troncs creux.",anec:"Les mères portent leurs petits sur le dos, et des chercheurs ont vu des petits phrynes rester près de leur mère et se toucher avec leurs fouets : un des rares arachnides qui vivent en famille."};
+if(typeof REL!=='undefined'){REL.phryne={mange:['grillon','cloporte','mouche','perce','tenebrion'],par:[]};for(const id of REL.phryne.mange)if(REL[id]&&REL[id].par&&!REL[id].par.includes('phryne'))REL[id].par.push('phryne')}
+if(typeof SCORP_PREY!=='undefined')SCORP_PREY.phryne=26;
+if(typeof GRANDES!=='undefined')GRANDES.phryne='le standard ou le grand bac, avec un tronc ou de l\'écorce';
+const PROIES_PHR={grillon:28,cloporte:18,mouche:12,moustique:8,perce:16,tenebrion:20,verfarine:16,gendarme:14,termite:10,blatte:20};
+function uPhryne(c,dt){if(gravity(c,dt))return;c.cd=(c.cd||0)-dt;c.frappe=Math.max(0,(c.frappe||0)-dt);if(c.cd>0){c.v=0;return}
+  const nuit=!isDay();
+  // à portée de fouet : les pédipalpes se déplient
+  if(c.energy<115){for(const o of creatures){if(o.dead||o===c||!PROIES_PHR[o.sp.id]||(pop[o.sp.id]||0)<2)continue;if(o.fly&&!(nuit&&Math.random()<0.3))continue;
+    if(dist3(o,c)<(nuit?13:7)){die(o,c);c.energy+=PROIES_PHR[o.sp.id];c.cd=6;c.frappe=0.5;c.path=null;wave({x:c.x,y:c.y,max:16,sp:50,col:'#c9a070',a:0.5});return}}}
+  if(c.path&&c.path.length){stepPath(c,dt,nuit?0.9:0.6);return}
+  c.t=(c.t||0)-dt;if(c.t>0){c.v=0;return}c.t=nuit?rnd(1.5,4):rnd(3,7);
+  if(!nuit){if(toShelter(c))return;if(shelterAt(c)){c.v=0;return}}
+  if(nuit&&c.energy<90&&Math.random()<0.5){const L=creatures.filter(o=>!o.dead&&!o.fly&&PROIES_PHR[o.sp.id]&&(pop[o.sp.id]||0)>=2);const p=nearest(c,L,140);
+    if(p&&p.k!=null){goTo(c,k=>Math.abs((k%COLS)-(p.k%COLS))<=2&&Math.abs(((k/COLS)|0)-((p.k/COLS)|0))<=2,9000);return}}
+  if(c.energy>100&&c.age>120&&canRepro('phryne',3-eggsOf('phryne'))&&Math.random()<0.1){c.energy-=45;layEggs(c,'phryne',{hatch:70,n:3});jlog('🦀','Une phryne porte ses œufs sous le ventre')}
+  if(nuit&&Math.random()<0.6){c.v=0;return}// surtout à l'affût
+  randomWalk(c,nuit?10:5)}
+UPD.phryne=uPhryne;
+{const ss=sandboxSpecies;sandboxSpecies=function(){const s=ss();if(!s.includes('phryne'))s.push('phryne');return s}}
+if(typeof GRANDIT!=='undefined')GRANDIT.push('phryne');
+if(typeof NAISS_EXCLUES!=='undefined')NAISS_EXCLUES.push('phryne');
+
+// ---------- dessin vu de côté ----------
+function phryneCote(c,alpha){const L=realLen(c)*(typeof ech==='function'?ech(c):1),u=L/10,m=Math.cos(c.ang)>=0?1:-1,ph=c.walkPh||0,mv=(c.v||0)>0.5,yG=c.y+CS*0.5,hb=u*1.1;
+  const brun=hsl(25,35,26),clair=hsl(38,45,55),fonce=hsl(20,30,14),cx=c.x+m*u*1.2,ax=c.x-m*u*2.6;
+  ctx.save();ctx.globalAlpha=alpha;ctx.lineCap='round';
+  // trois paires de pattes de marche, très longues, genoux hauts, rayées
+  const pattes=loin=>{const P=[[0.8,4.4,3.2],[0.0,0.8,3.4],[-0.8,-3.6,3.0]];for(let i=0;i<3;i++){const [at,pd,lv]=P[i],p=ph*TAU*0.5+i*TAUP+(loin?TAUP/2:0),ps=mv?Math.sin(p)*0.8:0,lift=mv?Math.max(0,Math.cos(p))*u*0.6:0;
+      const x0=c.x+m*u*at,y0=yG-hb,fx=c.x+m*u*(pd+ps)+(loin?-m*u*0.4:0),fy=yG-lift,kx=x0+(fx-x0)*0.45,ky=Math.min(y0,fy)-u*lv;ctx.globalAlpha=alpha*(loin?0.5:1);
+      const col=loin?fonce:brun;segPatte(x0,y0,kx,ky,u*0.35,u*0.28,col);segPatte(kx,ky,fx,fy,u*0.28,u*0.12,col);
+      if(!loin){ctx.strokeStyle=clair;ctx.lineWidth=u*0.3;ctx.beginPath();for(const t of [0.3,0.65]){const bx=kx+(fx-kx)*t,by=ky+(fy-ky)*t;ctx.moveTo(bx-u*0.12,by-u*0.12);ctx.lineTo(bx+u*0.12,by+u*0.12)}ctx.stroke()}}ctx.globalAlpha=alpha};
+  pattes(true);
+  // abdomen plat et segmenté
+  ctx.fillStyle=hsl(25,30,22);ctx.beginPath();ctx.ellipse(ax,yG-hb,u*3.4,u*0.85,0,0,TAU);ctx.fill();ctx.strokeStyle=fonce;ctx.lineWidth=u*0.1;ctx.beginPath();
+  for(let q=-3;q<=3;q++){const x=ax+q*u*0.9,hh=u*0.8*Math.sqrt(Math.max(0,1-(q/3.8)**2));ctx.moveTo(x,yG-hb-hh);ctx.lineTo(x,yG-hb+hh)}ctx.stroke();
+  // céphalothorax en galette, yeux sur le dessus
+  ctx.fillStyle=brun;ctx.beginPath();ctx.ellipse(cx,yG-hb-u*0.1,u*2.2,u*0.8,0,0,TAU);ctx.fill();ctx.strokeStyle=fonce;ctx.lineWidth=u*0.1;ctx.stroke();
+  ctx.fillStyle='#e8d090';ctx.beginPath();ctx.arc(cx+m*u*1.4,yG-hb-u*0.75,u*0.18,0,TAU);ctx.fill();
+  pattes(false);
+  // pédipalpes ravisseurs épineux : repliés, ou dépliés quand elle frappe
+  const fr=(c.frappe||0)>0?1:0;for(const loin of [true,false]){ctx.globalAlpha=alpha*(loin?0.55:1);const col=loin?fonce:hsl(28,40,32);
+    const x0=cx+m*u*1.9,y0=yG-hb,kx=x0+m*u*(1.4+fr*1.6),ky=y0-u*(2.2-fr*1.2),fx=kx+m*u*(fr?2.6:-0.6)+(loin?-m*u*0.3:0),fy=ky+u*(fr?0.8:1.6);
+    segPatte(x0,y0,kx,ky,u*0.55,u*0.45,col);segPatte(kx,ky,fx,fy,u*0.45,u*0.25,col);
+    if(!loin){ctx.strokeStyle='#e0c890';ctx.lineWidth=u*0.1;ctx.beginPath();for(const [ax0,ay0,bx,by] of [[x0,y0,kx,ky],[kx,ky,fx,fy]])for(let q=1;q<=4;q++){const t=q/5,x=ax0+(bx-ax0)*t,y=ay0+(by-ay0)*t,a=Math.atan2(by-ay0,bx-ax0)-TAUP/2*m;ctx.moveTo(x,y);ctx.lineTo(x+Math.cos(a)*u*0.6,y+Math.sin(a)*u*0.6)}ctx.stroke()}}
+  // les deux fouets : très longs, fins, qui balaient le noir
+  for(const loin of [true,false]){ctx.globalAlpha=alpha*(loin?0.4:0.9);ctx.strokeStyle=loin?fonce:clair;ctx.lineWidth=Math.max(0.15,u*0.09);ctx.beginPath();
+    let x=cx+m*u*1.2,y=yG-hb-u*0.2;ctx.moveTo(x,y);const n=16,bal=Math.sin(simT*(1.6+(loin?0.4:0))+c.phase*4+(loin?1.3:0));
+    for(let q=1;q<=n;q++){const t=q/n,a=-0.5+t*0.9+bal*0.5*t;x+=m*Math.cos(a)*u*1.3;y+=Math.sin(a)*u*0.9;ctx.lineTo(x,Math.min(y,yG-u*0.1))}ctx.stroke()}
+  ctx.globalAlpha=alpha;ctx.restore()}
+
+// ---------- dessin vu de dessus ----------
+function phryneDessus(c,alpha){const h=c.segs[0];const u=realLen(c)/c.sp.sf/10*(typeof ech==='function'?ech(c):1);
+  const brun=hsl(25,35,26),clair=hsl(38,45,55),fonce=hsl(20,30,14);ctx.save();ctx.globalAlpha=alpha;ctx.translate(h.x,h.y);ctx.rotate(typeof DAXE==='function'?DAXE(c):c.ang);ctx.lineCap='round';
+  // pattes de marche écartées comme un crabe
+  const ph=(c.walkPh||0)*TAU*0.5+(c.phase||0);[[-0.6,0.9],[-1.6,0.1],[-2.5,-0.9]].forEach(([x,f],i)=>{for(const sd of [-1,1]){const sw=Math.sin(ph+i*TAUP+(sd>0?TAUP:0))*0.15,t1=sd*(TAUP/2-f*0.5)+sw,t2=sd*(TAUP/2-f*0.9)+sw;
+    const x0=x*u,y0=sd*1.4*u,kx=x0+Math.cos(t1)*4.2*u,ky=y0+Math.sin(t1)*4.2*u,fx=kx+Math.cos(t2)*5*u,fy=ky+Math.sin(t2)*5*u;segPatte(x0,y0,kx,ky,0.4*u,0.32*u,brun);segPatte(kx,ky,fx,fy,0.3*u,0.12*u,brun);
+    ctx.strokeStyle=clair;ctx.lineWidth=0.35*u;ctx.beginPath();for(const t of [0.35,0.7]){const bx=kx+(fx-kx)*t,by=ky+(fy-ky)*t;ctx.moveTo(bx,by);ctx.lineTo(bx+0.01,by)}ctx.stroke()}});
+  // abdomen plat segmenté puis céphalothorax en haricot
+  ctx.fillStyle=hsl(25,30,22);ctx.beginPath();ctx.ellipse(-5.6*u,0,u*3.6,u*2.4,0,0,TAU);ctx.fill();ctx.strokeStyle=fonce;ctx.lineWidth=u*0.12;ctx.beginPath();
+  for(let q=-3;q<=3;q++){const x=-5.6*u+q*u*0.95,hh=u*2.3*Math.sqrt(Math.max(0,1-(q/3.8)**2));ctx.moveTo(x,-hh);ctx.lineTo(x,hh)}ctx.stroke();
+  ctx.fillStyle=brun;ctx.beginPath();ctx.ellipse(-1.2*u,0,u*1.9,u*2.7,0,0,TAU);ctx.fill();ctx.strokeStyle=fonce;ctx.stroke();ctx.fillStyle=clair;ctx.beginPath();ctx.ellipse(-1.2*u,0,u*0.5,u*1.2,0,0,TAU);ctx.fill();
+  ctx.fillStyle='#e8d090';ctx.beginPath();ctx.arc(0.4*u,0,u*0.25,0,TAU);ctx.fill();
+  // pédipalpes épineux repliés devant (dépliés pendant la frappe)
+  const fr=(c.frappe||0)>0?1:0;for(const sd of [-1,1]){const x0=0.4*u,y0=sd*0.8*u,kx=(2.2+fr*2)*u,ky=sd*(2.6-fr*1.4)*u,fx=fr?6*u:0.9*u,fy=sd*(fr?0.8:0.6)*u;
+    segPatte(x0,y0,kx,ky,0.7*u,0.6*u,hsl(28,40,32));segPatte(kx,ky,fx,fy,0.55*u,0.3*u,hsl(28,40,32));
+    ctx.strokeStyle='#e0c890';ctx.lineWidth=u*0.12;ctx.beginPath();for(let q=1;q<=4;q++){const t=q/5,x=kx+(fx-kx)*t,y=ky+(fy-ky)*t;ctx.moveTo(x,y);ctx.lineTo(x+0.5*u,y-sd*0.5*u)}ctx.stroke()}
+  // les fouets
+  for(const sd of [-1,1]){ctx.strokeStyle=clair;ctx.lineWidth=Math.max(0.2,u*0.12);ctx.beginPath();let x=0,y=sd*1.6*u;ctx.moveTo(x,y);const bal=Math.sin(simT*1.7+c.phase*4+(sd>0?1.4:0));
+    for(let q=1;q<=18;q++){const t=q/18,a=sd*(0.75-t*0.55+bal*0.35*t);x+=Math.cos(a)*1.2*u;y+=Math.sin(a)*1.2*u;ctx.lineTo(x,y)}ctx.stroke()}
+  ctx.restore()}
+
+// ---------- branchements ----------
+{const dp=drawProfile;drawProfile=function(c,alpha,gray){if(!gray&&c.sp.id==='phryne'){phryneCote(c,alpha);return}dp(c,alpha,gray)}}
+{const dt0=drawTiny;drawTiny=function(c){if(c.sp.id==='phryne'&&realLen(c)*camZ>=2.2){drawProfile(c,1,false);return}dt0(c)}}
+{const dcr=drawCreature;drawCreature=function(c,alpha,gray,preview){if(!gray&&c.sp.id==='phryne'&&c.segs&&c.segs[0]){try{phryneDessus(c,alpha);return}catch(e){}}dcr(c,alpha,gray,preview)}}
+{const m0=mission;mission=function(c){if(c&&!c.dead&&c.sp.id==='phryne'){if((c.frappe||0)>0||c.cd>0)return '🦀 Replie sa proie dans ses pédipalpes épineux';return isDay()?'☀ Cachée sous l\'écorce jusqu\'à la nuit':'🌙 À l\'affût, elle tâte le noir avec ses fouets'}return m0(c)}}
+
+// ================= CONTACT : SIGNALER UN BUG, UNE IDÉE, UNE DEMANDE =================
+// Pas de serveur : le message part dans la page « Issues » du dépôt GitHub (le joueur a besoin d'un compte GitHub),
+// ou se copie pour l'envoyer autrement. Si CONTACT_URL est rempli (service de formulaire type Formspree, compte créé
+// par l'auteur), le message est envoyé directement, sans compte. Entrées : menu titre, Options, lien ?contact=1.
+const CONTACT_URL='';
+const CONTACT_GH='https://github.com/grecdel/vivariom/issues/new';
+const ERREURS_JS=[];
+window.addEventListener('error',e=>{if(ERREURS_JS.length<5)ERREURS_JS.push(String(e.message||'').slice(0,160)+(e.lineno?' (l. '+e.lineno+')':''))});
+window.addEventListener('unhandledrejection',e=>{if(ERREURS_JS.length<5)ERREURS_JS.push('promesse : '+String(e.reason&&e.reason.message||e.reason).slice(0,160))});
+function contactInfos(){const ua=navigator.userAgent,app=window.matchMedia&&matchMedia('(display-mode: standalone)').matches?'appli installée':'navigateur';
+  const sys=/Android [\d.]+/.exec(ua)?.[0]||(/Windows/.test(ua)?'Windows':/Mac OS X/.test(ua)?'macOS':/iPhone|iPad/.test(ua)?'iOS':/Linux/.test(ua)?'Linux':'?');
+  const nav=/Edg\/\d+/.exec(ua)?.[0]||/Firefox\/\d+/.exec(ua)?.[0]||/Chrome\/\d+/.exec(ua)?.[0]||/Safari\/\d+/.exec(ua)?.[0]||'?';
+  const hud=document.getElementById('hud'),ou=hud&&hud.offsetParent?hud.innerText.split('\n')[0].slice(0,80):'menu';
+  return ['Appareil : '+sys+' · '+nav+' · '+app,'Écran : '+innerWidth+'×'+innerHeight+(devicePixelRatio>1?' (×'+devicePixelRatio+')':''),'Langue : '+(typeof LANG!=='undefined'?LANG:navigator.language),
+    'Où : '+ou,'Version : '+(document.lastModified||'?')].concat(ERREURS_JS.length?['Erreurs : '+ERREURS_JS.join(' | ')]:[]).join('\n')}
+const CONTACT_TYPES={bug:['🐞','Un bug','[Bug] '],idee:['💡','Une idée ou une demande','[Idée] '],autre:['💬','Autre chose','[Message] ']};
+function openContact(depuis){const O=$('opts');let type='bug';
+  O.innerHTML=`<div class="box"><div class="mhead"><h1>✉ Contact</h1><button class="back" id="ctback">Retour</button></div>
+   <p class="dim">Un bug, une idée, une question ? Écris-le ici : ça aide beaucoup à améliorer le jeu.</p>
+   <h3>C'est…</h3><div id="cttype" style="display:flex;gap:6px;flex-wrap:wrap">${Object.entries(CONTACT_TYPES).map(([k,v])=>`<button class="btn2" data-t="${k}" style="flex:1;min-width:120px">${v[0]} ${v[1]}</button>`).join('')}</div>
+   <h3>Ton message</h3>
+   <input id="cttitre" maxlength="90" placeholder="En quelques mots (ex. : la coccinelle traverse le sol)" style="width:100%;box-sizing:border-box;background:#0a0a0a;color:#fff;border:1px solid #333;border-radius:8px;padding:8px;font:14px inherit">
+   <textarea id="ctmsg" rows="6" maxlength="4000" placeholder="Raconte ce qui s'est passé, ce que tu faisais juste avant, ou ce que tu aimerais voir dans le jeu." style="width:100%;box-sizing:border-box;margin-top:8px;background:#0a0a0a;color:#fff;border:1px solid #333;border-radius:8px;padding:8px;font:14px inherit"></textarea>
+   <input id="ctnom" maxlength="40" placeholder="Ton prénom ou pseudo (facultatif)" style="width:100%;box-sizing:border-box;margin-top:8px;background:#0a0a0a;color:#fff;border:1px solid #333;border-radius:8px;padding:8px;font:14px inherit">
+   <label style="display:flex;gap:8px;align-items:center;margin-top:10px"><input type="checkbox" id="ctinfo" checked> Joindre les infos sur l'appareil (aide à trouver les bugs)</label>
+   <pre id="ctinfos" class="dim" style="white-space:pre-wrap;font:11px ui-monospace,monospace;margin:6px 0 0"></pre>
+   <p class="dim" id="ctmsg2"></p>
+   ${CONTACT_URL?'<button class="btn" id="ctsend">📨 Envoyer</button>':''}
+   <button class="${CONTACT_URL?'btn2':'btn'}" id="ctgh">🐙 Envoyer sur GitHub</button>
+   <p class="dim" style="margin-top:4px">${CONTACT_URL?'':"Il faut un compte GitHub (gratuit). Ton message y sera public : n'y mets rien de personnel."}</p>
+   <button class="btn2" id="ctcopy">📋 Copier le message</button></div>`;
+  O.style.display='flex';
+  const inf=$('ctinfos');inf.textContent=contactInfos();$('ctinfo').onchange=e=>{inf.style.display=e.target.checked?'block':'none'};
+  const majType=()=>{for(const b of O.querySelectorAll('#cttype button')){const on=b.dataset.t===type;b.style.borderColor=on?'#ffe94d':'';b.style.color=on?'#ffe94d':''}};
+  for(const b of O.querySelectorAll('#cttype button'))b.onclick=()=>{type=b.dataset.t;majType()};majType();
+  const m=$('ctmsg2'),lire=()=>{const titre=$('cttitre').value.trim(),msg=$('ctmsg').value.trim(),nom=$('ctnom').value.trim();
+    if(!titre&&!msg){m.textContent='✏ Écris d\'abord ton message.';return null}m.textContent='';
+    const corps=(msg||titre)+(nom?'\n\n— '+nom:'')+($('ctinfo').checked?'\n\n---\n'+contactInfos():'');return{titre:CONTACT_TYPES[type][2]+(titre||msg.split('\n')[0]).slice(0,90),corps,type,nom}};
+  $('ctback').onclick=()=>{if(depuis==='options')openOpts();else O.style.display='none'};
+  $('ctgh').onclick=()=>{const r=lire();if(!r)return;const url=CONTACT_GH+'?title='+encodeURIComponent(r.titre)+'&body='+encodeURIComponent(r.corps.slice(0,6000));
+    window.open(url,'_blank','noopener');m.textContent='✔ La page GitHub s\'est ouverte : vérifie ton message puis touche « Create » (ou « Submit new issue »).'};
+  $('ctcopy').onclick=async()=>{const r=lire();if(!r)return;const t=r.titre+'\n\n'+r.corps;try{await navigator.clipboard.writeText(t);m.textContent='✔ Message copié.'}catch(e){m.textContent='Copie impossible ici : sélectionne le texte à la main.'}};
+  if(CONTACT_URL)$('ctsend').onclick=async()=>{const r=lire();if(!r)return;m.textContent='Envoi…';
+    try{const rep=await fetch(CONTACT_URL,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({sujet:r.titre,message:r.corps,type:r.type,nom:r.nom})});
+      if(!rep.ok)throw new Error(rep.status);m.textContent='✔ Merci ! Ton message est bien parti.';$('ctmsg').value='';$('cttitre').value=''}
+    catch(e){m.textContent='⚠ L\'envoi n\'a pas marché (pas de connexion ?). Essaie GitHub ou copie le message.'}}}
+// entrées : menu titre, Options, lien ?contact=1
+{const t=$('ttuto');if(t&&!$('tcontact')){t.insertAdjacentHTML('afterend','<button class="tlink" id="tcontact">✉ Un bug, une idée ? Écris-nous</button>');$('tcontact').onclick=()=>openContact('titre')}}
+{const oo=openOpts;openOpts=function(){oo();const O=$('opts');if($('ocontact'))return;const box=O.querySelector('.box');if(!box)return;
+  const h=[...O.querySelectorAll('h3')].find(e=>e.textContent==='Données');const html='<button class="btn2" id="ocontact">✉ Signaler un bug, proposer une idée</button>';
+  if(h)h.insertAdjacentHTML('beforebegin','<h3>Contact</h3>'+html);else box.insertAdjacentHTML('beforeend','<h3>Contact</h3>'+html);$('ocontact').onclick=()=>openContact('options')}}
+try{if(/[?&]contact=1/.test(location.search))setTimeout(()=>openContact('titre'),400)}catch(e){}
+if(window.__sim)window.__sim.contact=()=>{openContact('titre');return contactInfos()};
 
 
 })();

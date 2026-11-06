@@ -54,7 +54,7 @@ Une trentaine d'espèces et leurs variantes (fourmi noire, fourmi champignonnist
 - la **coccinelle** pond près des pucerons, l'**abeille** butine et se pose la nuit, la **mouche** pond sur ce qui pourrit ;
 - le **papillon** pond sur les feuilles, la chenille se change en chrysalide ; le **ténébrion**, le **scarabée rhinocéros** passent par la larve et la nymphe ;
 - le **scorpion** se cache le jour, brille sous la lumière UV et porte ses petits sur son dos ;
-- le **grillon** chante la nuit, le **ver luisant** s'allume dans le noir et chasse les escargots ; la **solifuge** du désert court la nuit après ses proies ;
+- le **grillon** chante la nuit, le **ver luisant** s'allume dans le noir et chasse les escargots ; la **solifuge** du désert court la nuit après ses proies ; la **phryne** des forêts tropicales, toute plate, tâte le noir avec ses deux longs fouets et attrape ses proies avec ses pédipalpes épineux ;
 - la **mare** est une vraie étendue d'eau : le **têtard** devient **grenouille**, la larve de libellule devient **libellule**, celle du moustique devient **moustique**, et les **gerris** glissent à la surface ; on y croise aussi le **perce-oreille** et le **gendarme** ;
 - les **fourmis champignonnistes** découpent des feuilles pour cultiver leur jardin de champignon, les abeilles trop nombreuses partent en **essaim** ;
 - les pucerons trop serrés **s'envolent** vers une autre plante, les colonies de fourmis rivales **se font la guerre**, un sol détrempé fait pousser des **moisissures** et rend les bêtes malades ; les plantes aussi peuvent tomber malades (virus apporté par les pucerons, taches brunes quand c'est trop humide). Une carte d'aide explique comment soigner, et en Facile elle peut le faire pour toi ;
@@ -73,6 +73,9 @@ Textes plus grands, contraste fort, couleurs pour daltoniens, version anglaise, 
 
 ### Le matériel du vivarium
 Une barre compacte montre l'état de chaque appareil (température, lumière, prochaine brumisation, niveau du réservoir…) ; un clic ouvre ses réglages. La lumière fait pousser les plantes mais chauffe et assèche, le brumisateur humidifie, le tapis chauffant accélère tout le monde.
+
+### Un bug, une idée ?
+Le bouton **✉ Un bug, une idée ? Écris-nous** (menu du jeu, ou Options → Contact) ouvre un petit formulaire. Ton message arrive dans la page [Issues](https://github.com/grecdel/vivariom/issues) du projet.
 
 ---
 

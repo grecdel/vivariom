@@ -63,6 +63,7 @@ function majMenu(){if(!icone)return;
     {label:fen?'Éteindre les bestioles':'Allumer les bestioles',click:basculer},
     {label:'⚙ Options…',click:options},
     {label:'🎮 Jouer à Vivariom',click:()=>shell.openExternal('https://grecdel.github.io/vivariom/')},
+    {label:'✉ Un bug, une idée ? Écris-nous',click:()=>shell.openExternal('https://grecdel.github.io/vivariom/?contact=1')},
     {label:'Vivarium en fond d\'écran',type:'checkbox',checked:!!fond,click:(it)=>it.checked?fondOn():fondOff()},
     {type:'separator'},
     {label:'Lancer au démarrage de l\'ordinateur',type:'checkbox',checked:demarrageAuto(),click:(it)=>reglerDemarrageAuto(it.checked)},
