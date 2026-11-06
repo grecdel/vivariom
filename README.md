@@ -60,7 +60,7 @@ Une trentaine d'espèces et leurs variantes (fourmi noire, fourmi champignonnist
 - les pucerons trop serrés **s'envolent** vers une autre plante, les colonies de fourmis rivales **se font la guerre**, un sol détrempé fait pousser des **moisissures** et rend les bêtes malades ; les plantes aussi peuvent tomber malades (virus apporté par les pucerons, taches brunes quand c'est trop humide). Une carte d'aide explique comment soigner, et en Facile elle peut le faire pour toi ;
 - les petits **grandissent**, les vieilles bêtes ralentissent ; coccinelles et mouches passent par la **larve et la nymphe**.
 
-Côté plantes : fleurs, fougères (même arborescentes), graminées, trèfle, ronce, cactus, champignons, et une **dionée** carnivore qui attrape les mouches. Les fleurs pollinisées donnent des fruits. Les tiges ondulent, ploient sous le poids d'une bête et oscillent quand un insecte s'y pose ; les toiles vibrent et le sable bouge sous les pattes.
+Côté plantes : fleurs, fougères (même arborescentes), graminées, trèfle, ronce, cactus, champignons, et une **dionée** carnivore qui attrape les mouches. Les fleurs pollinisées donnent des fruits. La terre change selon le biome : humus et feuilles mortes en forêt, terre rouge sous les tropiques, sable ridé par le vent et grès au désert, vase et argile grise au marais, avec racines, cailloux et galeries visibles en coupe comme vus du dessus. Les tiges ondulent, ploient sous le poids d'une bête et oscillent quand un insecte s'y pose ; les toiles vibrent et le sable bouge sous les pattes.
 
 Sélectionne une bête pour savoir ce qu'elle est en train de faire : chasser, creuser, garder ses œufs, se reposer… Garde le doigt appuyé sur elle pour la **suivre** avec la caméra, et ouvre la **loupe** pour la voir en gros plan.
 

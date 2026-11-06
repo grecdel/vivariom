@@ -8,7 +8,7 @@ function decoShadow(g,x,y,rx,ry,rot,a=0.35){g.save();g.fillStyle=`rgba(0,0,0,${a
 const radial=(g,x,y,r,stops)=>{const gr=g.createRadialGradient(x-r*0.35,y-r*0.4,r*0.05,x,y,r*1.1);stops.forEach(([o,c])=>gr.addColorStop(o,c));return gr};
 
 drawDecosTop=function(g){for(const d of decos){const D=DECOS[d.type];if(!D)continue;const x=d.i*CS+CS/2,w=D.w*CS,y=-((d.dz||0)+d.w*CS*0.4),R=decoRng(d),rot=(d.seed||0)*TAU;g.save();
-  if(d.type==='pierre'){const rx=w/2,ry=w*0.38;decoShadow(g,x,y,rx,ry,rot);blobPath(g,x,y,rx,ry,rot,R);g.fillStyle=radial(g,x,y,rx,[[0,'#b4b9be'],[0.55,'#7b8086'],[1,'#4c5055']]);g.fill();
+  if(d.type==='pierre'){const rx=w/2,ry=w*0.38;decoShadow(g,x,y,rx,ry,rot);blobPath(g,x,y,rx,ry,rot,R);{const P=couleurPierre();g.fillStyle=radial(g,x,y,rx,[[0,P[0]],[0.55,P[1]],[1,P[2]]])}g.fill();
     g.save();g.clip();for(let q=0;q<26;q++){g.fillStyle=`rgba(${R()<0.5?'40,42,46':'210,214,218'},${(0.15+R()*0.25).toFixed(2)})`;g.beginPath();g.arc(x+(R()-0.5)*rx*1.8,y+(R()-0.5)*ry*1.8,0.25+R()*0.5,0,TAU);g.fill()}
     g.strokeStyle='rgba(30,32,35,0.55)';g.lineWidth=0.25;g.beginPath();let cx=x-rx*0.4,cy=y-ry*0.2;g.moveTo(cx,cy);for(let q=0;q<4;q++){cx+=rx*0.22;cy+=(R()-0.4)*ry*0.3;g.lineTo(cx,cy)}g.stroke();g.restore();
     blobPath(g,x,y,rx,ry,rot,decoRng(d));g.strokeStyle='rgba(255,255,255,0.18)';g.lineWidth=0.35;g.stroke()}

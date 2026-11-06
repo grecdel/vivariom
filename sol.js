@@ -95,4 +95,51 @@ renderSoil=function(){if(SOLSTYLE==='actuel'){renderSoilAncien();return}
         q.beginPath();q.ellipse(x+P*0.5,y-P*0.05,P*(ill?0.9:0.75),P*0.28,hsh(i,79)-0.5,0,TAU);q.fill()}}
     if(w>0.75&&!ill&&r<0.5){q.fillStyle='rgba(170,210,255,0.35)';q.fillRect(x+r*P,y+P*0.1,P*0.4,1)}}
 };
-if(window.__sim)window.__sim.solStyle=s=>{SOLSTYLE=s;soilDirty=true;soilT=0};
+if(window.__sim){window.__sim.solStyle=s=>{SOLSTYLE=s;soilDirty=true;soilT=0};window.__sim.solRender=()=>renderSoil()}
+
+// ---------- vue du dessus : même terre, même biome ----------
+// Le dessus montre la matière de surface de chaque colonne avec la même texture que la coupe, l'humidité en taches douces
+// (pas de rayures), et une couche de surface propre au biome : litière de feuilles et brindilles (forêt), grandes feuilles
+// (tropical), rides de vent et gravillons (désert), algues et mousse sur la vase (marais). Cache : refait si la surface change.
+const gTop2=document.createElement('canvas'),gWet=document.createElement('canvas'),gDeco=document.createElement('canvas');let gTop2T=-9,gTop2K='',gDecoK='';
+function feuilleMorte(q,x,y,L,a,col){const W=L*0.32;q.save();q.translate(x,y);q.rotate(a);q.fillStyle='rgba(0,0,0,0.25)';q.beginPath();q.ellipse(1,1.2,L/2,W/2,0,0,TAU);q.fill();
+  q.fillStyle=col;q.beginPath();q.moveTo(-L/2,0);q.quadraticCurveTo(0,-W,L/2,0);q.quadraticCurveTo(0,W,-L/2,0);q.fill();q.strokeStyle='rgba(0,0,0,0.3)';q.lineWidth=0.7;q.beginPath();q.moveTo(-L/2-L*0.12,0);q.lineTo(L/2,0);q.stroke();
+  q.lineWidth=0.4;for(let k=-2;k<=2;k++){if(!k)continue;q.beginPath();q.moveTo(k*L*0.15,0);q.lineTo(k*L*0.15+L*0.08,W*0.38);q.moveTo(k*L*0.15,0);q.lineTo(k*L*0.15+L*0.08,-W*0.38);q.stroke()}q.restore()}
+function surfaceDessus(q,bio,P,rows,tcol){const Wp=COLS*P,Hp=rows*P,n=Math.round(COLS*rows/14),R=k=>hsh(k,91,bio.length);
+  const ok=(x)=>{const t=tcol[Math.max(0,Math.min(COLS-1,Math.floor(x/P)))];return t};
+  if(bio==='desert'){// rides de vent : lignes sinueuses claires et ombrées
+    for(let y=8;y<Hp;y+=14+R(y)*8){const ph=R(y+1)*TAU,amp=2+R(y+2)*3;for(const [dy,c] of [[1.2,'rgba(60,35,10,0.18)'],[0,'rgba(255,235,190,0.16)']]){q.strokeStyle=c;q.lineWidth=1.4;q.beginPath();for(let x=0;x<=Wp;x+=8){const yy=y+dy+Math.sin(x/60+ph)*amp+Math.sin(x/23+ph*2)*1.2;x?q.lineTo(x,yy):q.moveTo(x,yy)}q.stroke()}}
+    for(let k=0;k<n/3;k++){const x=R(k*3)*Wp,y=R(k*3+1)*Hp,r=1+R(k*3+2)*2.5;if(ok(x)===5)continue;q.fillStyle='rgba(0,0,0,0.3)';q.beginPath();q.ellipse(x+0.8,y+1,r,r*0.75,0,0,TAU);q.fill();
+      q.fillStyle=hsl(R(k)<0.6?20:35,R(k)<0.6?35:12,38+R(k+5)*20);q.beginPath();q.ellipse(x,y,r,r*0.75,R(k+7)*3,0,TAU);q.fill();q.fillStyle='rgba(255,255,255,0.2)';q.beginPath();q.arc(x-r*0.3,y-r*0.3,r*0.3,0,TAU);q.fill()}
+    for(let k=0;k<n/40;k++){const x=R(k+900)*Wp,y=R(k+950)*Hp,L=12+R(k+990)*20,a=R(k+1020)*TAU;q.strokeStyle=hsl(35,25,62);q.lineWidth=1;q.beginPath();q.moveTo(x,y);q.lineTo(x+Math.cos(a)*L,y+Math.sin(a)*L);q.stroke()}
+    return}
+  if(bio==='marais'){for(let k=0;k<n/9;k++){const x=R(k*2)*Wp,y=R(k*2+1)*Hp,r=6+R(k+300)*18;q.fillStyle=hsl(90+R(k+40)*30,40,18+R(k+80)*10,0.3);
+      const pts=[];for(let s=0;s<9;s++){const a=s/9*TAU,rr=r*(0.6+hsh(k,s,5)*0.6);pts.push([x+Math.cos(a)*rr,y+Math.sin(a)*rr*0.8])}q.beginPath();q.moveTo((pts[8][0]+pts[0][0])/2,(pts[8][1]+pts[0][1])/2);for(let s=0;s<9;s++){const c=pts[s],d=pts[(s+1)%9];q.quadraticCurveTo(c[0],c[1],(c[0]+d[0])/2,(c[1]+d[1])/2)}q.fill()}
+    for(let k=0;k<n/2;k++){const x=R(k+2000)*Wp,y=R(k+2100)*Hp;q.fillStyle=hsl(100,50,26+R(k+2200)*16);q.beginPath();q.arc(x,y,0.8+R(k+2300)*1.2,0,TAU);q.fill()}
+    for(let k=0;k<n/30;k++){const x=R(k+2400)*Wp,y=R(k+2500)*Hp;feuilleMorte(q,x,y,12+R(k+2600)*10,R(k+2700)*TAU,hsl(40,30,22))}return}
+  // forêts : litière de feuilles, brindilles, touffes de mousse (moins sur le sable)
+  const trop=bio==='tropical',cols=trop?[[95,40,24],[25,55,28],[40,50,32],[110,35,20],[15,45,22]]:[[30,55,26],[40,60,34],[18,50,22],[50,45,30],[25,35,18]];
+  for(let k=0;k<n*(trop?0.55:0.75);k++){const x=R(k*2)*Wp,y=R(k*2+1)*Hp,t=ok(x);if(t===5||(t===3&&R(k+7)<0.8)||t===6&&R(k+7)<0.6)continue;const c=cols[Math.floor(R(k+11)*cols.length)];
+    feuilleMorte(q,x,y,(trop?16:10)+R(k+13)*(trop?20:10),R(k+17)*TAU,hsl(c[0],c[1],c[2]+R(k+19)*8))}
+  for(let k=0;k<n/12;k++){const x=R(k+3000)*Wp,y=R(k+3100)*Hp;if(ok(x)===5)continue;let L=15+R(k+3200)*35,a=R(k+3300)*TAU;q.strokeStyle='rgba(0,0,0,0.3)';q.lineWidth=2.2;q.beginPath();q.moveTo(x+1,y+1.2);q.lineTo(x+1+Math.cos(a)*L,y+1.2+Math.sin(a)*L);q.stroke();
+    q.strokeStyle=hsl(28,30,30+R(k+3400)*12);q.lineWidth=1.6;q.beginPath();q.moveTo(x,y);q.lineTo(x+Math.cos(a)*L,y+Math.sin(a)*L);q.stroke();if(R(k+3500)<0.5){const m=0.5,b=a+0.6;q.lineWidth=1;q.beginPath();q.moveTo(x+Math.cos(a)*L*m,y+Math.sin(a)*L*m);q.lineTo(x+Math.cos(a)*L*m+Math.cos(b)*L*0.3,y+Math.sin(a)*L*m+Math.sin(b)*L*0.3);q.stroke()}}
+  for(let k=0;k<n/25;k++){const x=R(k+4000)*Wp,y=R(k+4100)*Hp;if(ok(x)!==1&&ok(x)!==2)continue;for(let s=0;s<25;s++){q.fillStyle=hsl(95+hsh(k,s,9)*25,50,22+hsh(s,k,9)*18);q.beginPath();q.arc(x+(hsh(k,s,1)-0.5)*16,y+(hsh(s,k,2)-0.5)*12,0.8+hsh(k,s,3)*1.4,0,TAU);q.fill()}}}
+const drawGroundTopAncien=drawGroundTop;
+drawGroundTop=function(g){if(SOLSTYLE==='actuel'){drawGroundTopAncien(g);return}
+  const rows=Math.ceil(ZD/CS),P=SPX2,bio=solBiome(),tcol=new Uint8Array(COLS);for(let i=0;i<COLS;i++){const j=SURF[i];tcol[i]=j<ROWS?T[K(i,j)]||5:5}
+  const kS=bio+COLS+'x'+rows+':'+tcol.join('');
+  if(kS!==gTop2K){gTop2K=kS;gTop2.width=COLS*P;gTop2.height=rows*P;const q=gTop2.getContext('2d');
+    let i=0;while(i<COLS){const t=tcol[i];let e=i+1;while(e<COLS&&tcol[e]===t)e++;q.fillStyle=tuile(bio,t,'nature');q.fillRect(i*P,0,(e-i)*P,rows*P);i=e}
+    // passages entre matières : bord ondulé
+    for(let i=1;i<COLS;i++){const a=tcol[i-1],b=tcol[i];if(a===b)continue;const t=Math.min(a,b);q.fillStyle=tuile(bio,t,'nature');for(let y=0;y<rows*P;y+=P){const r=P*(0.4+hsh(i,y,4)*1.1);q.beginPath();q.arc(i*P+(a===t?0:0),y+P/2,r,0,TAU);q.fill()}}
+    if(gDecoK!==kS){gDecoK=kS;gDeco.width=COLS*P;gDeco.height=rows*P;const d=gDeco.getContext('2d');d.clearRect(0,0,gDeco.width,gDeco.height);surfaceDessus(d,bio,P,rows,tcol)}}
+  // humidité : taches douces, refaites toutes les 1,5 s
+  if(simT-gTop2T>1.5||gWet.width!==COLS){gTop2T=simT;const rw=Math.ceil(rows/3);gWet.width=COLS;gWet.height=rw;const q=gWet.getContext('2d'),im=q.createImageData(COLS,rw),D=im.data;
+    const wc=new Float32Array(COLS);for(let i=0;i<COLS;i++){let s=0,n=0;for(let d=-4;d<=4;d++){const ii=i+d;if(ii<0||ii>=COLS)continue;const j=SURF[ii];if(j<ROWS){s+=WET[K(ii,j)];n++}}wc[i]=n?s/n:0}
+    for(let r=0;r<rw;r++)for(let i=0;i<COLS;i++){const v=bruitTuile(i/9,r/5,64,3),w=Math.max(0,Math.min(1,wc[i]*(0.55+v*0.9))),o=(r*COLS+i)*4;
+      if(w>0.8){D[o]=25;D[o+1]=40;D[o+2]=55;D[o+3]=Math.round((w-0.8)*250+w*80)}else{D[o]=10;D[o+1]=14;D[o+2]=22;D[o+3]=Math.round(w*(bio==='desert'?110:85))}}
+    q.putImageData(im,0,0)}
+  g.imageSmoothingEnabled=true;g.drawImage(gTop2,0,-rows*CS,COLS*CS,rows*CS);g.drawImage(gWet,0,-rows*CS,COLS*CS,rows*CS);g.drawImage(gDeco,0,-rows*CS,COLS*CS,rows*CS)};
+
+// ---------- pierres aux couleurs du biome (coupe, 3/4 et dessus) ----------
+function couleurPierre(){const b=solBiome();return b==='desert'?['#e2b48c','#a86a42','#4a2816']:b==='tropical'?['#a3a49a','#5b5d55','#1f211d']:b==='marais'?['#aab09e','#646c5b','#23291f']:['#c9ccd0','#7d838a','#2e3236']}
