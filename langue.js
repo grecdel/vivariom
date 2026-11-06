@@ -260,7 +260,16 @@ const EN_D={
 "Un essaim ! Les abeilles se serrent en grappe avant de partir fonder une nouvelle colonie.":"A swarm! The bees huddle in a cluster before leaving to found a new colony.",
 "Des pucerons avec des ailes : leur plante est surpeuplée, alors ils partent ailleurs.":"Aphids with wings: their plant is overcrowded, so they're leaving.",
 "(vu !)":"(seen!)","✎ À observer :":"✎ To observe:","✨ Nouveau :":"✨ New:","À observer :":"To observe:","📔 Toutes les observations du jour sont dans le carnet de Camille !":"📔 All of today's observations are in Camille's notebook!","Toutes mes observations sont faites. Quelle journée !":"All my observations are done. What a day!","Encore une observation à faire… on la verra la prochaine fois.":"One more observation to make… we'll see it next time.","Je n'ai rien pu observer de spécial aujourd'hui. Rejouer pour voir ?":"I couldn't observe anything special today. Play again to see?","📔 Carnet de Camille":"📔 Camille's notebook","Carnet de Camille":"Camille's notebook","Le carnet est encore vide : lance un niveau de la campagne.":"The notebook is still empty: start a campaign level.","📔 Carnet de Camille (mode histoire)":"📔 Camille's notebook (story mode)",
-
+"Solifuge":"Solifuge","Chasseuse du désert, très rapide":"Very fast desert hunter",
+"Ténébrions, vers de farine, grillons, cloportes, fourmis, perce-oreilles : tout ce qu'elle rattrape.":"Darkling beetles, mealworms, crickets, woodlice, ants, earwigs: anything she can catch.",
+"Personne ici. Dans la nature : scorpions, lézards, oiseaux.":"No one here. In the wild: scorpions, lizards, birds.",
+"Garde les petits coléoptères du désert en équilibre.":"Keeps the small desert beetles in balance.",
+"Du sable sec et chaud, un abri pour la journée. Elle chasse la nuit.":"Dry, warm sand and a shelter for the day. She hunts at night.",
+"Ni araignée ni scorpion : un arachnide à part. D'énormes chélicères en pinces (jusqu'au tiers de son corps), des pédipalpes longs comme des pattes qu'elle tient devant elle pour tâter, et une course fulgurante. Pas de venin : elle broie ses proies.":"Neither spider nor scorpion: an arachnid of its own. Huge pincer-like chelicerae (up to a third of its body), pedipalps as long as legs that she holds in front to feel her way, and lightning speed. No venom: she crushes her prey.",
+"Déserts et steppes chaudes : Afrique du Nord, Moyen-Orient, sud de l'Espagne.":"Deserts and hot steppes: North Africa, the Middle East, southern Spain.",
+"On l'appelle « araignée-chameau », et des légendes disent qu'elle mange les chameaux : c'est faux, elle ne fait que quelques centimètres et ne mange que des petites bêtes.":"She's called the \"camel spider\", and legends say she eats camels: not true, she is only a few centimetres long and only eats small creatures.",
+"🦂 Broie sa proie avec ses chélicères":"🦂 Crushes her prey with her chelicerae","☀ Se cache du soleil":"☀ Hides from the sun","🌙 Chasse à toute vitesse dans le noir":"🌙 Hunts at full speed in the dark",
+"Une solifuge pond dans un terrier de sable":"A solifuge lays eggs in a sand burrow"
 };
 
 // Modèles : {} = morceau variable (traduit à son tour). Dans la traduction, {} = morceaux dans l'ordre, {0} {1}… = morceau n°.
