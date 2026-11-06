@@ -151,7 +151,7 @@ function draw(){
   ctx.strokeStyle='#0d0d14';ctx.lineWidth=1/camZ;ctx.beginPath();for(let y=Y0;y<Y0+ROWS*CS;y+=10){ctx.moveTo(0,y);ctx.lineTo(WW,y)}ctx.stroke();
   if(soilDirty&&simT-soilT>0.9||soilT===0){renderSoil();soilDirty=false;soilT=simT||0.001}
   if(view==='ens'){drawEnsBack();}
-  ctx.imageSmoothingEnabled=false;ctx.drawImage(soilCv,0,Y0,WW,WH);ctx.imageSmoothingEnabled=true;
+  ctx.imageSmoothingEnabled=typeof SOLSTYLE!=='undefined'&&SOLSTYLE!=='actuel';ctx.drawImage(soilCv,0,Y0,WW,WH);ctx.imageSmoothingEnabled=true;
   // pluie
   // circuit de brumisation
   if(view!=='ens'){ctx.strokeStyle='#3a4a5a';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,Y0+2);ctx.lineTo(WW,Y0+2);ctx.stroke();ctx.strokeStyle='#7a9ab5';ctx.lineWidth=0.6;ctx.beginPath();ctx.moveTo(0,Y0+1.2);ctx.lineTo(WW,Y0+1.2);ctx.stroke();
