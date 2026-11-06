@@ -113,7 +113,7 @@ function insecteCote(c,alpha){const id=c.sp.id,L=realLen(c)*(typeof ech==='funct
 {const dp=drawProfile;drawProfile=function(c,alpha,gray){if(gray||!ANAT||!INSECTES_DESSINES.includes(c.sp.id)||c.stade||c.state==='caught'){dp(c,alpha,gray);return}
   // sur une tige (mante) : même dessin, tourné le long de la tige, tête vers le haut ou vers le bas
   if(typeof onStem==='function'&&onStem(c)){if(c.sp.id!=='mante'){dp(c,alpha,gray);return}const P=Object.create(c);P.x=0;P.y=-CS*0.5;P.ang=0;P.v=0;const up=Math.sin(c.ang)<=0.2;
-    ctx.save();ctx.translate(c.x,c.y);ctx.rotate(up?-Math.PI/2:Math.PI/2);insecteCote(P,alpha);ctx.restore();return}
+    const Lb=realLen(c)*(typeof ech==='function'?ech(c):1)*0.6,sol=surfY(clamp(Math.floor(c.x/CS),0,COLS-1))-1,dy=Math.min(0,sol-(c.y+Lb));ctx.save();ctx.translate(c.x,c.y+dy);ctx.rotate(up?-Math.PI/2:Math.PI/2);insecteCote(P,alpha);ctx.restore();return}
   if(c.sp.id==='bousier'&&c.ball&&c.state==='roll'){dp(c,alpha,gray);return}
   insecteCote(c,alpha);if(c.malade&&typeof dessinPlus==='function')dessinPlus(c,ctx)}}
 

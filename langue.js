@@ -269,7 +269,13 @@ const EN_D={
 "Déserts et steppes chaudes : Afrique du Nord, Moyen-Orient, sud de l'Espagne.":"Deserts and hot steppes: North Africa, the Middle East, southern Spain.",
 "On l'appelle « araignée-chameau », et des légendes disent qu'elle mange les chameaux : c'est faux, elle ne fait que quelques centimètres et ne mange que des petites bêtes.":"She's called the \"camel spider\", and legends say she eats camels: not true, she is only a few centimetres long and only eats small creatures.",
 "🦂 Broie sa proie avec ses chélicères":"🦂 Crushes her prey with her chelicerae","☀ Se cache du soleil":"☀ Hides from the sun","🌙 Chasse à toute vitesse dans le noir":"🌙 Hunts at full speed in the dark",
-"Une solifuge pond dans un terrier de sable":"A solifuge lays eggs in a sand burrow"
+"Une solifuge pond dans un terrier de sable":"A solifuge lays eggs in a sand burrow",
+"Phyllie (phasme-feuille)":"Leaf insect","Phasme épineux":"Spiny leaf insect","Phasme péruvien":"Peruvian stick insect","Nymphe de la jungle":"Jungle nymph",
+"Phyllie":"Leaf insect","Épineux":"Spiny","Péruvien":"Peruvian","Nymphe jungle":"Jungle nymph",
+"Plat et vert comme une feuille, avec de fausses nervures et des « morsures » sur les bords. Il se balance comme une feuille dans le vent.":"Flat and green like a leaf, with fake veins and \"bite marks\" on the edges. It sways like a leaf in the wind.",
+"Couvert d'épines, la queue recourbée au-dessus du dos comme un scorpion : il imite une touffe de feuilles mortes.":"Covered in spines, its tail curled over its back like a scorpion: it mimics a clump of dead leaves.",
+"Noir velours, yeux jaunes et ailes rouge vif : il prévient qu'il n'est pas bon à manger.":"Velvet black, yellow eyes and bright red wings: it warns that it is not good to eat.",
+"L'un des plus lourds insectes du monde : vert pomme, trapu et épineux. La femelle peut peser 50 g.":"One of the heaviest insects in the world: apple green, stocky and spiny. The female can weigh 50 g."
 };
 
 // Modèles : {} = morceau variable (traduit à son tour). Dans la traduction, {} = morceaux dans l'ordre, {0} {1}… = morceau n°.
