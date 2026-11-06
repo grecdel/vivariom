@@ -71,6 +71,8 @@ Coche quand c'est vérifié et que ça marche. Si ça ne marche pas, laisse `[ ]
 - [x] Linux : se lance, icône près de l'horloge
 - [x] Ordinateur : les bêtes fuient la souris, « Tenir une miette » les fait suivre
 - [x] Papillons le jour, vers luisants le soir
+- [ ] Nouveau dessin des bestioles (pattes, antennes, chélicères comme dans le jeu) ; phasme, grillon et solifuge dans les réglages
+- [ ] Android : après l'ajout du secret BESTIOLES_CLE et une dernière désinstallation, les mises à jour s'installent par-dessus (« Mettre à jour »)
 
 ---
 
