@@ -23,6 +23,19 @@ jobs:
       - uses: gradle/actions/setup-gradle@v5
         with:
           gradle-version: '8.9'
+      - name: Clé de signature (secret BESTIOLES_CLE : « mot-de-passe clé-en-base64 »)
+        env:
+          BESTIOLES_CLE: ${{ secrets.BESTIOLES_CLE }}
+        run: |
+          if [ -n "$BESTIOLES_CLE" ]; then
+            echo "$BESTIOLES_CLE" | cut -d' ' -f2 | base64 -d > "$RUNNER_TEMP/cle.p12"
+            echo "::add-mask::$(echo "$BESTIOLES_CLE" | cut -d' ' -f1)"
+            echo "CLE_MDP=$(echo "$BESTIOLES_CLE" | cut -d' ' -f1)" >> "$GITHUB_ENV"
+            echo "CLE_FICHIER=$RUNNER_TEMP/cle.p12" >> "$GITHUB_ENV"
+            echo "Clé fixe utilisée"
+          else
+            echo "Pas de secret BESTIOLES_CLE : clé de débogage"
+          fi
       - name: Fabriquer l'APK
         run: gradle -p bestioles/android assembleRelease --no-daemon --stacktrace
       - name: Renommer

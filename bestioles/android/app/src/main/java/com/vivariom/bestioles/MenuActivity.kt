@@ -20,10 +20,11 @@ import org.json.JSONObject
 class MenuActivity : Activity() {
     private val especes = listOf(
         "fourmi" to "🐜 Fourmi", "puceron" to "🟢 Puceron", "coccinelle" to "🐞 Coccinelle", "mouche" to "🪰 Mouche",
-        "araignee" to "🕷 Araignée", "papillon" to "🦋 Papillon", "mante" to "🦗 Mante", "verluisant" to "✨ Ver luisant")
+        "araignee" to "🕷 Araignée", "papillon" to "🦋 Papillon", "mante" to "🦗 Mante", "verluisant" to "✨ Ver luisant",
+        "phasme" to "🌿 Phasme", "grillon" to "🎶 Grillon", "solifuge" to "🦂 Solifuge")
     // mêmes valeurs que DEFAUT et NMAX dans bestioles.js
-    private val defaut = mapOf("fourmi" to 5, "puceron" to 6, "coccinelle" to 1, "mouche" to 2, "araignee" to 1, "papillon" to 1, "mante" to 0, "verluisant" to 2)
-    private val maxi = mapOf("fourmi" to 15, "puceron" to 14, "coccinelle" to 4, "mouche" to 6, "araignee" to 3, "papillon" to 4, "mante" to 2, "verluisant" to 5)
+    private val defaut = mapOf("fourmi" to 5, "puceron" to 6, "coccinelle" to 1, "mouche" to 2, "araignee" to 1, "papillon" to 1, "mante" to 0, "verluisant" to 2, "phasme" to 1, "grillon" to 1, "solifuge" to 0)
+    private val maxi = mapOf("fourmi" to 15, "puceron" to 14, "coccinelle" to 4, "mouche" to 6, "araignee" to 3, "papillon" to 4, "mante" to 2, "verluisant" to 5, "phasme" to 3, "grillon" to 4, "solifuge" to 2)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
