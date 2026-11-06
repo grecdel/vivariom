@@ -274,6 +274,7 @@ const EN_D={
 
 // Modèles : {} = morceau variable (traduit à son tour). Dans la traduction, {} = morceaux dans l'ordre, {0} {1}… = morceau n°.
 const EN_T=[
+["📏 Une {} est grande pour ce petit bac : choisis plutôt {}.","📏 A {} is big for this small tank: pick {} instead."],["un grand bac (90 cm) ou le standard","a large tank (90 cm) or the standard one"],["le standard ou le grand bac","the standard or the large tank"],["le standard avec une mare","the standard one with a pond"],
 ["Un {} se change en nymphe","A {} turns into a pupa"],["Un {} devient adulte","A {} becomes an adult"],
 ["🍄 {} bêtes sont malades","🍄 {} creatures are sick"],["{} est guéri(e)","{} is cured"],["🌀 Ouvre la ventilation{} pour sécher l'air.","🌀 Open the ventilation{} to dry the air."],[" (pas encore débloquée ici)"," (not unlocked here yet)"],["Moisissures sur {} endroits.","Mould in {} places."],["Moisissures sur {} endroit.","Mould in {} place."],["{} — fais sécher le sol pour qu'elle guérisse","{} — dry the soil so it heals"],
 ["{} est morte","{} died"],["{} est mort de faim","{} died of hunger"],["{} est morte de faim","{} died of hunger"],["{} est mort de vieillesse","{} died of old age"],["{} est morte de vieillesse","{} died of old age"],["{} est mort","{} died"],

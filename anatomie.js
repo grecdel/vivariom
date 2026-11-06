@@ -4,7 +4,7 @@
 // des filières au bout de l'abdomen ; motifs propres à chaque espèce (croix de l'épeire, rayures de la loup,
 // zébrures de la sauteuse, poils et genoux colorés des mygales). Dans sa toile, l'épeire est vue de face, pattes en étoile.
 // Vue du dessus : chélicères et pédipalpes ajoutés. Nouvelle espèce : la solifuge (désert, chasseuse de nuit très rapide).
-let ANAT=false;// nouveau dessin des araignées : en attente de l'avis de l'utilisateur (la solifuge, elle, a toujours son dessin)
+let ANAT=true;// nouveau dessin des araignées et des insectes (validé par l'utilisateur)
 const TAUP=Math.PI;
 function pattePoils(x0,y0,x1,y1,n,len,col){ctx.strokeStyle=col;ctx.lineWidth=Math.max(0.12,len*0.12);ctx.beginPath();for(let q=1;q<=n;q++){const t=q/(n+1),x=x0+(x1-x0)*t,y=y0+(y1-y0)*t,a=Math.atan2(y1-y0,x1-x0)+TAUP/2;ctx.moveTo(x,y);ctx.lineTo(x+Math.cos(a+0.5)*len,y+Math.sin(a+0.5)*len)}ctx.stroke()}
 function segPatte(x0,y0,x1,y1,w0,w1,col){const a=Math.atan2(y1-y0,x1-x0),nx=-Math.sin(a),ny=Math.cos(a);ctx.fillStyle=col;ctx.beginPath();

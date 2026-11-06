@@ -32,6 +32,7 @@ Coche quand c'est vérifié et que ça marche. Si ça ne marche pas, laisse `[ ]
 
 - [ ] Plantes au dessin « organique » (tiges ondulées, feuilles en amande)
 - [ ] Les tiges ploient quand une bête grimpe ou qu'un insecte se pose ; toiles qui ondulent ; grains de sable sous les pattes
+- [ ] Nouveau dessin des araignées et des insectes (pattes, chélicères, antennes…) ; solifuge dans le désert ; décors à la bonne échelle
 - [ ] Aide contre les maladies (carte « 🪄 Le faire pour moi » en Facile, 🍄 en haut de l'écran sinon)
 
 - [ ] Nouvelles bêtes : perce-oreille, gendarme, libellule, moustique, gerris, têtard → grenouille (pose une mare 💧 d'abord)
